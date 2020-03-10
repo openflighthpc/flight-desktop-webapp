@@ -1,7 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import SignInForm from './SignInForm';
+import { Provider as CurrentUserProvider } from './CurrentUserContext';
 
 test('renders without crashing', () => {
-  render(<SignInForm />);
+  render(
+    <CurrentUserProvider user={{ username: 'alces' }}>
+      <SignInForm />
+    </CurrentUserProvider>
+  );
 });

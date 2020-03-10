@@ -2,25 +2,31 @@ import React from 'react';
 
 import BrandBar from './BrandBar';
 import Footer from './Footer';
-import UnauthenticatedDashboard from './UnauthenticatedDashboard';
+import Dashboard from './Dashboard';
+import { Provider as CurrentUserProvider } from './CurrentUserContext';
+import { Provider as SessionsProvider } from './SessionsContext';
 
 function App() {
   return (
     <div className="App">
-      <BrandBar />
-      <div
-        className="container-fluid"
-        id="main"
-      >
-        <div className="row content">
-          <div className="col-sm-2 sidenav"></div>
-          <div className="col centernav mt-4">
-            <UnauthenticatedDashboard />
+      <CurrentUserProvider>
+        <SessionsProvider>
+          <BrandBar />
+          <div
+            className="container-fluid"
+            id="main"
+          >
+            <div className="row content">
+              <div className="col-sm-2 sidenav"></div>
+              <div className="col centernav mt-4">
+                <Dashboard />
+              </div>
+              <div className="col-sm-2 sidenav"></div>
+            </div>
           </div>
-          <div className="col-sm-2 sidenav"></div>
-        </div>
-      </div>
-      <Footer />
+          <Footer />
+        </SessionsProvider>
+      </CurrentUserProvider>
     </div>
   );
 }
