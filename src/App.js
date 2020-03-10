@@ -8,7 +8,10 @@ function App() {
   return (
     <div className="App">
       <BrandBar />
-      <div className="container-fluid">
+      <div
+        className="container-fluid"
+        id="main"
+      >
         <div className="row content">
           <div className="col-sm-2 sidenav"></div>
           <div className="col centernav mt-4">
