@@ -28,10 +28,13 @@ jobs:
           name: Run tests
           # Runs jest with "--maxWorkers=2" argument to avoid OOM issues
           # command: yarn run test --coverage
-          command: yarn run test --maxWorkers=2 --ci --coverage --reporters=default --watchAll=false  #--reporters=jest-junit
+          command: yarn run test --maxWorkers=2 --ci --coverage --reporters=default --reporters=jest-junit
 
       - store_artifacts: 
           path: test-results
+
+      - store_artifacts: 
+          path: coverage
 
       - store_test_results:
           path: test-results

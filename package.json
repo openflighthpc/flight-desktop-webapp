@@ -31,5 +31,17 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "jest-junit": "^10.0.0"
+  },
+  "jest-junit": {
+    "suiteName": "jest tests",
+    "outputDirectory": ".",
+    "outputName": "test-results/junit.xml",
+    "classNameTemplate": "{classname}-{title}",
+    "titleTemplate": "{classname}-{title}",
+    "ancestorSeparator": " › ",
+    "usePathForSuiteName": "true"
   }
 }
