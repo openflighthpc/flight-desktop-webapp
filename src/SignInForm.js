@@ -25,10 +25,10 @@ const useForm = (callback) => {
 
 
 function SignInForm() {
-  const { dispatch: userDispatch } = useContext(CurrentUserContext);
-  const { dispatch: sessionsDispatch } = useContext(SessionsContext);
+  const { actions: userActions } = useContext(CurrentUserContext);
+  const { actions: sessionActions } = useContext(SessionsContext);
   const { handleSubmit, handleInputChange, inputs } = useForm(
-    signIn(userDispatch, sessionsDispatch)
+    signIn(userActions, sessionActions)
   );
 
   return (

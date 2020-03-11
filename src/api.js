@@ -1,19 +1,10 @@
-
-
-
-export const signIn = (userDispatch, sessionsDispatch) => async (inputs) => {
+export const signIn = (userActions, sessionActions) => async (inputs) => {
   // XXX Transition to authenticated dashboard.
-  userDispatch({
-    type: 'SIGN_IN',
-    payload: { username: inputs.username, password: inputs.password }
-  });
+  userActions.setUser(inputs.username, inputs.password);
 
-  sessionsDispatch({ type: 'LOAD' });
+  sessionActions.pending();
   const sessions = await retrieveFakeSessions();
-  sessionsDispatch({
-    type: 'RESOLVED',
-    payload: sessions,
-  });
+  sessionActions.resolved(sessions);
 }
 
 async function retrieveFakeSessions() {
