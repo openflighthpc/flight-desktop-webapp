@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useMemo, useReducer } from 'react';
 
 import { reduceReducers } from './utils';
 
@@ -35,33 +35,37 @@ function loadingReducer(state, action) {
   }
 }
 
-const Context = React.createContext({ state: initialState });
+const SessionsContext = React.createContext({ state: initialState });
 
-function Provider(props) {
+function SessionsProvider(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const actions = {
-    pending() { dispatch({ type: 'LOAD' }); },
+  const actions = useMemo(
+    () => ({
+      pending() { dispatch({ type: 'LOAD' }); },
 
-    resolved(sessions) {
-      dispatch({
-        type: 'RESOLVED',
-        payload: sessions,
-      });
-    },
+      resolved(sessions) {
+        dispatch({
+          type: 'RESOLVED',
+          payload: sessions,
+        });
+      },
 
-    rejected(errors) {
-      dispatch({
-        type: 'REJECTED',
-        errors: errors
-      });
-    },
-  };
+      rejected(errors) {
+        dispatch({
+          type: 'REJECTED',
+          errors: errors
+        });
+      },
+    }),
+    [ dispatch ],
+  );
 
 
+  // XXX Rename state.
   return (
-    <Context.Provider value={{ state, actions }}>
+    <SessionsContext.Provider value={{ state, actions }}>
       {props.children}
-    </Context.Provider>
+    </SessionsContext.Provider>
   );
 }
 
@@ -70,7 +74,7 @@ const internal = {
 }
 
 export {
-  Context,
-  Provider,
+  SessionsContext,
+  SessionsProvider,
   internal,
 }

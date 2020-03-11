@@ -1,12 +1,9 @@
 import React, { useContext } from 'react';
-import styled from 'styled-components'
+import { Link } from "react-router-dom";
 
+import { CardFooter } from './CardParts';
 import Logo from './png_trans_logo.png';
 import { Context as CurrentUserContext } from './CurrentUserContext';
-
-const CardFooter = styled.div`
-  padding: 0.75rem 1.25rem;
-`;
 
 function AuthenticatedDashboard() {
   const { currentUser } = useContext(CurrentUserContext);
@@ -41,13 +38,13 @@ function AuthenticatedDashboard() {
             </p>
           </div>
           <CardFooter>
-            <a
+            <Link
               className="btn btn-success btn-block"
-              href="/sessions"
+              to="/sessions"
             >
               <i className="fa fa-desktop mr-1"></i>
               <span>View sessions</span>
-            </a>
+            </Link>
           </CardFooter>
         </div>
         <div className="card">
@@ -61,13 +58,13 @@ function AuthenticatedDashboard() {
             </p>
           </div>
           <CardFooter>
-            <a
+            <Link
               className="btn btn-success btn-block"
-              href="/launch"
+              to="/sessions/new"
             >
               <i className="fa fa-rocket mr-1"></i>
               <span>Launch</span>
-            </a>
+            </Link>
           </CardFooter>
         </div>
       </div>

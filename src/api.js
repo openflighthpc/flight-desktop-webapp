@@ -1,7 +1,8 @@
 export const signIn = (userActions, sessionActions) => async (inputs) => {
-  // XXX Transition to authenticated dashboard.
   userActions.setUser(inputs.username, inputs.password);
+}
 
+export async function retrievSessions(sessionActions) {
   sessionActions.pending();
   const sessions = await retrieveFakeSessions();
   sessionActions.resolved(sessions);
@@ -12,6 +13,11 @@ async function retrieveFakeSessions() {
     const fakeData = [
       {
         "id": "1740a970-73e2-42bb-b740-baadb333175d",
+        "type": "terminal",
+        "image": null,
+      },
+      {
+        "id": "6fe6f4ed-b442-4703-ad47-075bc3f61835",
         "type": "terminal",
         "image": null,
       }

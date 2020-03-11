@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 
 import { signIn } from './api';
 import { Context as CurrentUserContext } from './CurrentUserContext';
-import { Context as SessionsContext } from './SessionsContext';
+import { SessionsContext } from './SessionsContext';
 
 const useForm = (callback) => {
   const [inputs, setInputs] = useState({});

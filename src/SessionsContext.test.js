@@ -1,12 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { Provider, internal } from './SessionsContext';
+import { SessionsProvider, internal } from './SessionsContext';
 
 test('renders without crashing', () => {
   render(
-    <Provider>
+    <SessionsProvider>
       <div>Some children</div>
-    </Provider>
+    </SessionsProvider>
   );
 });
 

@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useMemo, useReducer } from 'react';
 
 const currentUserReducer = (state, { type, payload }) => {
   switch (type) {
@@ -23,16 +23,19 @@ const Context = React.createContext(initialState);
 
 function Provider({ user, ...props }) {
   const [currentUser, dispatch] = useReducer(currentUserReducer, initialState);
-  const actions = {
-    setUser(username, password) {
-      dispatch({
-        type: 'SET_USER',
-        payload: { username, password }
-      })
-    },
+  const actions = useMemo(
+    () => ({
+      setUser(username, password) {
+        dispatch({
+          type: 'SET_USER',
+          payload: { username, password }
+        })
+      },
 
-    unsetUser() { dispatch({ type: 'UNSET_USER' }) },
-  };
+      unsetUser() { dispatch({ type: 'UNSET_USER' }) },
+    }),
+    [ dispatch ],
+  );
 
   return (
     <Context.Provider value={{ currentUser: user || currentUser, actions }}>
