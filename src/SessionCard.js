@@ -14,13 +14,13 @@ const prettyDesktopName = {
 };
 
 function SessionCard({ session }) {
-  const name = session.name || session.id.split('-')[0];
+  const session_name = session.name || session.id.split('-')[0];
 
   return (
     <div className="col-sm-6 col-lg-4">
       <div className="card border-primary mb-2">
         <h5 className="card-header bg-primary text-light">
-          {name}
+          {session_name}
         </h5>
         <div className="card-body">
           <div className="row mb-2">
@@ -55,7 +55,7 @@ function SessionCard({ session }) {
           <div className="btn-toolbar justify-content-center">
             <Link
               className="btn btn-primary mr-2"
-              to="/XXX"
+              to={`/sessions/${session.id}`}
             >
               <i className="fa fa-bolt mr-1"></i>
               <span>Connect</span>

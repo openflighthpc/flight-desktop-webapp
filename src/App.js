@@ -10,6 +10,7 @@ import BrandBar from './BrandBar';
 import Footer from './Footer';
 import Dashboard from './Dashboard';
 import SessionsPage from './SessionsPage';
+import SessionPage from './SessionPage';
 import { Provider as CurrentUserProvider } from './CurrentUserContext';
 import { SessionsProvider } from './SessionsContext';
 
@@ -33,6 +34,9 @@ function App() {
                       <div className="text-center">
                         XXX TBD
                       </div>
+                    </AuthenticatedRoute>
+                    <AuthenticatedRoute path="/sessions/:id">
+                      <SessionPage />
                     </AuthenticatedRoute>
                     <AuthenticatedRoute path="/sessions">
                       <SessionsPage />

@@ -3,3 +3,11 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
+
+// The lightest possible MutationObserver shim.  We may need to upgrade this
+// to `import "mutationobserver-shim"` at some point.
+global.MutationObserver = class {
+    // constructor(callback) {}
+    disconnect() {}
+    observe(element, initObject) {}
+};

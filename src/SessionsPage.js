@@ -43,7 +43,7 @@ function Error({ errors }) {
 }
 
 function SessionsList({ sessions }) {
-  const cards = sessions.map((session) => <SessionCard session={session} />);
+  const cards = sessions.map((session) => <SessionCard key={session.id} session={session} />);
   return (
     <div>
       <p>
