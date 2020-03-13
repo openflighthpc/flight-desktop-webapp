@@ -1,23 +1,55 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
+import useFetch from 'use-http';
 
-import NoVNC from './NoVNC';
 import ErrorBoundary from './ErrorBoundary';
+import NoVNC from './NoVNC';
+import Spinner from './Spinner';
+import { DefaultErrorMessage } from './ErrorBoundary';
+
+function buildUrl(id) {
+  const port = 41363;
+  const password = 'rZjgqb0L';
+
+  return `http://localhost:8000?id=${id}&port=${port}&password=${password}`;
+}
 
 function SessionPage() {
-  const session = {
-    "desktop": "terminal",
-    "hostname": "gateway1",
-    "id": "d58cc7aa-768e-453a-8b1a-585679645155",
-    "image": null,
-    "ip": "54.77.246.95",
-    "password": "rZjgqb0L",
-    "port": "5903",
-    "websocket_port": "41363",
-  };
-  const sessionName = session.name || session.id.split('-')[0];
-  const websocketPort = session.websocket_port || session.port;
-  const sessionUrl = session.url || `ws://localhost:9090/ws/127.0.0.1/${websocketPort}`;
+  const { id } = useParams();
+  const { loading, error, data: session } = useFetch(buildUrl(id), {}, [ id ]);
+  const sessionName = id.split('-')[0];
 
+  if (loading) {
+    return (
+      <Layout headerText={sessionName}>
+        <Spinner text="Loading session..." />
+      </Layout>
+    );
+  } else if (error) {
+    return <DefaultErrorMessage />;
+  } else {
+    const websocketPort = session.websocketPort || session.port;
+    const sessionUrl = session.url || `ws://localhost:9090/ws/127.0.0.1/${websocketPort}`;
+    return (
+      <Layout headerText={sessionName}>
+        <ErrorBoundary>
+          <NoVNC
+            connectionName={sessionUrl}
+            password={session.password}
+            onBeforeConnect={() => {
+              console.log('about to connect')
+            }}
+            onDisconnected={(e) => {
+              console.log('disconnected', e);
+            }}
+          />
+        </ErrorBoundary>
+      </Layout>
+    );
+  }
+}
+
+function Layout({ children, sessionName }) {
   return (
     <div className="overflow-auto">
       <div className="row no-gutters">
@@ -44,19 +76,7 @@ function SessionPage() {
               </div>
             </div>
             <div className="card-body p-0">
-              <ErrorBoundary>
-                <NoVNC
-                  connectionName={sessionUrl}
-                  isSecure={false}
-                  password={session.password}
-                  onBeforeConnect={() => {
-                    console.log('about to connect')
-                  }}
-                  onDisconnected={(e) => {
-                    console.log('disconnected', e);
-                  }}
-                />
-              </ErrorBoundary>
+              {children}
             </div>
           </div>
         </div>

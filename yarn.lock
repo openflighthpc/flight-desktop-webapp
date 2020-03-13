@@ -8885,6 +8885,16 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
+use-http@^0.3.7:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/use-http/-/use-http-0.3.7.tgz#fd18227c2eeec7e3966e1a3c749591b2af542971"
+  dependencies:
+    use-ssr "^1.0.22"
+
+use-ssr@^1.0.22:
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/use-ssr/-/use-ssr-1.0.22.tgz#a43c2587b1907fabda61c6542b80542c619228fe"
+
 use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"

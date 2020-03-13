@@ -2,10 +2,11 @@ import React, { useContext, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
 import SessionCard from './SessionCard';
+import Spinner from './Spinner';
 import { Context as CurrentUserContext } from './CurrentUserContext';
+import { DefaultErrorMessage } from './ErrorBoundary';
 import { SessionsContext } from './SessionsContext';
 import { retrievSessions } from './api';
-import { DefaultErrorMessage } from './ErrorBoundary';
 
 function SessionsPage() {
   const { currentUser } = useContext(CurrentUserContext);
@@ -25,15 +26,6 @@ function SessionsPage() {
     default:
       return <DefaultErrorMessage />;
   }
-}
-
-function Spinner({ text }) {
-  return (
-    <div className="text-center">
-      <i className="fa fa-spinner fa-spin mr-1"></i>
-      {text}
-    </div>
-  );
 }
 
 function NoSessionsFound() {

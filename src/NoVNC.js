@@ -29,7 +29,6 @@ import RFB from 'novnc-core'
 const createConnection = ({
   connectionName,
   domEl,
-  isSecure,
   onDisconnect,
   onConnect,
   onPasswordPrompt,
@@ -61,13 +60,8 @@ const createConnection = ({
 export default class VncContainer extends React.Component {
   static propTypes = {
     connectionName: PropTypes.string.isRequired,
-    isSecure: PropTypes.bool,
     password: PropTypes.string.isRequired,
     onBeforeConnect: PropTypes.func,
-  };
-
-  static defaultProps = {
-    isSecure: false
   };
 
   state = {
@@ -86,7 +80,6 @@ export default class VncContainer extends React.Component {
     this.rfb = createConnection({
       connectionName: this.props.connectionName,
       domEl: this.noVNCCanvas.current,
-      isSecure: this.props.isSecure,
       onDisconnect: this.onDisconnect,
       onConnect: this.onStatusChange,
       onPasswordPrompt: this.onPasswordRequired,

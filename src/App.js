@@ -13,6 +13,7 @@ import SessionsPage from './SessionsPage';
 import SessionPage from './SessionPage';
 import { Provider as CurrentUserProvider } from './CurrentUserContext';
 import { SessionsProvider } from './SessionsContext';
+import ErrorBoundary from './ErrorBoundary';
 
 function App() {
   return (
@@ -28,24 +29,24 @@ function App() {
               <div className="row content">
                 <div className="col-sm-2 sidenav"></div>
                 <div className="col centernav mt-4">
-
-                  <Switch>
-                    <AuthenticatedRoute path="/sessions/new">
-                      <div className="text-center">
-                        XXX TBD
-                      </div>
-                    </AuthenticatedRoute>
-                    <AuthenticatedRoute path="/sessions/:id">
-                      <SessionPage />
-                    </AuthenticatedRoute>
-                    <AuthenticatedRoute path="/sessions">
-                      <SessionsPage />
-                    </AuthenticatedRoute>
-                    <Route path="/">
-                      <Dashboard />
-                    </Route>
-                  </Switch>
-
+                  <ErrorBoundary>
+                    <Switch>
+                      <AuthenticatedRoute path="/sessions/new">
+                        <div className="text-center">
+                          XXX TBD
+                        </div>
+                      </AuthenticatedRoute>
+                      <AuthenticatedRoute path="/sessions/:id">
+                        <SessionPage />
+                      </AuthenticatedRoute>
+                      <AuthenticatedRoute path="/sessions">
+                        <SessionsPage />
+                      </AuthenticatedRoute>
+                      <Route path="/">
+                        <Dashboard />
+                      </Route>
+                    </Switch>
+                  </ErrorBoundary>
                 </div>
                 <div className="col-sm-2 sidenav"></div>
               </div>
