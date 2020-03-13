@@ -4,7 +4,7 @@ import { reduceReducers } from './utils';
 
 const initialState = {
   state: 'uninitialised',  // uninitialised | loading | loaded | errored
-  sessions: null,
+  data: null,
   errors: null,
 };
 
@@ -14,7 +14,7 @@ function uninitialisedReducer(state, action) {
   if (state.state !== 'uninitialised') { return state; }
   switch (action.type) {
     case "LOAD":
-      return { state: 'loading', sessions: null, errors: null }
+      return { state: 'loading', data: null, errors: null }
 
     default:
       return state;
@@ -25,10 +25,10 @@ function loadingReducer(state, action) {
   if (state.state !== 'loading') { return state; }
   switch (action.type) {
     case "RESOLVED":
-      return { state: 'loaded', sessions: action.payload, errors: null }
+      return { state: 'loaded', data: action.payload, errors: null }
 
     case "REJECTED":
-      return { state: 'errored', sessions: state.sessions, errors: action.errors }
+      return { state: 'errored', data: state.data, errors: action.errors }
 
     default:
       return state;
@@ -38,7 +38,7 @@ function loadingReducer(state, action) {
 const SessionsContext = React.createContext({ state: initialState });
 
 function SessionsProvider(props) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [sessions, dispatch] = useReducer(reducer, initialState);
   const actions = useMemo(
     () => ({
       pending() { dispatch({ type: 'LOAD' }); },
@@ -61,9 +61,8 @@ function SessionsProvider(props) {
   );
 
 
-  // XXX Rename state.
   return (
-    <SessionsContext.Provider value={{ state, actions }}>
+    <SessionsContext.Provider value={{ sessions, actions }}>
       {props.children}
     </SessionsContext.Provider>
   );

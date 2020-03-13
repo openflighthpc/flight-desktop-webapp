@@ -35,6 +35,7 @@
     ]
   },
   "devDependencies": {
+    "jest-fetch-mock": "^3.0.3",
     "jest-junit": "^10.0.0"
   },
   "jest-junit": {

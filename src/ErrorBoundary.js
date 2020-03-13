@@ -1,8 +1,8 @@
 import React from 'react';
 
-const DefaultErrorMessage = () => (
-  <div class="card">
-    <div class="card-body">
+export const DefaultErrorMessage = () => (
+  <div className="card">
+    <div className="card-body">
       <h3>An error has occurred</h3>
       <p>
         Unfortunately there has been a problem handling your request. Please

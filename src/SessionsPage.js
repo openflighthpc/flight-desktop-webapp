@@ -1,27 +1,29 @@
 import React, { useContext, useEffect } from 'react';
+import { Link } from "react-router-dom";
 
 import SessionCard from './SessionCard';
 import { Context as CurrentUserContext } from './CurrentUserContext';
 import { SessionsContext } from './SessionsContext';
 import { retrievSessions } from './api';
+import { DefaultErrorMessage } from './ErrorBoundary';
 
 function SessionsPage() {
   const { currentUser } = useContext(CurrentUserContext);
-  const { state: sessionsState, actions } = useContext(SessionsContext);
+  const { sessions, actions } = useContext(SessionsContext);
   useEffect(
     () => { retrievSessions(actions); },
     [currentUser, actions],
   );
 
-  switch (sessionsState.state) {
+  switch (sessions.state) {
     case "uninitialised":
     case "loading":
       return <Spinner text="Loading sessions..."/>;
     case "loaded":
-      return <SessionsList sessions={sessionsState.sessions} />;
+      return <SessionsList sessions={sessions.data} />;
     case "errored":
     default:
-      return <Error errors={sessionsState.errors} />;
+      return <DefaultErrorMessage />;
   }
 }
 
@@ -34,16 +36,24 @@ function Spinner({ text }) {
   );
 }
 
-function Error({ errors }) {
+function NoSessionsFound() {
   return (
     <div>
-      Ooops.  Something went wrong.
+      <p>
+        No sessions found.  You may want to <Link to="/sessions/new">start a
+          new session</Link>.
+      </p>
     </div>
   );
 }
 
 function SessionsList({ sessions }) {
-  const cards = sessions.map((session) => <SessionCard key={session.id} session={session} />);
+  if (!sessions.length) {
+    return <NoSessionsFound />;
+  }
+  const cards = sessions.map(
+    (session) => <SessionCard key={session.id} session={session} />
+  );
   return (
     <div>
       <p>

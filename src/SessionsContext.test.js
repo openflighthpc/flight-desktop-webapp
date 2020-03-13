@@ -1,6 +1,6 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { SessionsProvider, internal } from './SessionsContext';
+import { fireEvent, render } from '@testing-library/react';
+import { SessionsContext, SessionsProvider, internal } from './SessionsContext';
 
 test('renders without crashing', () => {
   render(
@@ -10,9 +10,71 @@ test('renders without crashing', () => {
   );
 });
 
+describe('SessionsProvider', () => {
+  it('provides function to resolve sessions', () => {
+    const fakeSessions = [ "fake session data" ];
+    const tree = (
+      <SessionsProvider>
+        <SessionsContext.Consumer>
+          {
+            ({actions, sessions}) => (
+              <div>
+                <span>
+                  Sessions: {sessions.data == null ? 0 : sessions.data.length}
+                </span>
+                <button
+                  onClick={
+                    () => {actions.pending(); actions.resolved(fakeSessions);}
+                  }
+                >
+                  Resolve
+                </button>
+              </div>
+            )
+          }
+        </SessionsContext.Consumer>
+      </SessionsProvider>
+    )
+    const { getByText } = render(tree)
+    expect(getByText(/^Sessions:/).textContent).toBe('Sessions: 0')
+    fireEvent.click(getByText('Resolve'));
+    expect(getByText(/^Sessions:/).textContent).toBe('Sessions: 1')
+  });
+
+  it('provides function to reject sessions', () => {
+    const fakeError = new Error('Ooops');
+    const tree = (
+      <SessionsProvider>
+        <SessionsContext.Consumer>
+          {
+            ({actions, sessions}) => (
+              <div>
+                <span>
+                  Error: {sessions.errors == null ? 'No error' : sessions.errors.message }
+                </span>
+                <button
+                  onClick={
+                    () => {actions.pending(); actions.rejected(fakeError);}
+                  }
+                >
+                  Resolve
+                </button>
+              </div>
+            )
+          }
+        </SessionsContext.Consumer>
+      </SessionsProvider>
+    )
+    const { getByText } = render(tree)
+    expect(getByText(/^Error:/).textContent).toBe('Error: No error')
+    fireEvent.click(getByText('Resolve'));
+    expect(getByText(/^Error:/).textContent).toBe('Error: Ooops')
+  });
+});
+
 describe('reducer', () => {
   describe('when uninitialised', () => {
-    const initialState = { state: 'uninitialised', sessions: null, errors: null };
+    const initialState = { state: 'uninitialised', data: null, errors: null };
 
     it('can transition to loading', () => {
       const action = { type: "LOAD" };
@@ -20,7 +82,7 @@ describe('reducer', () => {
       const newState = internal.reducer(initialState, action);
 
       expect(newState.state).toEqual('loading');
-      expect(newState.sessions).toBeNull();
+      expect(newState.data).toBeNull();
       expect(newState.errors).toBeNull();
     });
 
@@ -42,7 +104,7 @@ describe('reducer', () => {
   });
 
   describe('when loading', () => {
-    const initialState = { state: 'loading', sessions: null, errors: null };
+    const initialState = { state: 'loading', data: null, errors: null };
 
     it('can transition to loaded', () => {
       const action = { type: "RESOLVED", payload: 'the payload'};
@@ -50,7 +112,7 @@ describe('reducer', () => {
       const newState = internal.reducer(initialState, action);
 
       expect(newState.state).toEqual('loaded');
-      expect(newState.sessions).toEqual('the payload');
+      expect(newState.data).toEqual('the payload');
       expect(newState.errors).toBeNull();
     });
 
@@ -59,12 +121,12 @@ describe('reducer', () => {
       const existingSessions = 'previously loaded session data';
 
       const newState = internal.reducer(
-        { ...initialState, sessions: existingSessions },
+        { ...initialState, data: existingSessions },
         action
       );
 
       expect(newState.state).toEqual('errored');
-      expect(newState.sessions).toEqual(existingSessions);
+      expect(newState.data).toEqual(existingSessions);
       expect(newState.errors).toEqual('the error');
     });
   });

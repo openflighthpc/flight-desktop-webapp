@@ -18,7 +18,10 @@ function SessionCard({ session }) {
 
   return (
     <div className="col-sm-6 col-lg-4">
-      <div className="card border-primary mb-2">
+      <div
+        className="card border-primary mb-2"
+        data-testid="session-card"
+      >
         <h5 className="card-header bg-primary text-light">
           {session_name}
         </h5>
@@ -62,7 +65,7 @@ function SessionCard({ session }) {
             </Link>
             <Link
               className="btn btn-danger"
-              to="/XXX"
+              to={`/sessions/${session.id}/terminate`}
             >
               <i className="fa fa-trash mr-1"></i>
               <span>Terminate</span>

@@ -4,11 +4,27 @@ export const signIn = (userActions, sessionActions) => async (inputs) => {
 
 export async function retrievSessions(sessionActions) {
   sessionActions.pending();
-  const sessions = await retrieveFakeSessions();
-  sessionActions.resolved(sessions);
+  try {
+    const sessions = await retrieveFakeSessions();
+    sessionActions.resolved(sessions);
+  } catch(e) {
+    sessionActions.rejected(e);
+  }
 }
 
-async function retrieveFakeSessions() {
+function retrieveFakeSessions() {
+  return fetch("/sessions")
+    .then(res => res.json())
+    .catch(err => {
+      if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
+        return fakeSessionsPromise();
+      } else {
+        return Promise.reject(err);
+      }
+    });
+}
+
+function fakeSessionsPromise() {
   const promise = new Promise((resolve, reject) => {
     const fakeData = [
       {
@@ -47,7 +63,7 @@ async function retrieveFakeSessions() {
         "image": null,
       }
     ];
-    setTimeout(() => resolve(fakeData), 2000);
+    setTimeout(() => resolve(fakeData), 1000);
   });
-  return await promise;
+  return promise;
 }
