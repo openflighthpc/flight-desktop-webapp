@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 
 import { signIn } from './api';
 import { Context as CurrentUserContext } from './CurrentUserContext';
-import { SessionsContext } from './SessionsContext';
 
 const useForm = (callback) => {
   const [inputs, setInputs] = useState({});
@@ -26,9 +25,8 @@ const useForm = (callback) => {
 
 function SignInForm() {
   const { actions: userActions } = useContext(CurrentUserContext);
-  const { actions: sessionActions } = useContext(SessionsContext);
   const { handleSubmit, handleInputChange, inputs } = useForm(
-    signIn(userActions, sessionActions)
+    signIn(userActions)
   );
 
   return (

@@ -1,22 +1,15 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import useFetch from 'use-http';
 
 import ErrorBoundary from './ErrorBoundary';
 import NoVNC from './NoVNC';
 import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
-
-function buildUrl(id) {
-  const port = 41363;
-  const password = 'rZjgqb0L';
-
-  return `http://localhost:8000?id=${id}&port=${port}&password=${password}`;
-}
+import { useFetchSession } from './api';
 
 function SessionPage() {
   const { id } = useParams();
-  const { loading, error, data: session } = useFetch(buildUrl(id), {}, [ id ]);
+  const { loading, error, data: session } = useFetchSession(id);
   const sessionName = id.split('-')[0];
 
   if (loading) {

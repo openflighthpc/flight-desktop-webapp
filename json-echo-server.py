@@ -5,6 +5,13 @@ from urllib.parse import urlparse, parse_qs
 import json
 
 class RequestHandler(BaseHTTPRequestHandler):
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Headers", "Authorization")
+        self.end_headers()
+        return
+
     def do_GET(self):
         parsed_path = urlparse(self.path)
         data = {k: v[0] for k, v in parse_qs(parsed_path.query).items()}

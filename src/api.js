@@ -1,5 +1,23 @@
-export const signIn = (userActions, sessionActions) => async (inputs) => {
+import { useContext } from 'react';
+import useFetch from 'use-http';
+
+import { Context as CurrentUserContext } from './CurrentUserContext';
+
+export const signIn = (userActions) => async (inputs) => {
   userActions.setUser(inputs.username, inputs.password);
+}
+
+export function useFetchSession(id) {
+  const { currentUser } = useContext(CurrentUserContext);
+  let url;
+  if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
+    const port = 41363;
+    const password = 'rZjgqb0L';
+    url = `http://localhost:8000?id=${id}&port=${port}&password=${password}`;
+  } else {
+    url = `/sessions/${id}`;
+  }
+  return useFetch(url, [ id, currentUser.authToken ]);
 }
 
 export async function retrievSessions(sessionActions) {
