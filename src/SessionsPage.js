@@ -12,7 +12,7 @@ function SessionsPage() {
   const { currentUser } = useContext(CurrentUserContext);
   const { sessions, actions } = useContext(SessionsContext);
   useEffect(
-    () => { retrievSessions(actions); },
+    () => { retrievSessions(actions, currentUser); },
     [currentUser, actions],
   );
 

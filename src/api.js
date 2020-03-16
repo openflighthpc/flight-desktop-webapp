@@ -15,7 +15,8 @@ export function useFetchSession(id) {
     const password = 'rZjgqb0L';
     url = `http://localhost:8000?id=${id}&port=${port}&password=${password}`;
   } else {
-    url = `/sessions/${id}`;
+    // url = `/sessions/${id}`;
+    url = `http://localhost:9095/sessions/${id}`;
   }
   return useFetch(url, [ id, currentUser.authToken ]);
 }
@@ -25,7 +26,8 @@ export function useLaunchSession(desktop) {
   if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
     url = "/sessions/";
   } else {
-    url = "/sessions/";
+    // url = "/sessions/";
+    url = "http://localhost:9095/sessions/";
   }
   const request = useFetch(url, {
     method: 'post',
@@ -37,18 +39,21 @@ export function useLaunchSession(desktop) {
   return request;
 }
 
-export async function retrievSessions(sessionActions) {
+export async function retrievSessions(sessionActions, currentUser) {
   sessionActions.pending();
   try {
-    const sessions = await retrieveFakeSessions();
+    const sessions = await retrieveFakeSessions(currentUser);
     sessionActions.resolved(sessions);
   } catch(e) {
     sessionActions.rejected(e);
   }
 }
 
-function retrieveFakeSessions() {
-  return fetch("/sessions")
+function retrieveFakeSessions(currentUser) {
+  return fetch(
+    "http://localhost:9095/sessions",
+    { headers: { 'Authorization': `Basic ${currentUser.authToken}` } }
+  )
     .then(res => res.json())
     .catch(err => {
       if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
