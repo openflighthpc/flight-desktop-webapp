@@ -91,8 +91,8 @@ describe('when there are running sessions', () => {
       const connectLink = getByRole("link", { name: "Connect" });
       expect(connectLink).toHaveAttribute("href", `/sessions/${session.id}`);
 
-      const terminateLink = getByRole("link", { name: "Terminate" });
-      expect(terminateLink).toHaveAttribute("href", `/sessions/${session.id}/terminate`);
+      const terminateBtn = getByRole("button", { name: "Terminate" });
+      expect(terminateBtn).toBeInTheDocument();
     });
   });
 
