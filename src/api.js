@@ -24,10 +24,10 @@ export function useFetchSession(id) {
 export function useLaunchSession(desktop) {
   let url;
   if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
-    url = "/sessions/";
+    url = "/sessions";
   } else {
-    // url = "/sessions/";
-    url = "http://localhost:9095/sessions/";
+    // url = "/sessions";
+    url = "http://localhost:9095/sessions";
   }
   const request = useFetch(url, {
     method: 'post',
