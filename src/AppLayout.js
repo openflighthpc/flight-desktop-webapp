@@ -14,31 +14,42 @@ function AppLayout({ children }) {
       id="main"
     >
       <div className="row content">
-        <Switch>
-          <Route path="/sessions/:id">
-            {/* Don't render the sidenavs on the session page. */}
-          </Route>
-          <Route path="/">
-            <div className="col-sm-2 sidenav"></div>
-          </Route>
-        </Switch>
+        <SideNav />
         <div className="col centernav mt-4">
           <ErrorBoundary>
             {children}
           </ErrorBoundary>
         </div>
-        <Switch>
-          <Route path="/sessions/:id">
-            {/* Don't render the sidenavs on the session page. */}
-          </Route>
-          <Route path="/">
-            <div className="col-sm-2 sidenav"></div>
-          </Route>
-        </Switch>
+        <SideNav />
       </div>
     </div>
     <Footer />
     </>
+  );
+}
+
+function SideNav() {
+  const routes = [
+    { path: "/sessions/new", show: true },
+    { path: "/sessions/:id", show: false },
+    { path: "/",             show: true },
+  ];
+
+  return (
+    <Switch>
+      { routes.map((route, index) =>
+        <Route
+          key={index}
+          path={route.path}
+        >
+          {
+            route.show ?
+            <div className="col-sm-2 sidenav"></div> :
+            null
+          }
+        </Route>
+      )}
+    </Switch>
   );
 }
 
