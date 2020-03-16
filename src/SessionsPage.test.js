@@ -5,16 +5,13 @@ import { render, wait, within } from '@testing-library/react';
 import FetchProvider from './FetchProvider';
 import SessionsPage from './SessionsPage';
 import { Provider as CurrentUserProvider } from './CurrentUserContext';
-import { SessionsProvider } from './SessionsContext';
 
 async function renderSessionsPage() {
   const { getByText, queryByText, ...rest } = render(
     <Router>
       <CurrentUserProvider user={{ username: 'test', authToken: 'test:test' }}>
-        <FetchProvider>
-          <SessionsProvider>
-            <SessionsPage />
-          </SessionsProvider>
+        <FetchProvider cachePolicy="no-cache">
+          <SessionsPage />
         </FetchProvider>
       </CurrentUserProvider>
     </Router>

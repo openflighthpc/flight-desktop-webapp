@@ -13,7 +13,6 @@ import NewSessionPage from './NewSessionPage';
 import SessionPage from './SessionPage';
 import SessionsPage from './SessionsPage';
 import { Provider as CurrentUserProvider } from './CurrentUserContext';
-import { SessionsProvider } from './SessionsContext';
 
 function App() {
   return (
@@ -21,24 +20,22 @@ function App() {
       <Router>
         <CurrentUserProvider>
           <FetchProvider>
-            <SessionsProvider>
-              <AppLayout>
-                <Switch>
-                  <AuthenticatedRoute path="/sessions/new">
-                    <NewSessionPage />
-                  </AuthenticatedRoute>
-                  <AuthenticatedRoute path="/sessions/:id">
-                    <SessionPage />
-                  </AuthenticatedRoute>
-                  <AuthenticatedRoute path="/sessions">
-                    <SessionsPage />
-                  </AuthenticatedRoute>
-                  <Route path="/">
-                    <Dashboard />
-                  </Route>
-                </Switch>
-              </AppLayout>
-            </SessionsProvider>
+            <AppLayout>
+              <Switch>
+                <AuthenticatedRoute path="/sessions/new">
+                  <NewSessionPage />
+                </AuthenticatedRoute>
+                <AuthenticatedRoute path="/sessions/:id">
+                  <SessionPage />
+                </AuthenticatedRoute>
+                <AuthenticatedRoute path="/sessions">
+                  <SessionsPage />
+                </AuthenticatedRoute>
+                <Route path="/">
+                  <Dashboard />
+                </Route>
+              </Switch>
+            </AppLayout>
           </FetchProvider>
         </CurrentUserProvider>
       </Router>

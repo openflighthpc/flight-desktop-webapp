@@ -1,30 +1,20 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
 
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
-import { Context as CurrentUserContext } from './CurrentUserContext';
 import { DefaultErrorMessage } from './ErrorBoundary';
-import { SessionsContext } from './SessionsContext';
-import { retrievSessions } from './api';
+import { useFetchSessions } from './api';
 
 function SessionsPage() {
-  const { currentUser } = useContext(CurrentUserContext);
-  const { sessions, actions } = useContext(SessionsContext);
-  useEffect(
-    () => { retrievSessions(actions, currentUser); },
-    [currentUser, actions],
-  );
+  const { data, error, loading, } = useFetchSessions();
 
-  switch (sessions.state) {
-    case "uninitialised":
-    case "loading":
-      return <Spinner text="Loading sessions..."/>;
-    case "loaded":
-      return <SessionsList sessions={sessions.data} />;
-    case "errored":
-    default:
-      return <DefaultErrorMessage />;
+  if (loading) {
+    return <Spinner text="Loading sessions..."/>;
+  } else if (error) {
+    return <DefaultErrorMessage />;
+  } else {
+    return <SessionsList sessions={data} />;
   }
 }
 
