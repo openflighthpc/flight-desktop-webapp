@@ -9,28 +9,21 @@ export const signIn = (userActions) => async (inputs) => {
 
 export function useFetchSession(id) {
   const { currentUser } = useContext(CurrentUserContext);
-  let url;
+  let urlOrOptions;
   if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
     const port = 41363;
     const password = 'rZjgqb0L';
-    url = `http://localhost:8000?id=${id}&port=${port}&password=${password}`;
+    urlOrOptions = `http://localhost:8000?id=${id}&port=${port}&password=${password}`;
   } else {
-    // url = `/sessions/${id}`;
-    url = `http://localhost:9095/sessions/${id}`;
+    urlOrOptions = { path: `/sessions/${id}` };
   }
-  return useFetch(url, [ id, currentUser.authToken ]);
+  return useFetch(urlOrOptions, [ id, currentUser.authToken ]);
 }
 
 export function useLaunchSession(desktop) {
-  let url;
-  if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
-    url = "/sessions";
-  } else {
-    // url = "/sessions";
-    url = "http://localhost:9095/sessions";
-  }
-  const request = useFetch(url, {
+  const request = useFetch({
     method: 'post',
+    path: "/sessions",
     body: {
       desktop: desktop.type,
     },
@@ -40,15 +33,9 @@ export function useLaunchSession(desktop) {
 }
 
 export function useTerminateSession(id) {
-  let url;
-  if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
-    url = "/sessions";
-  } else {
-    // url = "/sessions";
-    url = `http://localhost:9095/sessions/${id}`;
-  }
-  const request = useFetch(url, {
+  const request = useFetch({
     method: 'delete',
+    path: `/sessions/${id}`,
     cachePolicy: 'no-cache',
   });
   return request;

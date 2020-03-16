@@ -1,17 +1,21 @@
 import React from 'react';
-import SessionsPage from './SessionsPage';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { render, wait, within } from '@testing-library/react';
+
+import FetchProvider from './FetchProvider';
+import SessionsPage from './SessionsPage';
 import { Provider as CurrentUserProvider } from './CurrentUserContext';
 import { SessionsProvider } from './SessionsContext';
-import { render, wait, within } from '@testing-library/react';
 
 async function renderSessionsPage() {
   const { getByText, queryByText, ...rest } = render(
     <Router>
       <CurrentUserProvider user={{ username: 'test', authToken: 'test:test' }}>
-        <SessionsProvider>
-          <SessionsPage />
-        </SessionsProvider>
+        <FetchProvider>
+          <SessionsProvider>
+            <SessionsPage />
+          </SessionsProvider>
+        </FetchProvider>
       </CurrentUserProvider>
     </Router>
   );

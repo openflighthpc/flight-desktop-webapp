@@ -19,7 +19,10 @@ function FetchProvider({ children }) {
   };
 
   return (
-    <Provider options={options}>
+    <Provider
+      options={options}
+      url="http://localhost:9095"
+    >
       {children}
     </Provider>
   );
