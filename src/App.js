@@ -9,6 +9,7 @@ import AppLayout from './AppLayout';
 import AuthenticatedRoute from './AuthenticatedRoute';
 import Dashboard from './Dashboard';
 import FetchProvider from './FetchProvider';
+import NewSessionPage from './NewSessionPage';
 import SessionPage from './SessionPage';
 import SessionsPage from './SessionsPage';
 import { Provider as CurrentUserProvider } from './CurrentUserContext';
@@ -24,9 +25,7 @@ function App() {
               <AppLayout>
                 <Switch>
                   <AuthenticatedRoute path="/sessions/new">
-                    <div className="text-center">
-                      XXX TBD
-                    </div>
+                    <NewSessionPage />
                   </AuthenticatedRoute>
                   <AuthenticatedRoute path="/sessions/:id">
                     <SessionPage />

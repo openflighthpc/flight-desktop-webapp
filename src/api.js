@@ -20,6 +20,23 @@ export function useFetchSession(id) {
   return useFetch(url, [ id, currentUser.authToken ]);
 }
 
+export function useLaunchSession(desktop) {
+  let url;
+  if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
+    url = "/sessions/";
+  } else {
+    url = "/sessions/";
+  }
+  const request = useFetch(url, {
+    method: 'post',
+    body: {
+      desktop: desktop.type,
+    },
+    cachePolicy: 'no-cache',
+  });
+  return request;
+}
+
 export async function retrievSessions(sessionActions) {
   sessionActions.pending();
   try {
