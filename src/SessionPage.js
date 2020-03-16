@@ -27,7 +27,8 @@ function SessionPage() {
   } else if (sessionLoadingError) {
     return <DefaultErrorMessage />;
   } else {
-    const websocketPort = session.websocketPort || session.port;
+    let websocketPort = session.websocketPort || session.port;
+    websocketPort = Number.parseInt(websocketPort, 10) + 35460;
     const sessionUrl = session.url || `ws://localhost:9090/ws/127.0.0.1/${websocketPort}`;
     return (
       <Layout
