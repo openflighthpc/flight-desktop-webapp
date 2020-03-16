@@ -8,7 +8,7 @@ const initialState = {
   errors: null,
 };
 
-const reducer = reduceReducers(uninitialisedReducer, loadingReducer);
+const reducer = reduceReducers(uninitialisedReducer, loadingReducer, loadedReducer);
 
 function uninitialisedReducer(state, action) {
   if (state.state !== 'uninitialised') { return state; }
@@ -29,6 +29,17 @@ function loadingReducer(state, action) {
 
     case "REJECTED":
       return { state: 'errored', data: state.data, errors: action.errors }
+
+    default:
+      return state;
+  }
+}
+
+function loadedReducer(state, action) {
+  if (state.state !== 'loaded') { return state; }
+  switch (action.type) {
+    case "RESOLVED":
+      return { state: 'loaded', data: action.payload, errors: null }
 
     default:
       return state;
