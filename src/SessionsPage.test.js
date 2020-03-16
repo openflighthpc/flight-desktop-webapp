@@ -8,7 +8,7 @@ import { render, wait, within } from '@testing-library/react';
 async function renderSessionsPage() {
   const { getByText, queryByText, ...rest } = render(
     <Router>
-      <CurrentUserProvider>
+      <CurrentUserProvider user={{ username: 'test', authToken: 'test:test' }}>
         <SessionsProvider>
           <SessionsPage />
         </SessionsProvider>

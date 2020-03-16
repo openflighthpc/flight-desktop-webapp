@@ -55,6 +55,7 @@ export function useTerminateSession(id) {
 }
 
 export async function retrievSessions(sessionActions, currentUser) {
+  if (currentUser == null) { return }
   sessionActions.pending();
   try {
     const sessions = await retrieveFakeSessions(currentUser);
