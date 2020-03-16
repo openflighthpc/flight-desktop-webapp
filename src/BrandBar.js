@@ -1,21 +1,22 @@
 import React from 'react';
 import styled from 'styled-components'
+import { Link } from "react-router-dom";
 
 import Logo from './png_trans_logo-navbar.png';
 
 function BrandBar({ className }) {
   return (
     <nav className={`navbar navbar-expand-lg navbar-light bg-white border-bottom ${className}`}>
-      <a
+      <Link
         className="navbar-brand"
-        href="/"
+        to="/"
       >
         <img
           src={Logo}
           alt="openflightHPC Logo"
           height="75">
         </img>
-      </a>
+      </Link>
 
       <div className="collapse navbar-collapse" id="navbarNavDropdown">
         <ul className="navbar-nav mr-auto">
