@@ -65,9 +65,8 @@ export default class VncContainer extends React.Component {
   };
 
   state = {
-    status: 'initializing',
+    status: 'connecting',
     connectionName: this.props.connectionName,
-    passwordRequired: false,
   };
 
   constructor(props) {
@@ -76,16 +75,7 @@ export default class VncContainer extends React.Component {
   }
 
   componentDidMount() {
-    console.log('creating RFB connection');
-    this.rfb = createConnection({
-      connectionName: this.props.connectionName,
-      domEl: this.noVNCCanvas.current,
-      onDisconnect: this.onDisconnect,
-      onConnect: this.onStatusChange,
-      onPasswordPrompt: this.onPasswordRequired,
-      password: this.props.password,
-      viewOnly: this.props.viewOnly
-    });
+    this.createConnection();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -100,9 +90,12 @@ export default class VncContainer extends React.Component {
     this.props.onBeforeConnect();
   };
 
-  onDisconnect = e => this.props.onDisconnected(
-    !e.detail.clean || this.state.status !== 'connected'
-  )
+  onDisconnect = (e) => {
+    this.props.onDisconnected(
+      !e.detail.clean || this.state.status !== 'connected'
+    )
+    this.setState(() => ({status: 'disconnected'}));
+  }
 
   onUserDisconnect = () => this.rfb.disconnect();
 
@@ -110,6 +103,27 @@ export default class VncContainer extends React.Component {
     // XXX Something has gone all kinds of wrong here.  We should have
     // configured with the password in the first instance.
     this.rfb.sendCredentials({password: this.props.password})
+  }
+
+  onReconnect() {
+    this.createConnection();
+  }
+
+  createConnection() {
+    console.log('creating RFB connection');
+    if (this.rfb != null && this.state.status !== 'disconnected') {
+      this.rfb.disconnect();
+      this.rfb = null;
+    }
+    this.rfb = createConnection({
+      connectionName: this.props.connectionName,
+      domEl: this.noVNCCanvas.current,
+      onDisconnect: this.onDisconnect,
+      onConnect: this.onStatusChange,
+      onPasswordPrompt: this.onPasswordRequired,
+      password: this.props.password,
+      viewOnly: this.props.viewOnly
+    });
   }
 
   render() {
