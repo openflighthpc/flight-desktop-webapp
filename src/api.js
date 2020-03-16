@@ -39,6 +39,21 @@ export function useLaunchSession(desktop) {
   return request;
 }
 
+export function useTerminateSession(id) {
+  let url;
+  if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
+    url = "/sessions";
+  } else {
+    // url = "/sessions";
+    url = `http://localhost:9095/sessions/${id}`;
+  }
+  const request = useFetch(url, {
+    method: 'delete',
+    cachePolicy: 'no-cache',
+  });
+  return request;
+}
+
 export async function retrievSessions(sessionActions, currentUser) {
   sessionActions.pending();
   try {

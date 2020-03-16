@@ -5,10 +5,11 @@ import ErrorBoundary from './ErrorBoundary';
 import NoVNC from './NoVNC';
 import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
-import { useFetchSession } from './api';
+import { useFetchSession, useTerminateSession } from './api';
 
 function SessionPage() {
   const { id } = useParams();
+  const terminateSession = useTerminateSession(id);
   const {
     data: session,
     error: sessionLoadingError,
@@ -27,8 +28,7 @@ function SessionPage() {
   } else if (sessionLoadingError) {
     return <DefaultErrorMessage />;
   } else {
-    let websocketPort = session.websocketPort || session.port;
-    websocketPort = Number.parseInt(websocketPort, 10) + 35460;
+    const websocketPort = session.port;
     const sessionUrl = session.url || `ws://localhost:9090/ws/127.0.0.1/${websocketPort}`;
     return (
       <Layout
@@ -46,6 +46,7 @@ function SessionPage() {
             vnc.current.onReconnect();
           }
         }}
+        onTerminate={() => terminateSession.delete() }
       >
         <ErrorBoundary>
           <ConnectStateIndicator connectionState={connectionState} />

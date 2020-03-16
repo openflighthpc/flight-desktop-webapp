@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { CardFooter } from './CardParts';
 import placeholderImage from './placeholder.jpg';
+import { useTerminateSession } from './api';
 
 const prettyDesktopName = {
   chrome: "Google Chrome browser session",
@@ -15,6 +16,7 @@ const prettyDesktopName = {
 
 function SessionCard({ session }) {
   const session_name = session.name || session.id.split('-')[0];
+  const terminateSession = useTerminateSession(session.id);
 
   return (
     <div className="col-sm-6 col-lg-4">
@@ -63,13 +65,13 @@ function SessionCard({ session }) {
               <i className="fa fa-bolt mr-1"></i>
               <span>Connect</span>
             </Link>
-            <Link
+            <button
               className="btn btn-danger"
-              to={`/sessions/${session.id}/terminate`}
+              onClick={() => { terminateSession.delete(); }}
             >
               <i className="fa fa-trash mr-1"></i>
               <span>Terminate</span>
-            </Link>
+            </button>
           </div>
         </CardFooter>
       </div>
