@@ -115,16 +115,38 @@ describe('when there are running sessions', () => {
 });
 
 describe('when session retrieval fails', () => {
+  let errors = { errors: [{ status: "500", code: "Internal Server Error" }]};
+  let status = 500;
+
   beforeEach(() => {
     fetch.resetMocks();
-    fetch.mockReject(new Error('fake error message'))
+    fetch.mockReject(() => {
+      return new Response(JSON.stringify(errors), { status: status });
+    })
   });
 
-  it('shows an error message', async () => {
-    const { getByText } = await renderSessionsPage();
-    expect(getByText('An error has occurred')).toBeInTheDocument();
-    expect(
-      getByText(/Unfortunately there has been a problem handling your request/)
-    ).toBeInTheDocument();
+  describe('with a 500 error', () => {
+    it('shows a generic error message', async () => {
+      const { getByText } = await renderSessionsPage();
+      expect(getByText('An error has occurred')).toBeInTheDocument();
+      expect(
+        getByText(/Unfortunately there has been a problem handling your request/)
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('with a 401 Unauthorized error', () => {
+    beforeAll(() => {
+      errors = { errors: [{ status: "401", code: "Unauthorized" }]};
+      status = 401;
+    });
+
+    it('shows an unauthorized error message', async () => {
+      const { getByText } = await renderSessionsPage();
+      expect(getByText('Unauthorized')).toBeInTheDocument();
+      expect(
+        getByText(/There was a problem authorizing your username and password/)
+      ).toBeInTheDocument();
+    });
   });
 });

@@ -4,15 +4,20 @@ import { Link } from "react-router-dom";
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
+import { errorCode } from './utils';
 import { useFetchSessions } from './api';
 
 function SessionsPage() {
-  const { data, error, loading, } = useFetchSessions();
+  const { data, error, loading } = useFetchSessions();
 
   if (loading) {
     return <Spinner text="Loading sessions..."/>;
   } else if (error) {
-    return <DefaultErrorMessage />;
+    if (errorCode(data) === 'Unauthorized') {
+      return <UnauthorizedError />;
+    } else {
+      return <DefaultErrorMessage />;
+    }
   } else {
     return <SessionsList sessions={data} />;
   }
@@ -45,6 +50,20 @@ function SessionsList({ sessions }) {
       </p>
       <div className="row">
         {cards}
+      </div>
+    </div>
+  );
+}
+
+function UnauthorizedError() {
+  return (
+    <div className="card">
+      <div className="card-body">
+        <h3>Unauthorized</h3>
+        <p>
+          There was a problem authorizing your username and password.  Please
+          check that they are entered correctly and try again.
+        </p>
       </div>
     </div>
   );
