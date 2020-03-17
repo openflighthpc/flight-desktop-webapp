@@ -15,6 +15,15 @@ body {
     margin-bottom: 60px;
 }
 
+.nav-menu-text {
+    font-size: larger;
+}
+
+.nav-menu-button {
+    font-weight: bold;
+    font-size: larger;
+}
+
 footer {
     background-color: white;
     bottom: 0;

@@ -6,7 +6,8 @@ import { Context as CurrentUserContext } from './CurrentUserContext';
 function FetchProvider({ children, cachePolicy }) {
   const { currentUser } = useContext(CurrentUserContext);
   const options = {
-    cachePolicy: cachePolicy,
+    cachePolicy: cachePolicy || 'no-cache',
+    cacheLife: 1 * 60 * 1000,  /* 1 minute in milliseconds. */
     interceptors: {
       // Options can be modified and must be returned.
       request: async (options, url, path, route) => {
