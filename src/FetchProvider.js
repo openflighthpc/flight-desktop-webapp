@@ -22,7 +22,7 @@ function FetchProvider({ children, cachePolicy }) {
   return (
     <Provider
       options={options}
-      url="http://localhost:9095"
+      url={process.env.REACT_APP_API_ROOT_URL}
     >
       {children}
     </Provider>

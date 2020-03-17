@@ -13,15 +13,42 @@ sessions.
 
 ## Installation
 
-TBC
+Install node version 12.16.  The following instructions assume `nvm` is being
+used to manage the node version.
+
+```
+git clone git@github.com:openflighthpc/flight-desktop-client.git
+cd flight-desktop-client
+nvm use
+yarn install
+```
+
+Flight Desktop Client is now installed.  Next it needs to be configured.
 
 ## Configuration
 
-TBC
+To configure, edit `.env` and set the variables `REACT_APP_CLUSTER_NAME`,
+`REACT_APP_API_ROOT_URL` and `REACT_APP_WEBSOCKET_PATH_PREFIX`.  They must all
+be set.
+
 
 ## Operation
 
-TBC
+To use Flight Desktop Client, it must be built.
+
+```
+yarn run build
+```
+
+The static files required to server Flight Desktop Client are saved to
+`build/`.  They can be served from that directory by any HTTP file server,
+e.g.,
+
+```
+cd build
+python -m SimpleHTTPServer 8080
+```
+
 
 # Contributing
 

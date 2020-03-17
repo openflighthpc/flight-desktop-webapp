@@ -7,6 +7,39 @@ import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
 import { useFetchSession, useTerminateSession } from './api';
 
+function buildWebsocketUrl(session) {
+  if (process.env.REACT_APP_DEV_ONLY_WEBSOCKET_ROOT_URL) {
+    // This branch is intended for development and testing only.  The code
+    // here is intentionally less robust in the URL it constructs.  It is
+    // expected that the developer sets things up correctly.
+    const rootUrl = process.env.REACT_APP_DEV_ONLY_WEBSOCKET_ROOT_URL;
+    const prefix = process.env.REACT_APP_WEBSOCKET_PATH_PREFIX;
+    const pathIP = process.env.REACT_APP_DEV_ONLY_WEBSOCKET_PATH_IP || session.ip;
+    return `${rootUrl}${prefix}/${pathIP}/${session.port}`;
+
+  } else {
+    const apiUrl = new URL(process.env.REACT_APP_API_ROOT_URL);
+    const wsUrl = new URL(process.env.REACT_APP_API_ROOT_URL);
+
+    if (apiUrl.protocol.match(/https/)) {
+      wsUrl.protocol = 'wss';
+    } else {
+      wsUrl.protocol = 'ws';
+    }
+
+    if (!apiUrl.pathname.endsWith('/')) {
+      wsUrl.pathname = wsUrl.pathname + '/';
+    }
+    let prefix = process.env.REACT_APP_WEBSOCKET_PATH_PREFIX;
+    if (prefix.startsWith('/')) {
+      prefix = prefix.replace('/', '');
+    }
+    wsUrl.pathname = wsUrl.pathname + `${prefix}/${session.ip}/${session.port}`;
+
+    return wsUrl.toString()
+  }
+}
+
 function SessionPage() {
   const { id } = useParams();
   const terminateSession = useTerminateSession(id);
@@ -28,8 +61,7 @@ function SessionPage() {
   } else if (sessionLoadingError) {
     return <DefaultErrorMessage />;
   } else {
-    const websocketPort = session.port;
-    const sessionUrl = session.url || `ws://localhost:9090/ws/127.0.0.1/${websocketPort}`;
+    const websocketUrl = buildWebsocketUrl(session);
     return (
       <Layout
         connectionState={connectionState}
@@ -52,7 +84,7 @@ function SessionPage() {
           <ConnectStateIndicator connectionState={connectionState} />
           <div className={connectionState === 'connected' ? 'd-block' : 'd-none'}>
             <NoVNC
-              connectionName={sessionUrl}
+              connectionName={websocketUrl}
               password={session.password}
               onBeforeConnect={() => {
                 console.log('connected')

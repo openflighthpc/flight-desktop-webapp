@@ -1,12 +1,6 @@
 import React from 'react';
 
 import DesktopCard from './DesktopCard';
-// import ErrorBoundary from './ErrorBoundary';
-// import NoVNC from './NoVNC';
-// import Spinner from './Spinner';
-// import { DefaultErrorMessage } from './ErrorBoundary';
-// import { useFetchSession } from './api';
-
 
 const desktops = [
   {
