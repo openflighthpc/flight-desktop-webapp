@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 //
 // Return a new reducer which calls each provided reducer in turn.
 //
@@ -22,3 +24,12 @@ export function errorCode(responseBody) {
 function isObject(object) {
   return (typeof object === 'function' || typeof object === 'object') && !!object;
 };
+
+export function usePeriodicRerender({ interval }) {
+  // eslint-disable-next-line no-unused-vars
+  const [_, setCounter ] = useState(0);
+  useEffect(() => {
+    const timer = setTimeout(() => setCounter(c => c + 1), interval);
+    return () => { clearTimeout(timer); };
+  });
+}

@@ -4,11 +4,12 @@ import { Link } from "react-router-dom";
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
-import { errorCode } from './utils';
+import { errorCode, usePeriodicRerender } from './utils';
 import { useFetchSessions } from './api';
 
 function SessionsPage() {
   const { data, error, loading } = useFetchSessions();
+  usePeriodicRerender({ interval: 1 * 60 * 1000 });
 
   if (loading) {
     return <Spinner text="Loading sessions..."/>;
