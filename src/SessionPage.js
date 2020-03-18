@@ -42,10 +42,7 @@ function buildWebsocketUrl(session) {
 
 function SessionPage() {
   const { id } = useParams();
-  const {
-    del,
-    // loading: terminateLoading,
-  } = useTerminateSession(id);
+  const { del, loading: terminating } = useTerminateSession(id);
   const {
     data: session,
     error: sessionLoadingError,
@@ -56,6 +53,7 @@ function SessionPage() {
   const [connectionState, setConnectionState] = useState('connecting');
   const history = useHistory();
   const terminateSession = () => {
+    setConnectionState('terminating');
     del().then(() => history.push(`/sessions`));
   };
 
@@ -86,6 +84,7 @@ function SessionPage() {
           }
         }}
         onTerminate={terminateSession}
+        terminating={terminating}
       >
         <ErrorBoundary>
           <ConnectStateIndicator connectionState={connectionState} />
@@ -117,6 +116,7 @@ function Layout({
   onDisconnect,
   onReconnect,
   onTerminate,
+  terminating,
 }) {
   return (
     <div className="overflow-auto">
@@ -135,6 +135,7 @@ function Layout({
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
                       onTerminate={onTerminate}
+                      terminating={terminating}
                     />
                   </div>
                 </div>
@@ -155,6 +156,7 @@ function Toolbar({
   onDisconnect,
   onReconnect,
   onTerminate,
+  terminating,
 }) {
   const disconnectBtn = connectionState === 'connected' ? (
     <button
@@ -180,9 +182,14 @@ function Toolbar({
     <button
       className="btn btn-danger btn-sm"
       onClick={onTerminate}
+      disabled={terminating}
     >
-      <i className="fa fa-trash mr-1"></i>
-      <span>Terminate session</span>
+      {
+        terminating ?
+          <i className="fa fa-spinner fa-spin mr-1"></i> :
+          <i className="fa fa-trash mr-1"></i>
+      }
+      <span>{ terminating ? 'Terminating...' : 'Terminate session' }</span>
     </button>
   );
 
@@ -201,6 +208,8 @@ function ConnectStateIndicator({ connectionState }) {
       return (<Spinner text="Initializing connection..." />);
     case 'disconnecting':
       return (<Spinner text="Disconnecting..." />);
+    case 'terminating':
+      return (<Spinner text="Terminating..." />);
     case 'disconnected':
       return (<div className="text-center">Session has been disconnected.</div>);
     default:
