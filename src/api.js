@@ -5,7 +5,9 @@ import { Context as CurrentUserContext } from './CurrentUserContext';
 
 export function useSignIn() {
   const {
+    error,
     get,
+    loading,
     response,
   } = useAuthCheck();
   const { tempUser, actions: userActions } = useContext(CurrentUserContext);
@@ -29,7 +31,7 @@ export function useSignIn() {
     userActions.setTempUser(inputs.username, inputs.password);
   }
 
-  return startSignIn;
+  return { error, loading, startSignIn };
 }
 
 export function useAuthCheck() {
