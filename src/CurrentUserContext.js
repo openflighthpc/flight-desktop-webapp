@@ -1,40 +1,22 @@
-import React, { useMemo, useReducer } from 'react';
+import React, { useMemo } from 'react';
 
-const currentUserReducer = (state, { type, payload }) => {
-  switch (type) {
-
-    case "SET_USER":
-      const basicAuthToken = btoa(`${payload.username}:${payload.password}`);
-      return {
-        username: payload.username,
-        authToken: basicAuthToken,
-      };
-
-    case "UNSET_USER":
-      return null;
-
-    default:
-      return;
-  }
-};
+import useLocalStorage from './useLocalStorage';
 
 const initialState = null;
 const Context = React.createContext(initialState);
 
 function Provider({ user, ...props }) {
-  const [currentUser, dispatch] = useReducer(currentUserReducer, initialState);
+  const [currentUser, setCurrentUser] = useLocalStorage('currentUser', initialState);
   const actions = useMemo(
     () => ({
       setUser(username, password) {
-        dispatch({
-          type: 'SET_USER',
-          payload: { username, password }
-        })
+        const basicAuthToken = btoa(`${username}:${password}`);
+        setCurrentUser({ username, authToken: basicAuthToken });
       },
 
-      unsetUser() { dispatch({ type: 'UNSET_USER' }) },
+      unsetUser() { setCurrentUser(null) },
     }),
-    [ dispatch ],
+    [ setCurrentUser ],
   );
 
   return (
@@ -44,13 +26,7 @@ function Provider({ user, ...props }) {
   );
 }
 
-// Exported to allow testing.
-const internal = {
-  currentUserReducer,
-};
-
 export {
   Context,
   Provider,
-  internal,
 }
