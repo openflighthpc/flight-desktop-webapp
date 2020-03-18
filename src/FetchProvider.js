@@ -18,9 +18,9 @@ function FetchProvider({ children, cachePolicy }) {
       request: async (options, url, path, route) => {
         if (currentUser) {
           if (options.headers == null) { options.headers = {}; }
-          options.headers.Authorization = `Basic ${currentUser.authToken}`
+          options.headers.Authorization = currentUser.authToken;
         }
-        return options
+        return options;
       },
     },
   };

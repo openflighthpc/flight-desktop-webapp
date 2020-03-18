@@ -3,12 +3,15 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { render } from '@testing-library/react';
 import Dashboard from './Dashboard';
 import { Provider as CurrentUserProvider } from './CurrentUserContext';
+import FetchProvider from './FetchProvider';
 
 test('renders without crashing', () => {
   render(
     <Router>
       <CurrentUserProvider>
-        <Dashboard />
+        <FetchProvider>
+          <Dashboard />
+        </FetchProvider>
       </CurrentUserProvider>
     </Router>
   );
@@ -18,7 +21,9 @@ test('renders anonymous dashboard without a user', () => {
   const { getByText } = render(
     <Router>
       <CurrentUserProvider>
-        <Dashboard />
+        <FetchProvider>
+          <Dashboard />
+        </FetchProvider>
       </CurrentUserProvider>
     </Router>
   );
@@ -29,7 +34,9 @@ test('renders authenticated dashboard with a user', () => {
   const { getByText } = render(
     <Router>
       <CurrentUserProvider user={{ username: 'alces' }}>
-        <Dashboard />
+        <FetchProvider>
+          <Dashboard />
+        </FetchProvider>
       </CurrentUserProvider>
     </Router>
   );

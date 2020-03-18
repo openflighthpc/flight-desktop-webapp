@@ -48,14 +48,18 @@ afterEach(() => {
 });
 
 
-function signIn({ getByPlaceholderText, getByRole, getByText }) {
+async function signIn({ getByPlaceholderText, getByRole, getByText }) {
   const nameInput = getByPlaceholderText('Enter username');
   const passwordInput = getByPlaceholderText('Enter password');
   const button = getByRole('button', { name: 'Go!' });
   fireEvent.change(nameInput, { target: { value: 'alces' } });
   fireEvent.change(passwordInput, { target: { value: 'password' } });
-  fireEvent.click(button);
-  expect(getByText(/You are signed in as alces/)).toBeInTheDocument();
+  await act(() => {
+    fireEvent.click(button);
+    return wait(
+      () => expect(getByText(/You are signed in as alces/)).toBeInTheDocument()
+    )
+  });
 }
 
 function navigateToLaunchPage({ getByText }) {
@@ -72,7 +76,7 @@ async function launchDesktop(desktopType, { getByRole }) {
 test('launch a new desktop session', async () => {
   const queries = render(<App />);
 
-  signIn(queries);
+  await signIn(queries);
   navigateToLaunchPage(queries);
   await act(() => {
     launchDesktop('Terminal', queries);

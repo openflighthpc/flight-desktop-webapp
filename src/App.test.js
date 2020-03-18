@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { act, render, fireEvent, wait } from '@testing-library/react';
 import App from './App';
 
 test('renders without crashing', () => {
@@ -7,7 +7,7 @@ test('renders without crashing', () => {
 });
 
 
-test('can sign in', () => {
+test('can sign in', async () => {
   const { getByText, getByRole, getByPlaceholderText, queryByText } = render(<App />);
 
   expect(queryByText(/You are signed in as my-username/)).toBeNull();
@@ -18,7 +18,10 @@ test('can sign in', () => {
   const button = getByRole('button', { name: 'Go!' });
   fireEvent.change(nameInput, { target: { value: 'my-username' } });
   fireEvent.change(passwordInput, { target: { value: 'my-password' } });
-  fireEvent.click(button);
-
-  expect(getByText(/You are signed in as my-username/)).toBeInTheDocument();
+  await act(() => {
+    fireEvent.click(button);
+    return wait(
+      () => expect(getByText(/You are signed in as my-username/)).toBeInTheDocument()
+    )
+  });
 });

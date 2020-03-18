@@ -1,10 +1,52 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import useFetch from 'use-http';
 
 import { Context as CurrentUserContext } from './CurrentUserContext';
 
-export const signIn = (userActions) => async (inputs) => {
-  userActions.setUser(inputs.username, inputs.password);
+export function useSignIn() {
+  const {
+    get,
+    response,
+  } = useAuthCheck();
+  const { tempUser, actions: userActions } = useContext(CurrentUserContext);
+
+  useEffect(() => {
+    async function stuff() {
+      if (tempUser) {
+        await get();
+        if (response.ok) {
+          userActions.promoteUser(tempUser);
+        } else if (response.status === 401) {
+          console.log('user unauthed');
+        }
+      }
+    }
+    stuff();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ tempUser ]);
+
+  function startSignIn(inputs) {
+    userActions.setTempUser(inputs.username, inputs.password);
+  }
+
+  return startSignIn;
+}
+
+export function useAuthCheck() {
+  const { tempUser } = useContext(CurrentUserContext);
+
+  return useFetch({
+    path: "/ping",
+    interceptors: {
+      request: async (options, url, path, route) => {
+        if (tempUser) {
+          if (options.headers == null) { options.headers = {}; }
+          options.headers.Authorization = tempUser.authToken;
+        }
+        return options;
+      },
+    },
+  });
 }
 
 export function useFetchSessions() {

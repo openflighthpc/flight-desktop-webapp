@@ -77,7 +77,7 @@ function UserNavItems() {
     <li className="nav-item">
       <button
         className="btn btn-link nav-link nav-menu-button"
-        onClick={actions.unsetUser}
+        onClick={actions.signOut}
       >
         Sign out
       </button>
