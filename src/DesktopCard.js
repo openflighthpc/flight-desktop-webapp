@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Toast, ToastHeader, ToastBody } from 'reactstrap';
 
 import { CardFooter } from './CardParts';
 import { useLaunchSession } from './api';
 import { errorCode } from './utils';
+import Portal from './Portal';
 
 function DesktopCard({ desktop }) {
+  const [ showToast, setShowToast ] = useState(false);
   const { loading, post, response } = useLaunchSession(desktop);
   const history = useHistory();
-  const redirectToSession = ({ id, errors }) => {
+  const redirectToSession = (responseBody) => {
     if (response.ok) {
-      history.push(`/sessions/${id}`);
+      history.push(`/sessions/${responseBody.id}`);
     } else {
-      console.log(errorCode({ errors }));
+      console.log('Error launch session', errorCode(responseBody));
+      setShowToast(true);
     }
   }
 
@@ -46,7 +50,37 @@ function DesktopCard({ desktop }) {
           </div>
         </CardFooter>
       </div>
+      {
+        showToast ? (
+          <LaunchErrorToast
+            desktop={desktop}
+            showToast={showToast}
+            toggle={() => setShowToast(s => !s)}
+          />
+        ) : null
+      }
     </div>
+  );
+}
+
+function LaunchErrorToast({ desktop, showToast, toggle }) {
+  return (
+    <Portal id="toast-portal">
+      <Toast isOpen={showToast}>
+        <ToastHeader
+          icon="danger"
+          toggle={toggle}
+        >
+          Failed to launch desktop
+        </ToastHeader>
+        <ToastBody>
+          Unfortunately there has been a problem launching your
+          {' '}<strong>{desktop.name}</strong> desktop session.  Please try
+          again and, if problems persist, help us to more quickly rectify the
+          problem by contacting us and letting us know.
+        </ToastBody>
+      </Toast>
+    </Portal>
   );
 }
 

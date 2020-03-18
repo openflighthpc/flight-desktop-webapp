@@ -13,6 +13,7 @@ body {
 
 #main {
     margin-bottom: 60px;
+    position: relative;
 }
 
 .nav-menu-text {
@@ -31,5 +32,12 @@ footer {
     line-height: 60px;
     position: fixed;
     width: 100%;
+    z-index: 100;
+}
+
+#toast-portal {
+    position: absolute;
+    top: 5px;
+    right: 5px;
     z-index: 100;
 }
