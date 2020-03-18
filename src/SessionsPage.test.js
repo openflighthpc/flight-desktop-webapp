@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, wait, within } from '@testing-library/react';
+import { act, render, wait, within } from '@testing-library/react';
 
 import FetchProvider from './FetchProvider';
 import SessionsPage from './SessionsPage';
@@ -9,7 +9,7 @@ import { Provider as CurrentUserProvider } from './CurrentUserContext';
 async function renderSessionsPage() {
   const { getByText, queryByText, ...rest } = render(
     <Router>
-      <CurrentUserProvider user={{ username: 'test', authToken: 'test:test' }}>
+      <CurrentUserProvider user={{ username: 'test', authToken: 'testAuthToken' }}>
         <FetchProvider cachePolicy="no-cache">
           <SessionsPage />
         </FetchProvider>
@@ -22,6 +22,10 @@ async function renderSessionsPage() {
 
   return { getByText, queryByText, ...rest };
 }
+
+afterEach(() => {
+  fetch.resetMocks();
+});
 
 test('renders without crashing', async () => {
   fetch.resetMocks();
@@ -147,6 +151,70 @@ describe('when session retrieval fails', () => {
       expect(
         getByText(/There was a problem authorizing your username and password/)
       ).toBeInTheDocument();
+    });
+  });
+});
+
+describe('periodic reloading of the sessions data', () => {
+  const firstResponse = [
+    {
+      "id": "410bc483-710c-4795-a859-baeae17f08ce",
+      "desktop": "terminal",
+      "image": "totally some PNG image data",
+    },
+  ];
+  const secondResponse = [
+    {
+      "id": "410bc483-710c-4795-a859-baeae17f08ce",
+      "desktop": "terminal",
+      "image": "totally some PNG image data",
+    },
+    {
+      "id": "1740a970-73e2-42bb-b740-baadb333175d",
+      "desktop": "chrome",
+      "image": null,
+    },
+  ];
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.advanceTimersByTime(1);
+    fetch.resetMocks();
+    fetch.mockResponseOnce(JSON.stringify(firstResponse));
+    fetch.mockResponse(JSON.stringify(secondResponse));
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  test('renders a count of the sessions', async () => {
+    const { getByText } = await renderSessionsPage();
+
+    expect(getByText(/1 currently running .* session/)).toBeInTheDocument();
+    await act(async () => { await jest.runOnlyPendingTimers(); });
+    expect(getByText(/2 currently running .* sessions/)).toBeInTheDocument();
+  });
+
+  test('renders a card for each of the sessions', async () => {
+    const { getAllByTestId } = await renderSessionsPage();
+    let cards = getAllByTestId('session-card');
+
+    expect(cards).toHaveLength(1)
+    cards.forEach((card, index) => {
+      const session = firstResponse[index];
+      const name = session.id.split('-')[0];
+      expect(card).toHaveTextContent(name);
+    });
+
+    await act(async () => { await jest.runOnlyPendingTimers(); });
+    cards = getAllByTestId('session-card');
+
+    expect(cards).toHaveLength(2)
+    cards.forEach((card, index) => {
+      const session = secondResponse[index];
+      const name = session.id.split('-')[0];
+      expect(card).toHaveTextContent(name);
     });
   });
 });

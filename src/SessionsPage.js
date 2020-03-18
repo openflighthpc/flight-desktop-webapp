@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
-import { errorCode, usePeriodicRerender } from './utils';
+import { errorCode, useInterval } from './utils';
 import { useFetchSessions } from './api';
 
 function SessionsPage() {
-  const { data, error, loading } = useFetchSessions();
-  usePeriodicRerender({ interval: 1 * 60 * 1000 });
+  const { data, error, loading, get } = useFetchSessions();
+  useInterval(get, 1 * 60 * 1000);
 
   if (loading) {
     return <Spinner text="Loading sessions..."/>;
@@ -36,7 +36,7 @@ function NoSessionsFound() {
 }
 
 function SessionsList({ sessions }) {
-  if (!sessions.length) {
+  if (sessions == null || !sessions.length) {
     return <NoSessionsFound />;
   }
   const cards = sessions.map(

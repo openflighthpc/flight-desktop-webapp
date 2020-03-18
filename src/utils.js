@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 //
 // Return a new reducer which calls each provided reducer in turn.
@@ -25,11 +25,22 @@ function isObject(object) {
   return (typeof object === 'function' || typeof object === 'object') && !!object;
 };
 
-export function usePeriodicRerender({ interval }) {
-  // eslint-disable-next-line no-unused-vars
-  const [_, setCounter ] = useState(0);
+export function useInterval(fn, interval, { immediate=false }={}) {
+  const savedFn = useRef();
+  savedFn.current = fn;
+
   useEffect(() => {
-    const timer = setTimeout(() => setCounter(c => c + 1), interval);
-    return () => { clearTimeout(timer); };
-  });
+    savedFn.current = fn;
+  }, [fn]);
+
+  useEffect(() => {
+    function tick() { savedFn.current(); }
+    if (immediate) {
+      tick();
+    }
+    if (interval !== null) {
+      let id = setInterval(tick, interval);
+      return () => clearInterval(id);
+    }
+  }, [immediate, interval]);
 }
