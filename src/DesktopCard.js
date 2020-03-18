@@ -11,6 +11,10 @@ function DesktopCard({ desktop }) {
   const [ showToast, setShowToast ] = useState(false);
   const { loading, post, response } = useLaunchSession(desktop);
   const history = useHistory();
+  const launchSession = () => {
+    setShowToast(false);
+    post().then(redirectToSession);
+  };
   const redirectToSession = (responseBody) => {
     if (response.ok) {
       history.push(`/sessions/${responseBody.id}`);
@@ -37,7 +41,7 @@ function DesktopCard({ desktop }) {
           <div className="btn-toolbar justify-content-center">
             <button
               className={`btn btn-primary mr-2 ${loading ? 'disabled' : null}`}
-              onClick={() => { post().then(redirectToSession); }}
+              onClick={launchSession}
               disabled={loading}
             >
               {
