@@ -14,9 +14,12 @@ const prettyDesktopName = {
   xterm: "xterm",
 };
 
-function SessionCard({ session }) {
+function SessionCard({ reload, session }) {
   const session_name = session.name || session.id.split('-')[0];
-  const terminateSession = useTerminateSession(session.id);
+  const { loading, del } = useTerminateSession(session.id);
+  const terminateSession = () => {
+    del().then(() => reload());
+  };
 
   return (
     <div className="col-sm-6 col-lg-4">
@@ -66,11 +69,16 @@ function SessionCard({ session }) {
               <span>Connect</span>
             </Link>
             <button
-              className="btn btn-danger"
-              onClick={() => { terminateSession.delete(); }}
+              className={`btn btn-danger ${loading ? 'disabled' : null}`}
+              onClick={terminateSession}
+              disabled={loading}
             >
-              <i className="fa fa-trash mr-1"></i>
-              <span>Terminate</span>
+              {
+                loading ?
+                  <i className="fa fa-spinner fa-spin mr-1"></i> :
+                  <i className="fa fa-trash mr-1"></i>
+              }
+              <span>{ loading ? 'Terminating...' : 'Terminate' }</span>
             </button>
           </div>
         </CardFooter>

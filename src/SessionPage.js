@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import ErrorBoundary from './ErrorBoundary';
 import NoVNC from './NoVNC';
@@ -42,7 +42,10 @@ function buildWebsocketUrl(session) {
 
 function SessionPage() {
   const { id } = useParams();
-  const terminateSession = useTerminateSession(id);
+  const {
+    del,
+    // loading: terminateLoading,
+  } = useTerminateSession(id);
   const {
     data: session,
     error: sessionLoadingError,
@@ -51,6 +54,10 @@ function SessionPage() {
   const sessionName = id.split('-')[0];
   const vnc = useRef(null);
   const [connectionState, setConnectionState] = useState('connecting');
+  const history = useHistory();
+  const terminateSession = () => {
+    del().then(() => history.push(`/sessions`));
+  };
 
   if (sessionLoading) {
     return (
@@ -78,7 +85,7 @@ function SessionPage() {
             vnc.current.onReconnect();
           }
         }}
-        onTerminate={() => terminateSession.delete() }
+        onTerminate={terminateSession}
       >
         <ErrorBoundary>
           <ConnectStateIndicator connectionState={connectionState} />

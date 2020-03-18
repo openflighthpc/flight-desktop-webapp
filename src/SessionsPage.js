@@ -20,7 +20,7 @@ function SessionsPage() {
       return <DefaultErrorMessage />;
     }
   } else {
-    return <SessionsList sessions={data} />;
+    return <SessionsList sessions={data} reload={get} />;
   }
 }
 
@@ -35,12 +35,12 @@ function NoSessionsFound() {
   );
 }
 
-function SessionsList({ sessions }) {
+function SessionsList({ reload, sessions }) {
   if (sessions == null || !sessions.length) {
     return <NoSessionsFound />;
   }
   const cards = sessions.map(
-    (session) => <SessionCard key={session.id} session={session} />
+    (session) => <SessionCard key={session.id} reload={reload} session={session} />
   );
   return (
     <div>
