@@ -62,42 +62,11 @@ function navigateToLaunchPage({ getByText }) {
   fireEvent.click(getByText('Launch new session'));
 }
 
-async function navigateToSessionListing({ getByText, queryByText }) {
-  fireEvent.click(getByText('My sessions'));
-  expect(getByText(/Loading sessions/)).toBeInTheDocument();
-  await wait(() => expect(queryByText(/Loading sessions/)).not.toBeInTheDocument());
-  expect(getByText(/1 currently running .* sessions/)).toBeInTheDocument();
-}
-
-async function navigateToSession(session, { getByText, getByRole, findByRole, queryByText }) {
-  fireEvent.click(getByText('My sessions'));
-  const sessionName = session.id.split('-')[0];
-
-  const heading = await findByRole('heading', { name: sessionName })
-  const card = heading.closest('.card');
-  const connectLink = within(card).getByRole('link', { name: 'Connect' });
-  fireEvent.click(connectLink);
-  await wait(
-    () => expect(
-      queryByText(/Initializing connection/)
-    ).toBeInTheDocument()
-  );
-}
-
 async function launchDesktop(desktopType, { getByRole }) {
   const heading = getByRole('heading', { name: desktopType });
   const card = heading.closest('.card');
   const launchButton = within(card).getByRole('button', { name: 'Launch' });
-  // XXX Wait for something better here.
-  await act(() => {
-    fireEvent.click(launchButton);
-    return sleep(1000);
-  });
-}
-
-async function sleep(ms) {
-  const promise = new Promise(resolve => { setTimeout(resolve, ms); });
-  await promise;
+  fireEvent.click(launchButton);
 }
 
 test('launch a new desktop session', async () => {
@@ -105,9 +74,12 @@ test('launch a new desktop session', async () => {
 
   signIn(queries);
   navigateToLaunchPage(queries);
-  await launchDesktop('Terminal', queries);
-  await navigateToSessionListing(queries);
-  await navigateToSession(session, queries);
+  await act(() => {
+    launchDesktop('Terminal', queries);
+    return wait(
+      () => expect(queries.queryByText(/Initializing connection/)).toBeInTheDocument()
+    )
+  });
 
   const vncConnection = `ws://localhost:9090/ws/172.17.0.3/${session.port}`;
   expect(RFB).toHaveBeenCalledWith(

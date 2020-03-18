@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import DesktopCard from './DesktopCard';
 import { Provider as CurrentUserProvider } from './CurrentUserContext';
 import FetchProvider from './FetchProvider';
@@ -12,11 +13,13 @@ const exampleDesktop = {
 
 function WrappedDesktopCard({ desktop }) {
   return(
-    <CurrentUserProvider>
-      <FetchProvider>
-        <DesktopCard desktop={desktop} />
-      </FetchProvider>
-    </CurrentUserProvider>
+    <Router>
+      <CurrentUserProvider>
+        <FetchProvider>
+          <DesktopCard desktop={desktop} />
+        </FetchProvider>
+      </CurrentUserProvider>
+    </Router>
   );
 }
 
