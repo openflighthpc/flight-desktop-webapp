@@ -17,7 +17,6 @@ function SessionCard({ reload, session }) {
   };
 
   return (
-    <div className="col-sm-6 col-lg-4">
       <div
         className="card border-primary mb-2"
         data-testid="session-card"
@@ -71,7 +70,6 @@ function SessionCard({ reload, session }) {
           </div>
         </CardFooter>
       </div>
-    </div>
   );
 }
 

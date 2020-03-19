@@ -6,6 +6,7 @@ import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
 import { errorCode, useInterval } from './utils';
 import { useFetchSessions } from './api';
+import { useMediaGrouping } from './useMedia';
 
 function SessionsPage() {
   const { data, error, loading, get } = useFetchSessions();
@@ -39,11 +40,34 @@ function NoSessionsFound() {
 }
 
 function SessionsList({ reload, sessions }) {
+  const { groupedItems: groupedSessions, perGroup } = useMediaGrouping(
+    ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
+    [3, 2, 2, 1],
+    1,
+    sessions || [],
+  );
   if (sessions == null || !sessions.length) {
     return <NoSessionsFound />;
   }
-  const cards = sessions.map(
-    (session) => <SessionCard key={session.id} reload={reload} session={session} />
+  const decks = groupedSessions.map(
+    (group, index) => {
+      let blanks = null;
+      if ( group.length < perGroup ) {
+        const a = new Array(perGroup - group.length);
+        a.fill(0);
+        blanks = a.map((i, index) => <div key={index} className="card invisible"></div>)
+      }
+      return (
+        <div key={index} className="card-deck">
+          {
+            group.map((session) => (
+              <SessionCard key={session.id} reload={reload} session={session} />
+            ))
+          }
+          {blanks}
+        </div>
+      );
+    }
   );
   return (
     <div>
@@ -52,9 +76,7 @@ function SessionsList({ reload, sessions }) {
         the <i>Connect</i> button to establish a connection to a desktop
         session or the <i>Terminate</i> button to shutdown a desktop session.
       </p>
-      <div className="row">
-        {cards}
-      </div>
+      {decks}
     </div>
   );
 }

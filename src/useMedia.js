@@ -38,7 +38,7 @@ export function useMediaGrouping(
     const group = itemsToGroup.slice(i, i + perGroup);
     groupedItems.push(group);
   }
-  return groupedItems;
+  return { groupedItems, perGroup };
 }
 
 export default useMedia;

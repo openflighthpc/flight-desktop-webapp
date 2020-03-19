@@ -39,7 +39,7 @@ const desktops = [
 
 
 function NewSessionPage() {
-  const groupedDesktops = useMediaGrouping(
+  const { groupedItems: groupedDesktops } = useMediaGrouping(
     ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
     [3, 2, 2, 1],
     1,
