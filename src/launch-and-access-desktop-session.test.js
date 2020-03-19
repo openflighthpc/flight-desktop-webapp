@@ -22,17 +22,18 @@ beforeEach(() => {
   fetch.mockResponse((req) => {
     const pathname = new URL(req.url).pathname;
     // console.log('req:', req.method, pathname);  // eslint-disable-line no-console
-    if (req.method === 'POST' && pathname === '/sessions') {
+
+    if (req.method === 'POST' && pathname.match(/sessions$/)) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify(session), status: 200, }),
         0
       ));
-    } else if (req.method === 'GET' && pathname === '/sessions') {
+    } else if (req.method === 'GET' && pathname.match(/sessions$/)) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify([session]), status: 200, }),
         0
       ));
-    } else if (req.method === 'GET' && pathname === `/sessions/${session.id}`) {
+    } else if (req.method === 'GET' && pathname.match(new RegExp(`sessions/${session.id}$`))) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify(session), status: 200, }),
         0
@@ -85,7 +86,7 @@ test('launch a new desktop session', async () => {
     )
   });
 
-  const vncConnection = `ws://localhost:9090/ws/172.17.0.3/${session.port}`;
+  const vncConnection = `wss://my.cluster.com/ws/127.0.0.1/${session.port}`;
   expect(RFB).toHaveBeenCalledWith(
     expect.anything(),
     vncConnection,

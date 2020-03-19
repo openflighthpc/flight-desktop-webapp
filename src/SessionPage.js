@@ -15,7 +15,7 @@ function buildWebsocketUrl(session) {
     // expected that the developer sets things up correctly.
     const rootUrl = process.env.REACT_APP_DEV_ONLY_WEBSOCKET_ROOT_URL;
     const prefix = process.env.REACT_APP_WEBSOCKET_PATH_PREFIX;
-    const pathIP = process.env.REACT_APP_DEV_ONLY_WEBSOCKET_PATH_IP || session.ip;
+    const pathIP = process.env.REACT_APP_WEBSOCKET_PATH_IP || session.ip;
     return `${rootUrl}${prefix}/${pathIP}/${session.port}`;
 
   } else {
@@ -28,14 +28,9 @@ function buildWebsocketUrl(session) {
       wsUrl.protocol = 'ws';
     }
 
-    if (!apiUrl.pathname.endsWith('/')) {
-      wsUrl.pathname = wsUrl.pathname + '/';
-    }
     let prefix = process.env.REACT_APP_WEBSOCKET_PATH_PREFIX;
-    if (prefix.startsWith('/')) {
-      prefix = prefix.replace('/', '');
-    }
-    wsUrl.pathname = wsUrl.pathname + `${prefix}/${session.ip}/${session.port}`;
+    const pathIP = process.env.REACT_APP_WEBSOCKET_PATH_IP || session.ip;
+    wsUrl.pathname = `${prefix}/${pathIP}/${session.port}`;
 
     return wsUrl.toString()
   }
