@@ -48,23 +48,67 @@ describe('when there are no running sessions', () => {
   });
 });
 
-describe('when there are running sessions', () => {
+describe('screenshots', () => {
   const sessions = [
     {
       "id": "410bc483-710c-4795-a859-baeae17f08ce",
       "desktop": "terminal",
-      "image": "totally some PNG image data",
-    },
-    {
-      "id": "1740a970-73e2-42bb-b740-baadb333175d",
-      "desktop": "chrome",
-      "image": null,
     },
   ];
 
   beforeEach(() => {
     fetch.resetMocks();
     fetch.mockResponseOnce(JSON.stringify(sessions));
+    fetch.mockResponse((req) => {
+      const pathname = new URL(req.url).pathname;
+      // console.log('req:', req.method, pathname);  // eslint-disable-line no-console
+
+      if (req.method === 'GET' && pathname.match(new RegExp(`sessions/.*/screenshot$`))) {
+        return new Promise(resolve => setTimeout(
+          () => resolve({ body: "totally a base64 encoded png", status: 200, }),
+          0
+        ));
+      } else {
+        return Promise.resolve('all good');
+      }
+    });
+  });
+
+  test('session cards show the screenshot', async () => {
+    const { getAllByTestId } = await renderSessionsPage();
+    const cards = getAllByTestId('session-card');
+
+    // This test is much easier to write if we only check the first card.
+    const card = cards[0];
+    const { getByRole } = within(card);
+    expect(getByRole("img")).toHaveAttribute("src", "placeholder.jpg");
+    await act(() => wait(() => {
+      expect(getByRole("img")).toHaveAttribute(
+        "src",
+        "data:image/png;base64,totally a base64 encoded png"
+      );
+    }))
+  });
+});
+
+describe('when there are running sessions', () => {
+  const sessions = [
+    {
+      "id": "410bc483-710c-4795-a859-baeae17f08ce",
+      "desktop": "terminal",
+    },
+    {
+      "id": "1740a970-73e2-42bb-b740-baadb333175d",
+      "desktop": "chrome",
+    },
+  ];
+
+  beforeEach(() => {
+    fetch.resetMocks();
+    fetch.mockResponseOnce(JSON.stringify(sessions));
+    fetch.mockReject(() => {
+      return new Response(JSON.stringify("Not Found"), { status: 404 });
+    })
   });
 
   test('renders a count of the sessions', async () => {
@@ -98,22 +142,6 @@ describe('when there are running sessions', () => {
 
       const terminateBtn = getByRole("button", { name: "Terminate" });
       expect(terminateBtn).toBeInTheDocument();
-    });
-  });
-
-  test('session cards show the screenshot', async () => {
-    const { getAllByTestId } = await renderSessionsPage();
-    const cards = getAllByTestId('session-card');
-
-    cards.forEach((card, index) => {
-      const session = sessions[index];
-      const { getByRole } = within(card);
-
-      const screenshot = getByRole("img");
-      const expectedImageSrc = session.image == null ?
-        "placeholder.jpg" :
-        `data:image/png;base64,${session.image}`;
-      expect(screenshot).toHaveAttribute("src", expectedImageSrc);
     });
   });
 });

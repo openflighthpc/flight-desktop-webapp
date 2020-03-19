@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import useFetch from 'use-http';
 
 import { Context as CurrentUserContext } from './CurrentUserContext';
@@ -91,11 +91,23 @@ export function useTerminateSession(id) {
 }
 
 export function useFetchScreenshot(id) {
+  const reloadInterval = 1 * 60 * 1000;
+  const lastLoadedAt = useRef(null);
   const [ image, setImage ] = useState(null);
+
+  const now = new Date();
+  const reloadDue = lastLoadedAt.current == null ||
+    now - lastLoadedAt.current < reloadInterval;
+  if (reloadDue) {
+    lastLoadedAt.current = now;
+  }
+
   const { get, response } = useFetch({
     path: `/sessions/${id}/screenshot`,
-    cachePolicy: 'no-cache',
-  })
+    cachePolicy: 'cache-first',
+    cacheLife: reloadInterval,
+    // cachePolicy: 'no-cache',
+  }, [lastLoadedAt])
 
   if (response.ok) {
     response.blob().then((blob) => {

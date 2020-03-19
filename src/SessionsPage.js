@@ -11,16 +11,19 @@ function SessionsPage() {
   const { data, error, loading, get } = useFetchSessions();
   useInterval(get, 1 * 60 * 1000);
 
-  if (loading) {
-    return <Spinner text="Loading sessions..."/>;
-  } else if (error) {
+  if (error) {
     if (errorCode(data) === 'Unauthorized') {
       return <UnauthorizedError />;
     } else {
       return <DefaultErrorMessage />;
     }
   } else {
-    return <SessionsList sessions={data} reload={get} />;
+    return (
+      <>
+      { loading && <Spinner text="Loading sessions..."/> }
+      { data != null && <SessionsList sessions={data} reload={get} /> }
+      </>
+    );
   }
 }
 

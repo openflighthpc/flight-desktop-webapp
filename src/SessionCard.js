@@ -9,7 +9,7 @@ import { useFetchScreenshot, useTerminateSession } from './api';
 
 function SessionCard({ reload, session }) {
   const { get: getScreenshot, image: screenshot } = useFetchScreenshot(session.id);
-  useInterval(getScreenshot, 1 * 60 * 1000, { immediate: true });
+  useInterval(getScreenshot, 1 * 60 * 1000, { immediate: false });
   const session_name = session.name || session.id.split('-')[0];
   const { loading, del } = useTerminateSession(session.id);
   const terminateSession = () => {
