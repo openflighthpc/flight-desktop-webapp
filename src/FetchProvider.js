@@ -9,7 +9,7 @@ function FetchProvider({ children, cachePolicy }) {
     // We can't make use of the cache until it is possible to clear it when
     // the user signs out.
     //
-    // cachePolicy: cachePolicy || 'no-cache',
+    // cachePolicy: cachePolicy || 'cache-first',
     // cacheLife: 1 * 60 * 1000,  /* 1 minute in milliseconds. */
     cachePolicy: 'no-cache',
     cacheLife: 0,

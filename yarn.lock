@@ -8947,8 +8947,8 @@ url@^0.11.0:
     querystring "0.2.0"
 
 use-http@^0.3.7:
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/use-http/-/use-http-0.3.7.tgz#fd18227c2eeec7e3966e1a3c749591b2af542971"
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/use-http/-/use-http-0.3.9.tgz#a37919989dc0d816cb1c50d6e0b5a5b02bcf9b80"
   dependencies:
     use-ssr "^1.0.22"
 
