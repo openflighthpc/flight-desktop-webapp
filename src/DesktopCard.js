@@ -25,35 +25,33 @@ function DesktopCard({ desktop }) {
   }
 
   return (
-    <div className="col-sm-6 col-lg-4">
-      <div className="card border-primary mb-2">
-        <h5 className="card-header bg-primary text-light">
-          {desktop.name}
-        </h5>
-        <div className="card-body">
-          <div className="row mb-2">
-            <div className="col">
-              {desktop.description}
-            </div>
+    <div className="card border-primary mb-2">
+      <h5 className="card-header bg-primary text-light">
+        {desktop.name}
+      </h5>
+      <div className="card-body">
+        <div className="row mb-2">
+          <div className="col">
+            {desktop.description}
           </div>
         </div>
-        <CardFooter>
-          <div className="btn-toolbar justify-content-center">
-            <button
-              className={`btn btn-primary mr-2 ${loading ? 'disabled' : null}`}
-              onClick={launchSession}
-              disabled={loading}
-            >
-              {
-                loading ?
-                  <i className="fa fa-spinner fa-spin mr-1"></i> :
-                  <i className="fa fa-bolt mr-1"></i>
-              }
-              <span>{ loading ? 'Launching...' : 'Launch' }</span>
-            </button>
-          </div>
-        </CardFooter>
       </div>
+      <CardFooter>
+        <div className="btn-toolbar justify-content-center">
+          <button
+            className={`btn btn-primary mr-2 ${loading ? 'disabled' : null}`}
+            onClick={launchSession}
+            disabled={loading}
+          >
+            {
+              loading ?
+                <i className="fa fa-spinner fa-spin mr-1"></i> :
+                <i className="fa fa-bolt mr-1"></i>
+            }
+            <span>{ loading ? 'Launching...' : 'Launch' }</span>
+          </button>
+        </div>
+      </CardFooter>
       {
         showToast ? (
           <LaunchErrorToast

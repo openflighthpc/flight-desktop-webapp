@@ -39,20 +39,20 @@ function SessionCard({ reload, session }) {
               />
             </div>
           </div>
-              <dl className="row">
-                <dt
-                  className="col-sm-4 text-truncate"
-                  title="Desktop"
-                >
-                  Desktop
-                </dt>
-                <dd
-                  className="col-sm-8 text-truncate"
-                  title={prettyDesktopName[session.desktop]}
-                >
-                  {prettyDesktopName[session.desktop]}
-                </dd>
-              </dl>
+          <dl className="row">
+            <dt
+              className="col-sm-4 text-truncate"
+              title="Desktop"
+            >
+              Desktop
+            </dt>
+            <dd
+              className="col-sm-8 text-truncate"
+              title={prettyDesktopName[session.desktop]}
+            >
+              {prettyDesktopName[session.desktop]}
+            </dd>
+          </dl>
         </div>
         <CardFooter>
           <div className="btn-toolbar justify-content-center">

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import DesktopCard from './DesktopCard';
+import useMedia from './useMedia';
 
 const desktops = [
   {
@@ -38,28 +39,42 @@ const desktops = [
 
 
 function NewSessionPage() {
-  const cards = desktops.map(
-    (desktop) => <DesktopCard key={desktop.type} desktop={desktop} />
+  const perGroup = useMedia(
+    ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
+    [3, 2, 2, 1],
+    1
   );
+
+  const groupedDesktops = [];
+  for (let i = 0; i < desktops.length; i = i + perGroup) {
+    const group = desktops.slice(i, i + perGroup);
+    groupedDesktops.push(group);
+  }
+  const decks = groupedDesktops.map(
+    (group, index) => (
+      <div key={index} className="card-deck">
+        {group.map((desktop) => <DesktopCard key={desktop.type} desktop={desktop} />)}
+      </div>
+    )
+  );
+
   return (
     <div>
-    <div className="jumbotron bg-white py-4">
-      <h1>
-        Launch a new desktop session
-      </h1>
-      <p>
-        To launch a new desktop session
-      </p>
-      <ul>
-        <li>Select the desktop session type from the list below.</li>
-        <li>Click "Launch".</li>
-        <li>When your session is ready you will be automatically connected to it.</li>
-        <li>Start working!</li>
-      </ul>
-    </div>
-      <div className="row">
-        {cards}
+      <div className="jumbotron bg-white py-4">
+        <h1>
+          Launch a new desktop session
+        </h1>
+        <p>
+          To launch a new desktop session
+        </p>
+        <ul>
+          <li>Select the desktop session type from the list below.</li>
+          <li>Click "Launch".</li>
+          <li>When your session is ready you will be automatically connected to it.</li>
+          <li>Start working!</li>
+        </ul>
       </div>
+      {decks}
     </div>
   );
 }
