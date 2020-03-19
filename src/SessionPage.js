@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import ErrorBoundary from './ErrorBoundary';
 import NoVNC from './NoVNC';
 import Spinner from './Spinner';
+import TerminateButton from './TerminateButton';
 import { DefaultErrorMessage } from './ErrorBoundary';
 import { useFetchSession, useTerminateSession } from './api';
 
@@ -84,6 +85,7 @@ function SessionPage() {
           }
         }}
         onTerminate={terminateSession}
+        session={session}
         terminating={terminating}
       >
         <ErrorBoundary>
@@ -116,6 +118,7 @@ function Layout({
   onDisconnect,
   onReconnect,
   onTerminate,
+  session,
   terminating,
 }) {
   return (
@@ -135,6 +138,7 @@ function Layout({
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
                       onTerminate={onTerminate}
+                      session={session}
                       terminating={terminating}
                     />
                   </div>
@@ -156,6 +160,7 @@ function Toolbar({
   onDisconnect,
   onReconnect,
   onTerminate,
+  session,
   terminating,
 }) {
   const disconnectBtn = connectionState === 'connected' ? (
@@ -178,20 +183,14 @@ function Toolbar({
     </button>
   ) : null;
 
-  const terminateBtn = (
-    <button
-      className="btn btn-danger btn-sm"
-      onClick={onTerminate}
-      disabled={terminating}
+  const terminateBtn = session != null ? (
+    <TerminateButton
+      session={session}
+      terminateSession={onTerminate}
+      terminating={terminating}
     >
-      {
-        terminating ?
-          <i className="fa fa-spinner fa-spin mr-1"></i> :
-          <i className="fa fa-trash mr-1"></i>
-      }
-      <span>{ terminating ? 'Terminating...' : 'Terminate session' }</span>
-    </button>
-  );
+    </TerminateButton>
+  ) : null;
 
   return (
     <div className="btn-toolbar">
