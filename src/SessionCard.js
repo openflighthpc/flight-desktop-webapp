@@ -4,10 +4,12 @@ import { Link } from "react-router-dom";
 import TerminateButton from './TerminateButton';
 import placeholderImage from './placeholder.jpg';
 import { CardFooter } from './CardParts';
-import { prettyDesktopName } from './utils';
-import { useTerminateSession } from './api';
+import { prettyDesktopName, useInterval } from './utils';
+import { useFetchScreenshot, useTerminateSession } from './api';
 
 function SessionCard({ reload, session }) {
+  const { get: getScreenshot, image: screenshot } = useFetchScreenshot(session.id);
+  useInterval(getScreenshot, 1 * 60 * 1000, { immediate: true });
   const session_name = session.name || session.id.split('-')[0];
   const { loading, del } = useTerminateSession(session.id);
   const terminateSession = () => {
@@ -29,9 +31,9 @@ function SessionCard({ reload, session }) {
               <img
                 className="card-img"
                 src={
-                  session.image == null ?
-                    placeholderImage :
-                    `data:image/png;base64,${session.image}`
+                  screenshot != null ?
+                    `data:image/png;base64,${screenshot}` :
+                    placeholderImage
                 }
                 alt="Session screenshot"
               />

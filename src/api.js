@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useFetch from 'use-http';
 
 import { Context as CurrentUserContext } from './CurrentUserContext';
@@ -34,7 +34,7 @@ export function useSignIn() {
   return { error, loading, startSignIn };
 }
 
-export function useAuthCheck() {
+function useAuthCheck() {
   const { tempUser } = useContext(CurrentUserContext);
 
   return useFetch({
@@ -88,4 +88,24 @@ export function useTerminateSession(id) {
     cachePolicy: 'no-cache',
   });
   return request;
+}
+
+export function useFetchScreenshot(id) {
+  const [ image, setImage ] = useState(null);
+  const { get, response } = useFetch({
+    path: `/sessions/${id}/screenshot`,
+    cachePolicy: 'no-cache',
+  })
+
+  if (response.ok) {
+    response.blob().then((blob) => {
+      blob.text().then((newImage) => {
+        if (image !== newImage) {
+          setImage(newImage);
+        }
+      });
+    });
+  }
+
+  return { get, image };
 }
