@@ -1,7 +1,7 @@
 import React from 'react';
 
 import DesktopCard from './DesktopCard';
-import useMedia from './useMedia';
+import { useMediaGrouping } from './useMedia';
 
 const desktops = [
   {
@@ -39,17 +39,12 @@ const desktops = [
 
 
 function NewSessionPage() {
-  const perGroup = useMedia(
+  const groupedDesktops = useMediaGrouping(
     ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
     [3, 2, 2, 1],
-    1
+    1,
+    desktops,
   );
-
-  const groupedDesktops = [];
-  for (let i = 0; i < desktops.length; i = i + perGroup) {
-    const group = desktops.slice(i, i + perGroup);
-    groupedDesktops.push(group);
-  }
   const decks = groupedDesktops.map(
     (group, index) => (
       <div key={index} className="card-deck">

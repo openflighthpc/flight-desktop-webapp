@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function useMedia(queries, values, defaultValue) {
+export function useMedia(queries, values, defaultValue) {
   const mediaQueryLists = queries.map(q => window.matchMedia(q));
 
   const getValue = () => {
@@ -24,6 +24,21 @@ function useMedia(queries, values, defaultValue) {
   );
 
   return value;
+}
+
+export function useMediaGrouping(
+  queries,
+  values,
+  defaultValue,
+  itemsToGroup,
+) {
+  const perGroup = useMedia(queries, values, defaultValue);
+  const groupedItems = [];
+  for (let i = 0; i < itemsToGroup.length; i = i + perGroup) {
+    const group = itemsToGroup.slice(i, i + perGroup);
+    groupedItems.push(group);
+  }
+  return groupedItems;
 }
 
 export default useMedia;
