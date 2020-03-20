@@ -18,10 +18,6 @@ function AuthenticatedDashboard() {
       >
       </img>
 
-      <p>
-        You are signed in as {currentUser.username}.
-      </p>
-
       <div className="card-deck">
         <div className="card">
           <div className="card-body">

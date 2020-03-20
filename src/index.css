@@ -19,6 +19,9 @@ body {
 .nav-menu-text {
     font-size: larger;
 }
+.navbar-light .navbar-nav .nav-menu-text:hover {
+    color: rgba(0,0,0,.5);
+}
 
 .nav-menu-button {
     font-weight: bold;

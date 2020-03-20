@@ -71,7 +71,7 @@ function UserNavItems() {
     <>
     <li className="nav-item">
       <span className="nav-link nav-menu-text">
-        Signed as {currentUser.username}
+        Signed in as {currentUser.username}
       </span>
     </li>
     <li className="nav-item">
