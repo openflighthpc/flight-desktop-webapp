@@ -17,7 +17,7 @@ import { Provider as CurrentUserProvider } from './CurrentUserContext';
 function App() {
   return (
     <div className="App">
-      <Router>
+      <Router basename="/desktop">
         <CurrentUserProvider>
           <FetchProvider>
             <AppLayout>
