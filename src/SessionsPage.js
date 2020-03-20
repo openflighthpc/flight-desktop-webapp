@@ -4,17 +4,27 @@ import { Link } from "react-router-dom";
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
+import { errorCode, useInterval } from './utils';
 import { useFetchSessions } from './api';
+import { useMediaGrouping } from './useMedia';
 
 function SessionsPage() {
-  const { data, error, loading, } = useFetchSessions();
+  const { data, error, loading, get } = useFetchSessions();
+  useInterval(get, 1 * 60 * 1000);
 
-  if (loading) {
-    return <Spinner text="Loading sessions..."/>;
-  } else if (error) {
-    return <DefaultErrorMessage />;
+  if (error) {
+    if (errorCode(data) === 'Unauthorized') {
+      return <UnauthorizedError />;
+    } else {
+      return <DefaultErrorMessage />;
+    }
   } else {
-    return <SessionsList sessions={data} />;
+    return (
+      <>
+      { loading && <Spinner text="Loading sessions..."/> }
+      { data != null && <SessionsList sessions={data} reload={get} /> }
+      </>
+    );
   }
 }
 
@@ -29,12 +39,35 @@ function NoSessionsFound() {
   );
 }
 
-function SessionsList({ sessions }) {
-  if (!sessions.length) {
+function SessionsList({ reload, sessions }) {
+  const { groupedItems: groupedSessions, perGroup } = useMediaGrouping(
+    ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
+    [3, 2, 2, 1],
+    1,
+    sessions || [],
+  );
+  if (sessions == null || !sessions.length) {
     return <NoSessionsFound />;
   }
-  const cards = sessions.map(
-    (session) => <SessionCard key={session.id} session={session} />
+  const decks = groupedSessions.map(
+    (group, index) => {
+      let blanks = null;
+      if ( group.length < perGroup ) {
+        const a = new Array(perGroup - group.length);
+        a.fill(0);
+        blanks = a.map((i, index) => <div key={index} className="card invisible"></div>)
+      }
+      return (
+        <div key={index} className="card-deck">
+          {
+            group.map((session) => (
+              <SessionCard key={session.id} reload={reload} session={session} />
+            ))
+          }
+          {blanks}
+        </div>
+      );
+    }
   );
   return (
     <div>
@@ -43,8 +76,20 @@ function SessionsList({ sessions }) {
         the <i>Connect</i> button to establish a connection to a desktop
         session or the <i>Terminate</i> button to shutdown a desktop session.
       </p>
-      <div className="row">
-        {cards}
+      {decks}
+    </div>
+  );
+}
+
+function UnauthorizedError() {
+  return (
+    <div className="card">
+      <div className="card-body">
+        <h3>Unauthorized</h3>
+        <p>
+          There was a problem authorizing your username and password.  Please
+          check that they are entered correctly and try again.
+        </p>
       </div>
     </div>
   );

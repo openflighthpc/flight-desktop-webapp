@@ -1,7 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useMemo, useState } from 'react';
+import { Toast, ToastHeader, ToastBody } from 'reactstrap';
 
-import { signIn } from './api';
-import { Context as CurrentUserContext } from './CurrentUserContext';
+import Portal from './Portal';
+import { useSignIn } from './api';
 
 const useForm = (callback) => {
   const [inputs, setInputs] = useState({});
@@ -24,10 +25,13 @@ const useForm = (callback) => {
 
 
 function SignInForm() {
-  const { actions: userActions } = useContext(CurrentUserContext);
-  const { handleSubmit, handleInputChange, inputs } = useForm(
-    signIn(userActions)
-  );
+  const { error, loading, startSignIn } = useSignIn();
+  const [ showToast, setShowToast ] = useState(false);
+  const { handleSubmit, handleInputChange, inputs } = useForm(startSignIn);
+
+  useMemo(() => {
+    setShowToast(!loading && !!error);
+  }, [ error, loading ]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -55,13 +59,47 @@ function SignInForm() {
         <div className="input-group-append">
           <button
             className="btn btn-primary"
+            disabled={loading}
+            id="go"
+            style={{ minWidth: '52px' }}
             type="submit"
-            id="go">
-            Go!
+          >
+            {
+              loading ?
+                <i className="fa fa-spinner fa-spin mr-1"></i> :
+                'Go!'
+            }
           </button>
         </div>
       </div>
+      {
+        showToast ? (
+          <LoginErrorToast
+            showToast={showToast}
+            toggle={() => setShowToast(s => !s)}
+          />
+        ) : null
+      }
     </form>
+  );
+}
+
+function LoginErrorToast({ showToast, toggle }) {
+  return (
+    <Portal id="toast-portal">
+      <Toast isOpen={showToast}>
+        <ToastHeader
+          icon="danger"
+          toggle={toggle}
+        >
+          Unable to sign in to your account
+        </ToastHeader>
+        <ToastBody>
+          There was a problem authorizing your username and password.  Please
+          check that they are entered correctly and try again.
+        </ToastBody>
+      </Toast>
+    </Portal>
   );
 }
 

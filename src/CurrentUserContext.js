@@ -1,56 +1,45 @@
-import React, { useMemo, useReducer } from 'react';
+import React, { useMemo, useState } from 'react';
 
-const currentUserReducer = (state, { type, payload }) => {
-  switch (type) {
-
-    case "SET_USER":
-      const basicAuthToken = btoa(`${payload.username}:${payload.password}`);
-      return {
-        username: payload.username,
-        authToken: basicAuthToken,
-      };
-
-    case "UNSET_USER":
-      return null;
-
-    default:
-      return;
-  }
-};
+import useLocalStorage from './useLocalStorage';
 
 const initialState = null;
 const Context = React.createContext(initialState);
 
+function getAuthToken({ username, password }) {
+  return `Basic ${btoa(`${username}:${password}`)}`;
+}
+
 function Provider({ user, ...props }) {
-  const [currentUser, dispatch] = useReducer(currentUserReducer, initialState);
+  const [tempUser, doSetTempUser] = useState(null);
+  const [currentUser, setCurrentUser] = useLocalStorage('currentUser', initialState);
   const actions = useMemo(
     () => ({
-      setUser(username, password) {
-        dispatch({
-          type: 'SET_USER',
-          payload: { username, password }
-        })
+      setTempUser(username, password) {
+        const basicAuthToken = getAuthToken({ username, password });
+        doSetTempUser({ username, authToken: basicAuthToken });
       },
 
-      unsetUser() { dispatch({ type: 'UNSET_USER' }) },
+      promoteUser(user) {
+        setCurrentUser(user);
+        doSetTempUser(null);
+      },
+
+      signOut() {
+        setCurrentUser(null);
+        doSetTempUser(null);
+      },
     }),
-    [ dispatch ],
+    [ setCurrentUser ],
   );
 
   return (
-    <Context.Provider value={{ currentUser: user || currentUser, actions }}>
+    <Context.Provider value={{ currentUser: user || currentUser, tempUser, actions }}>
       {props.children}
     </Context.Provider>
   );
 }
 
-// Exported to allow testing.
-const internal = {
-  currentUserReducer,
-};
-
 export {
   Context,
   Provider,
-  internal,
 }

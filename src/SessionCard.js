@@ -1,25 +1,22 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
-import { CardFooter } from './CardParts';
+import TerminateButton from './TerminateButton';
 import placeholderImage from './placeholder.jpg';
-import { useTerminateSession } from './api';
+import { CardFooter } from './CardParts';
+import { prettyDesktopName, useInterval } from './utils';
+import { useFetchScreenshot, useTerminateSession } from './api';
 
-const prettyDesktopName = {
-  chrome: "Google Chrome browser session",
-  gnome: "GNOME v3",
-  kde: "KDE Plasma Desktop",
-  terminal: "Terminal",
-  xfce: "Xfce desktop",
-  xterm: "xterm",
-};
-
-function SessionCard({ session }) {
+function SessionCard({ reload, session }) {
+  const { get: getScreenshot, image: screenshot } = useFetchScreenshot(session.id);
+  useInterval(getScreenshot, 1 * 60 * 1000, { immediate: false });
   const session_name = session.name || session.id.split('-')[0];
-  const terminateSession = useTerminateSession(session.id);
+  const { loading, del } = useTerminateSession(session.id);
+  const terminateSession = () => {
+    del().then(() => reload());
+  };
 
   return (
-    <div className="col-sm-6 col-lg-4">
       <div
         className="card border-primary mb-2"
         data-testid="session-card"
@@ -33,28 +30,28 @@ function SessionCard({ session }) {
               <img
                 className="card-img"
                 src={
-                  session.image == null ?
-                    placeholderImage :
-                    `data:image/png;base64,${session.image}`
+                  screenshot != null ?
+                    `data:image/png;base64,${screenshot}` :
+                    placeholderImage
                 }
                 alt="Session screenshot"
               />
             </div>
           </div>
-              <dl className="row">
-                <dt
-                  className="col-sm-4 text-truncate"
-                  title="Desktop"
-                >
-                  Desktop
-                </dt>
-                <dd
-                  className="col-sm-8 text-truncate"
-                  title={prettyDesktopName[session.desktop]}
-                >
-                  {prettyDesktopName[session.desktop]}
-                </dd>
-              </dl>
+          <dl className="row">
+            <dt
+              className="col-sm-4 text-truncate"
+              title="Desktop"
+            >
+              Desktop
+            </dt>
+            <dd
+              className="col-sm-8 text-truncate"
+              title={prettyDesktopName[session.desktop]}
+            >
+              {prettyDesktopName[session.desktop]}
+            </dd>
+          </dl>
         </div>
         <CardFooter>
           <div className="btn-toolbar justify-content-center">
@@ -65,17 +62,14 @@ function SessionCard({ session }) {
               <i className="fa fa-bolt mr-1"></i>
               <span>Connect</span>
             </Link>
-            <button
-              className="btn btn-danger"
-              onClick={() => { terminateSession.delete(); }}
-            >
-              <i className="fa fa-trash mr-1"></i>
-              <span>Terminate</span>
-            </button>
+            <TerminateButton
+              session={session}
+              terminateSession={terminateSession}
+              terminating={loading}
+            />
           </div>
         </CardFooter>
       </div>
-    </div>
   );
 }
 

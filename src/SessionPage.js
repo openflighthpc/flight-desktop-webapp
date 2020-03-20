@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import ErrorBoundary from './ErrorBoundary';
 import NoVNC from './NoVNC';
 import Spinner from './Spinner';
+import TerminateButton from './TerminateButton';
 import { DefaultErrorMessage } from './ErrorBoundary';
 import { useFetchSession, useTerminateSession } from './api';
 
@@ -14,7 +15,7 @@ function buildWebsocketUrl(session) {
     // expected that the developer sets things up correctly.
     const rootUrl = process.env.REACT_APP_DEV_ONLY_WEBSOCKET_ROOT_URL;
     const prefix = process.env.REACT_APP_WEBSOCKET_PATH_PREFIX;
-    const pathIP = process.env.REACT_APP_DEV_ONLY_WEBSOCKET_PATH_IP || session.ip;
+    const pathIP = process.env.REACT_APP_WEBSOCKET_PATH_IP || session.ip;
     return `${rootUrl}${prefix}/${pathIP}/${session.port}`;
 
   } else {
@@ -27,14 +28,9 @@ function buildWebsocketUrl(session) {
       wsUrl.protocol = 'ws';
     }
 
-    if (!apiUrl.pathname.endsWith('/')) {
-      wsUrl.pathname = wsUrl.pathname + '/';
-    }
     let prefix = process.env.REACT_APP_WEBSOCKET_PATH_PREFIX;
-    if (prefix.startsWith('/')) {
-      prefix = prefix.replace('/', '');
-    }
-    wsUrl.pathname = wsUrl.pathname + `${prefix}/${session.ip}/${session.port}`;
+    const pathIP = process.env.REACT_APP_WEBSOCKET_PATH_IP || session.ip;
+    wsUrl.pathname = `${prefix}/${pathIP}/${session.port}`;
 
     return wsUrl.toString()
   }
@@ -42,7 +38,7 @@ function buildWebsocketUrl(session) {
 
 function SessionPage() {
   const { id } = useParams();
-  const terminateSession = useTerminateSession(id);
+  const { del, loading: terminating } = useTerminateSession(id);
   const {
     data: session,
     error: sessionLoadingError,
@@ -51,6 +47,11 @@ function SessionPage() {
   const sessionName = id.split('-')[0];
   const vnc = useRef(null);
   const [connectionState, setConnectionState] = useState('connecting');
+  const history = useHistory();
+  const terminateSession = () => {
+    setConnectionState('terminating');
+    del().then(() => history.push(`/sessions`));
+  };
 
   if (sessionLoading) {
     return (
@@ -78,7 +79,9 @@ function SessionPage() {
             vnc.current.onReconnect();
           }
         }}
-        onTerminate={() => terminateSession.delete() }
+        onTerminate={terminateSession}
+        session={session}
+        terminating={terminating}
       >
         <ErrorBoundary>
           <ConnectStateIndicator connectionState={connectionState} />
@@ -110,6 +113,8 @@ function Layout({
   onDisconnect,
   onReconnect,
   onTerminate,
+  session,
+  terminating,
 }) {
   return (
     <div className="overflow-auto">
@@ -128,6 +133,8 @@ function Layout({
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
                       onTerminate={onTerminate}
+                      session={session}
+                      terminating={terminating}
                     />
                   </div>
                 </div>
@@ -148,6 +155,8 @@ function Toolbar({
   onDisconnect,
   onReconnect,
   onTerminate,
+  session,
+  terminating,
 }) {
   const disconnectBtn = connectionState === 'connected' ? (
     <button
@@ -169,15 +178,14 @@ function Toolbar({
     </button>
   ) : null;
 
-  const terminateBtn = (
-    <button
-      className="btn btn-danger btn-sm"
-      onClick={onTerminate}
+  const terminateBtn = session != null ? (
+    <TerminateButton
+      session={session}
+      terminateSession={onTerminate}
+      terminating={terminating}
     >
-      <i className="fa fa-trash mr-1"></i>
-      <span>Terminate session</span>
-    </button>
-  );
+    </TerminateButton>
+  ) : null;
 
   return (
     <div className="btn-toolbar">
@@ -194,6 +202,8 @@ function ConnectStateIndicator({ connectionState }) {
       return (<Spinner text="Initializing connection..." />);
     case 'disconnecting':
       return (<Spinner text="Disconnecting..." />);
+    case 'terminating':
+      return (<Spinner text="Terminating..." />);
     case 'disconnected':
       return (<div className="text-center">Session has been disconnected.</div>);
     default:

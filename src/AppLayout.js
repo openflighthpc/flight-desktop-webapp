@@ -13,6 +13,7 @@ function AppLayout({ children }) {
       className="container-fluid"
       id="main"
     >
+      <div id="toast-portal"></div>
       <div className="row content">
         <SideNav />
         <div className="col centernav mt-4">
