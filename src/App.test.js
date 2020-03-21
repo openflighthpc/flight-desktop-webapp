@@ -21,7 +21,7 @@ test('can sign in', async () => {
   await act(() => {
     fireEvent.click(button);
     return wait(
-      () => expect(getByText(/You are signed in as my-username/)).toBeInTheDocument()
+      () => expect(getByText(/Signed in as my-username/)).toBeInTheDocument()
     )
   });
 });

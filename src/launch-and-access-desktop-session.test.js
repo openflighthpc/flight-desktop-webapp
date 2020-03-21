@@ -58,7 +58,7 @@ async function signIn({ getByPlaceholderText, getByRole, getByText }) {
   await act(() => {
     fireEvent.click(button);
     return wait(
-      () => expect(getByText(/You are signed in as alces/)).toBeInTheDocument()
+      () => expect(getByText(/Signed in as alces/)).toBeInTheDocument()
     )
   });
 }

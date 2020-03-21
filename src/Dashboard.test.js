@@ -40,5 +40,5 @@ test('renders authenticated dashboard with a user', () => {
       </CurrentUserProvider>
     </Router>
   );
-  expect(getByText(/You are signed in as alces/)).toBeInTheDocument();
+  expect(getByText(/View your running .*sessions/)).toBeInTheDocument();
 });
