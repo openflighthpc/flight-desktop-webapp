@@ -1,15 +1,19 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import SignInForm from './SignInForm';
-import { Provider as CurrentUserProvider } from './CurrentUserContext';
+import { Context as CurrentUserContext } from './CurrentUserContext';
 import FetchProvider from './FetchProvider';
+import { Context as ConfigContext } from './ConfigContext';
 
 test('renders without crashing', () => {
+  const currentUser = { username: 'alces' };
   render(
-    <CurrentUserProvider user={{ username: 'alces' }}>
-      <FetchProvider>
-        <SignInForm />
-      </FetchProvider>
-    </CurrentUserProvider>
+    <ConfigContext.Provider value={{ apiRootUrl: ""}} >
+      <CurrentUserContext.Provider value={{ currentUser, actions: {} }}>
+        <FetchProvider>
+          <SignInForm />
+        </FetchProvider>
+      </CurrentUserContext.Provider>
+    </ConfigContext.Provider>
   );
 });

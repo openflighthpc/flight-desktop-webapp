@@ -9,7 +9,7 @@ function getAuthToken({ username, password }) {
   return `Basic ${btoa(`${username}:${password}`)}`;
 }
 
-function Provider({ user, ...props }) {
+function Provider({ children }) {
   const [tempUser, doSetTempUser] = useState(null);
   const [currentUser, setCurrentUser] = useLocalStorage('currentUser', initialState);
   const actions = useMemo(
@@ -33,8 +33,8 @@ function Provider({ user, ...props }) {
   );
 
   return (
-    <Context.Provider value={{ currentUser: user || currentUser, tempUser, actions }}>
-      {props.children}
+    <Context.Provider value={{ currentUser: currentUser, tempUser, actions }}>
+      {children}
     </Context.Provider>
   );
 }

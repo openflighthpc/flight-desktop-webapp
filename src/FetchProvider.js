@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import { Provider } from 'use-http';
 
+import { Context as ConfigContext } from './ConfigContext';
 import { Context as CurrentUserContext } from './CurrentUserContext';
 
 function FetchProvider({ children, cachePolicy }) {
+  const { apiRootUrl } = useContext(ConfigContext);
   const { currentUser } = useContext(CurrentUserContext);
   const options = {
     // We can't make use of the cache until it is possible to clear it when
@@ -28,7 +30,7 @@ function FetchProvider({ children, cachePolicy }) {
   return (
     <Provider
       options={options}
-      url={process.env.REACT_APP_API_ROOT_URL}
+      url={apiRootUrl}
     >
       {children}
     </Provider>

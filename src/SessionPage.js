@@ -1,26 +1,27 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import ErrorBoundary from './ErrorBoundary';
 import NoVNC from './NoVNC';
 import Spinner from './Spinner';
 import TerminateButton from './TerminateButton';
+import { Context as ConfigContext } from './ConfigContext';
 import { DefaultErrorMessage } from './ErrorBoundary';
 import { useFetchSession, useTerminateSession } from './api';
 
-function buildWebsocketUrl(session) {
-  if (process.env.REACT_APP_DEV_ONLY_WEBSOCKET_ROOT_URL) {
+function buildWebsocketUrl(session, config) {
+  if (config.devOnlyWebsocketRootUrl) {
     // This branch is intended for development and testing only.  The code
     // here is intentionally less robust in the URL it constructs.  It is
     // expected that the developer sets things up correctly.
-    const rootUrl = process.env.REACT_APP_DEV_ONLY_WEBSOCKET_ROOT_URL;
-    const prefix = process.env.REACT_APP_WEBSOCKET_PATH_PREFIX;
-    const pathIP = process.env.REACT_APP_WEBSOCKET_PATH_IP || session.ip;
+    const rootUrl = config.devOnlyWebsocketRootUrl;
+    const prefix = config.websocketPathPrefix;
+    const pathIP = config.websocketPathIp || session.ip;
     return `${rootUrl}${prefix}/${pathIP}/${session.port}`;
 
   } else {
-    const apiUrl = new URL(process.env.REACT_APP_API_ROOT_URL);
-    const wsUrl = new URL(process.env.REACT_APP_API_ROOT_URL);
+    const apiUrl = new URL(config.apiRootUrl);
+    const wsUrl = new URL(config.apiRootUrl);
 
     if (apiUrl.protocol.match(/https/)) {
       wsUrl.protocol = 'wss';
@@ -28,8 +29,8 @@ function buildWebsocketUrl(session) {
       wsUrl.protocol = 'ws';
     }
 
-    let prefix = process.env.REACT_APP_WEBSOCKET_PATH_PREFIX;
-    const pathIP = process.env.REACT_APP_WEBSOCKET_PATH_IP || session.ip;
+    let prefix = config.websocketPathPrefix;
+    const pathIP = config.websocketPathIp || session.ip;
     wsUrl.pathname = `${prefix}/${pathIP}/${session.port}`;
 
     return wsUrl.toString()
@@ -37,6 +38,7 @@ function buildWebsocketUrl(session) {
 }
 
 function SessionPage() {
+  const config = useContext(ConfigContext);
   const { id } = useParams();
   const { del, loading: terminating } = useTerminateSession(id);
   const {
@@ -62,7 +64,7 @@ function SessionPage() {
   } else if (sessionLoadingError) {
     return <DefaultErrorMessage />;
   } else {
-    const websocketUrl = buildWebsocketUrl(session);
+    const websocketUrl = buildWebsocketUrl(session, config);
     return (
       <Layout
         connectionState={connectionState}

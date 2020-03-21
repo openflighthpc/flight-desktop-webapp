@@ -58,15 +58,7 @@ export function useFetchSessions() {
 
 export function useFetchSession(id) {
   const { currentUser } = useContext(CurrentUserContext);
-  let urlOrOptions;
-  if ( process.env.NODE_ENV === 'development' && process.env.REACT_APP_FAKE_DATA ) {
-    const port = 41363;
-    const password = 'rZjgqb0L';
-    urlOrOptions = `http://localhost:8000?id=${id}&port=${port}&password=${password}`;
-  } else {
-    urlOrOptions = { path: `/sessions/${id}` };
-  }
-  return useFetch(urlOrOptions, [ id, currentUser.authToken ]);
+  return useFetch({ path: `/sessions/${id}` }, [ id, currentUser.authToken ]);
 }
 
 export function useLaunchSession(desktop) {

@@ -4,6 +4,7 @@ import { act, fireEvent, render, wait } from '@testing-library/react';
 import RFB from 'novnc-core';
 
 import App from './App';
+import testConfig from '../public/config.test.json';
 
 jest.mock('novnc-core');
 
@@ -20,24 +21,34 @@ const session = {
 beforeEach(() => {
   fetch.resetMocks();
   fetch.mockResponse((req) => {
-    const pathname = new URL(req.url).pathname;
+    const url = new URL(req.url);
+    const pathname = url.pathname;
     // console.log('req:', req.method, pathname);  // eslint-disable-line no-console
 
-    if (req.method === 'POST' && pathname.match(/sessions$/)) {
+    if (pathname === "/desktop/ping") {
+      return Promise.resolve("OK");
+
+    } else if (url.toString() === process.env.REACT_APP_CONFIG_FILE) {
+      return Promise.resolve(JSON.stringify(testConfig));
+
+    } else if (req.method === 'POST' && pathname.match(/sessions$/)) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify(session), status: 200, }),
         0
       ));
+
     } else if (req.method === 'GET' && pathname.match(/sessions$/)) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify([session]), status: 200, }),
         0
       ));
+
     } else if (req.method === 'GET' && pathname.match(new RegExp(`sessions/${session.id}$`))) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify(session), status: 200, }),
         0
       ));
+
     } else {
       return Promise.resolve('all good');
     }
@@ -74,8 +85,17 @@ async function launchDesktop(desktopType, { getByRole }) {
   fireEvent.click(launchButton);
 }
 
+async function renderApp() {
+  const utils = render(<App />);
+  expect(utils.getByText('Loading...')).toBeInTheDocument();
+  await wait(
+    () => expect(utils.queryByText('Loading...')).toBeNull()
+  );
+  return utils;
+}
+
 test('launch a new desktop session', async () => {
-  const queries = render(<App />);
+  const queries = await renderApp();
 
   await signIn(queries);
   navigateToLaunchPage(queries);

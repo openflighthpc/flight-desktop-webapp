@@ -4,6 +4,7 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
 import { enableFetchMocks } from 'jest-fetch-mock';
+import testConfig from '../public/config.test.json';
 
 // The lightest possible MutationObserver shim.  We may need to upgrade this
 // to `import "mutationobserver-shim"` at some point.
@@ -14,6 +15,27 @@ global.MutationObserver = class {
 };
 
 enableFetchMocks();
+
+beforeEach(() => {
+  fetch.resetMocks();
+  fetch.mockResponse((req) => {
+    const url = new URL(req.url);
+    const pathname = url.pathname;
+    // console.log('req:', req.method, pathname);  // eslint-disable-line no-console
+
+    if (pathname === "/desktop/ping") {
+      return Promise.resolve("OK");
+
+    } else if (url.toString() === process.env.REACT_APP_CONFIG_FILE) {
+      return Promise.resolve(JSON.stringify(testConfig));
+    }
+  });
+});
+
+afterEach(() => {
+  fetch.resetMocks();
+});
+
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

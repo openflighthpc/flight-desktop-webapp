@@ -1,0 +1,6 @@
+{
+  "clusterName": "This deployment needs configuring",
+  "apiRootUrl": "https://gateway1.my.custer",
+  "websocketPathPrefix": "/ws",
+  "websocketPathIp": "127.0.0.1"
+}

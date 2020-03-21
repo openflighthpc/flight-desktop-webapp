@@ -1,13 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
 
 import { CardFooter } from './CardParts';
 import Logo from './png_trans_logo.png';
-import { Context as CurrentUserContext } from './CurrentUserContext';
 
 function AuthenticatedDashboard() {
-  const { currentUser } = useContext(CurrentUserContext);
-
   return (
     <div>
       <img
