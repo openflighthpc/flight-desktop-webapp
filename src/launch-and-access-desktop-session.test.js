@@ -1,6 +1,6 @@
 import React from 'react';
 import { within } from '@testing-library/dom';
-import { act, fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import RFB from 'novnc-core';
 
 import App from './App';
@@ -66,12 +66,10 @@ async function signIn({ getByPlaceholderText, getByRole, getByText }) {
   const button = getByRole('button', { name: 'Go!' });
   fireEvent.change(nameInput, { target: { value: 'alces' } });
   fireEvent.change(passwordInput, { target: { value: 'password' } });
-  await act(() => {
-    fireEvent.click(button);
-    return wait(
-      () => expect(getByText(/Signed in as alces/)).toBeInTheDocument()
-    )
-  });
+  fireEvent.click(button);
+  await wait(
+    () => expect(getByText(/Signed in as alces/)).toBeInTheDocument()
+  )
 }
 
 function navigateToLaunchPage({ getByText }) {
@@ -99,12 +97,10 @@ test('launch a new desktop session', async () => {
 
   await signIn(queries);
   navigateToLaunchPage(queries);
-  await act(() => {
-    launchDesktop('Terminal', queries);
-    return wait(
-      () => expect(queries.queryByText(/Initializing connection/)).toBeInTheDocument()
-    )
-  });
+  launchDesktop('Terminal', queries);
+  await wait(
+    () => expect(queries.queryByText(/Initializing connection/)).toBeInTheDocument()
+  )
 
   const vncConnection = `wss://my.cluster.com/ws/127.0.0.1/${session.port}`;
   expect(RFB).toHaveBeenCalledWith(

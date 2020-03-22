@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, fireEvent, wait } from '@testing-library/react';
+import { render, fireEvent, wait } from '@testing-library/react';
 import App from './App';
 
 async function renderApp() {
@@ -29,10 +29,8 @@ test('can sign in', async () => {
   const button = getByRole('button', { name: 'Go!' });
   fireEvent.change(nameInput, { target: { value: 'my-username' } });
   fireEvent.change(passwordInput, { target: { value: 'my-password' } });
-  await act(() => {
-    fireEvent.click(button);
-    return wait(
-      () => expect(getByText(/Signed in as my-username/)).toBeInTheDocument()
-    )
-  });
+  fireEvent.click(button);
+  await wait(
+    () => expect(getByText(/Signed in as my-username/)).toBeInTheDocument()
+  )
 });

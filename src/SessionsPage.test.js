@@ -87,12 +87,12 @@ describe('screenshots', () => {
     const card = cards[0];
     const { getByRole } = within(card);
     expect(getByRole("img")).toHaveAttribute("src", "placeholder.jpg");
-    await act(() => wait(() => {
+    await wait(() => {
       expect(getByRole("img")).toHaveAttribute(
         "src",
         "data:image/png;base64,totally a base64 encoded png"
       );
-    }))
+    })
   });
 });
 
