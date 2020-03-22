@@ -25,7 +25,7 @@ beforeEach(() => {
     const pathname = url.pathname;
     // console.log('req:', req.method, pathname);  // eslint-disable-line no-console
 
-    if (pathname === "/desktop/ping") {
+    if (pathname === `${process.env.REACT_APP_MOUNT_PATH}/ping`) {
       return Promise.resolve("OK");
 
     } else if (url.toString() === process.env.REACT_APP_CONFIG_FILE) {

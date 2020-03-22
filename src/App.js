@@ -19,7 +19,7 @@ function App() {
   return (
     <div className="App">
       <ConfigProvider>
-        <Router basename="/desktop">
+        <Router basename={process.env.REACT_APP_MOUNT_PATH}>
           <CurrentUserProvider>
             <FetchProvider>
               <AppLayout>
