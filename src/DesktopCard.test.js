@@ -2,8 +2,9 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import DesktopCard from './DesktopCard';
-import { Provider as CurrentUserProvider } from './CurrentUserContext';
 import FetchProvider from './FetchProvider';
+import { Context as ConfigContext } from './ConfigContext';
+import { Context as CurrentUserContext } from './CurrentUserContext';
 
 const exampleDesktop = {
   type: "example",
@@ -12,14 +13,18 @@ const exampleDesktop = {
 };
 
 function WrappedDesktopCard({ desktop }) {
+  const currentUser = { username: 'alces' };
+
   return(
-    <Router>
-      <CurrentUserProvider>
-        <FetchProvider>
-          <DesktopCard desktop={desktop} />
-        </FetchProvider>
-      </CurrentUserProvider>
-    </Router>
+    <ConfigContext.Provider value={{ apiRootUrl: ""}} >
+      <Router>
+        <CurrentUserContext.Provider value={{ currentUser, actions: {} }}>
+          <FetchProvider>
+            <DesktopCard desktop={desktop} />
+          </FetchProvider>
+        </CurrentUserContext.Provider>
+      </Router>
+    </ConfigContext.Provider>
   );
 }
 

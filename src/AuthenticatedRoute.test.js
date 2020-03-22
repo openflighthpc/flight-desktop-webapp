@@ -7,11 +7,11 @@ import {
 } from "react-router-dom";
 import { render } from '@testing-library/react';
 import AuthenticatedRoute from './AuthenticatedRoute';
-import { Provider as CurrentUserProvider } from './CurrentUserContext';
+import { Context as CurrentUserContext } from './CurrentUserContext';
 
 function TestComponent({ path, user }) {
   return (
-    <CurrentUserProvider user={user}>
+    <CurrentUserContext.Provider value={{ currentUser: user, actions: {} }}>
       <Switch>
         <AuthenticatedRoute path="/auth">
           <div>Protected route</div>
@@ -20,7 +20,7 @@ function TestComponent({ path, user }) {
           <div>Default route</div>
         </Route>
       </Switch>
-    </CurrentUserProvider>
+    </CurrentUserContext.Provider>
   );
 }
 

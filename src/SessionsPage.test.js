@@ -4,17 +4,22 @@ import { act, render, wait, within } from '@testing-library/react';
 
 import FetchProvider from './FetchProvider';
 import SessionsPage from './SessionsPage';
-import { Provider as CurrentUserProvider } from './CurrentUserContext';
+import { Context as CurrentUserContext } from './CurrentUserContext';
+import { Context as ConfigContext } from './ConfigContext';
 
 async function renderSessionsPage() {
+  const currentUser = { username: 'test', authToken: 'testAuthToken' };
+
   const { getByText, queryByText, ...rest } = render(
-    <Router>
-      <CurrentUserProvider user={{ username: 'test', authToken: 'testAuthToken' }}>
-        <FetchProvider cachePolicy="no-cache">
-          <SessionsPage />
-        </FetchProvider>
-      </CurrentUserProvider>
-    </Router>
+    <ConfigContext.Provider value={{ apiRootUrl: ""}} >
+      <Router>
+        <CurrentUserContext.Provider value={{ currentUser, actions: {} }}>
+          <FetchProvider cachePolicy="no-cache">
+            <SessionsPage />
+          </FetchProvider>
+        </CurrentUserContext.Provider>
+      </Router>
+    </ConfigContext.Provider>
   );
 
   expect(getByText(/Loading sessions/)).toBeInTheDocument();
@@ -82,12 +87,12 @@ describe('screenshots', () => {
     const card = cards[0];
     const { getByRole } = within(card);
     expect(getByRole("img")).toHaveAttribute("src", "placeholder.jpg");
-    await act(() => wait(() => {
+    await wait(() => {
       expect(getByRole("img")).toHaveAttribute(
         "src",
         "data:image/png;base64,totally a base64 encoded png"
       );
-    }))
+    })
   });
 });
 

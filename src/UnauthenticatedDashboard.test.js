@@ -1,16 +1,20 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import UnauthenticatedDashboard from './UnauthenticatedDashboard';
-import { Provider as CurrentUserProvider } from './CurrentUserContext';
 import FetchProvider from './FetchProvider';
+import { Context as CurrentUserContext } from './CurrentUserContext';
+import { Context as ConfigContext } from './ConfigContext';
 
 test('renders without crashing', () => {
+  const currentUser = { username: 'alces' };
+
   render(
-    <CurrentUserProvider user={{ username: 'alces' }}>
-      <FetchProvider>
-        <UnauthenticatedDashboard />
-      </FetchProvider>
-    </CurrentUserProvider>
+    <ConfigContext.Provider value={{ apiRootUrl: ""}} >
+      <CurrentUserContext.Provider value={{ currentUser, actions: {} }}>
+        <FetchProvider>
+          <UnauthenticatedDashboard />
+        </FetchProvider>
+      </CurrentUserContext.Provider>
+    </ConfigContext.Provider>
   );
 });
-

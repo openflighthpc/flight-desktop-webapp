@@ -1,9 +1,10 @@
 import React from 'react';
 import { within } from '@testing-library/dom';
-import { act, fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import RFB from 'novnc-core';
 
 import App from './App';
+import testConfig from '../public/config.test.json';
 
 jest.mock('novnc-core');
 
@@ -20,24 +21,34 @@ const session = {
 beforeEach(() => {
   fetch.resetMocks();
   fetch.mockResponse((req) => {
-    const pathname = new URL(req.url).pathname;
+    const url = new URL(req.url);
+    const pathname = url.pathname;
     // console.log('req:', req.method, pathname);  // eslint-disable-line no-console
 
-    if (req.method === 'POST' && pathname.match(/sessions$/)) {
+    if (pathname === `${process.env.REACT_APP_MOUNT_PATH}/ping`) {
+      return Promise.resolve("OK");
+
+    } else if (url.toString() === process.env.REACT_APP_CONFIG_FILE) {
+      return Promise.resolve(JSON.stringify(testConfig));
+
+    } else if (req.method === 'POST' && pathname.match(/sessions$/)) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify(session), status: 200, }),
         0
       ));
+
     } else if (req.method === 'GET' && pathname.match(/sessions$/)) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify([session]), status: 200, }),
         0
       ));
+
     } else if (req.method === 'GET' && pathname.match(new RegExp(`sessions/${session.id}$`))) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify(session), status: 200, }),
         0
       ));
+
     } else {
       return Promise.resolve('all good');
     }
@@ -55,12 +66,10 @@ async function signIn({ getByPlaceholderText, getByRole, getByText }) {
   const button = getByRole('button', { name: 'Go!' });
   fireEvent.change(nameInput, { target: { value: 'alces' } });
   fireEvent.change(passwordInput, { target: { value: 'password' } });
-  await act(() => {
-    fireEvent.click(button);
-    return wait(
-      () => expect(getByText(/You are signed in as alces/)).toBeInTheDocument()
-    )
-  });
+  fireEvent.click(button);
+  await wait(
+    () => expect(getByText(/Signed in as alces/)).toBeInTheDocument()
+  )
 }
 
 function navigateToLaunchPage({ getByText }) {
@@ -74,17 +83,24 @@ async function launchDesktop(desktopType, { getByRole }) {
   fireEvent.click(launchButton);
 }
 
+async function renderApp() {
+  const utils = render(<App />);
+  expect(utils.getByText('Loading...')).toBeInTheDocument();
+  await wait(
+    () => expect(utils.queryByText('Loading...')).toBeNull()
+  );
+  return utils;
+}
+
 test('launch a new desktop session', async () => {
-  const queries = render(<App />);
+  const queries = await renderApp();
 
   await signIn(queries);
   navigateToLaunchPage(queries);
-  await act(() => {
-    launchDesktop('Terminal', queries);
-    return wait(
-      () => expect(queries.queryByText(/Initializing connection/)).toBeInTheDocument()
-    )
-  });
+  launchDesktop('Terminal', queries);
+  await wait(
+    () => expect(queries.queryByText(/Initializing connection/)).toBeInTheDocument()
+  )
 
   const vncConnection = `wss://my.cluster.com/ws/127.0.0.1/${session.port}`;
   expect(RFB).toHaveBeenCalledWith(

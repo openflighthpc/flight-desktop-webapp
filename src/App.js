@@ -7,6 +7,7 @@ import {
 
 import AppLayout from './AppLayout';
 import AuthenticatedRoute from './AuthenticatedRoute';
+import { Provider as ConfigProvider } from './ConfigContext';
 import Dashboard from './Dashboard';
 import FetchProvider from './FetchProvider';
 import NewSessionPage from './NewSessionPage';
@@ -17,28 +18,30 @@ import { Provider as CurrentUserProvider } from './CurrentUserContext';
 function App() {
   return (
     <div className="App">
-      <Router>
-        <CurrentUserProvider>
-          <FetchProvider>
-            <AppLayout>
-              <Switch>
-                <AuthenticatedRoute path="/sessions/new">
-                  <NewSessionPage />
-                </AuthenticatedRoute>
-                <AuthenticatedRoute path="/sessions/:id">
-                  <SessionPage />
-                </AuthenticatedRoute>
-                <AuthenticatedRoute path="/sessions">
-                  <SessionsPage />
-                </AuthenticatedRoute>
-                <Route path="/">
-                  <Dashboard />
-                </Route>
-              </Switch>
-            </AppLayout>
-          </FetchProvider>
-        </CurrentUserProvider>
-      </Router>
+      <ConfigProvider>
+        <Router basename={process.env.REACT_APP_MOUNT_PATH}>
+          <CurrentUserProvider>
+            <FetchProvider>
+              <AppLayout>
+                <Switch>
+                  <AuthenticatedRoute path="/sessions/new">
+                    <NewSessionPage />
+                  </AuthenticatedRoute>
+                  <AuthenticatedRoute path="/sessions/:id">
+                    <SessionPage />
+                  </AuthenticatedRoute>
+                  <AuthenticatedRoute path="/sessions">
+                    <SessionsPage />
+                  </AuthenticatedRoute>
+                  <Route path="/">
+                    <Dashboard />
+                  </Route>
+                </Switch>
+              </AppLayout>
+            </FetchProvider>
+          </CurrentUserProvider>
+        </Router>
+      </ConfigProvider>
     </div>
   );
 }

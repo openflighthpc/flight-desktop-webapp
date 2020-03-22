@@ -2,15 +2,14 @@ import BrandBar from './BrandBar';
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render } from '@testing-library/react';
-import { Provider as CurrentUserProvider } from './CurrentUserContext';
+import { Context as CurrentUserContext } from './CurrentUserContext';
 
 test('renders without crashing', () => {
   render(
     <Router>
-      <CurrentUserProvider>
+      <CurrentUserContext.Provider value={{ currentUser: null, actions: {} }}>
         <BrandBar />
-      </CurrentUserProvider>
+      </CurrentUserContext.Provider>
     </Router>
   );
 });
-
