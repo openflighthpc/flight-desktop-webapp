@@ -13,41 +13,21 @@ sessions.
 
 ## Installation
 
-Install node version 12.16.  The following instructions assume `nvm` is being
-used to manage the node version.
+ 1. Download a packaged build from
+    https://github.com/openflighthpc/flight-desktop-client/releases.
 
-```
-git clone git@github.com:openflighthpc/flight-desktop-client.git
-cd flight-desktop-client
-nvm use
-yarn install
-```
+ 2. Extract the packaged build to some path, say `/opt/flight-desktop-client`.
 
-Flight Desktop Client is now installed.  Next it needs to be configured.
+ 3. Edit `/opt/flight-desktop-client/build/config.json` to be suitable for
+    your cluster.  In particular, you will likely want to change `clusterName`
+    and `apiRootUrl`.
 
-## Configuration
+ 4. Configure nginx so that requests to `/desktop` are served from the files
+    in the `/opt/flight-desktop-client/build` directory.
 
-To configure, edit `.env` and set the variables `REACT_APP_CLUSTER_NAME`,
-`REACT_APP_API_ROOT_URL` and `REACT_APP_WEBSOCKET_PATH_PREFIX`.  They must all
-be set.
+# Developing
 
-
-## Operation
-
-To use Flight Desktop Client, it must be built.
-
-```
-yarn run build
-```
-
-The static files required to server Flight Desktop Client are saved to
-`build/`.  They can be served from that directory by any HTTP file server,
-e.g.,
-
-```
-cd build
-python -m SimpleHTTPServer 8080
-```
+TBD
 
 
 # Contributing
