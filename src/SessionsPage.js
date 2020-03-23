@@ -4,9 +4,15 @@ import { Link } from "react-router-dom";
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
-import { errorCode, useInterval } from './utils';
+import { errorCode, isObject, useInterval } from './utils';
 import { useFetchSessions } from './api';
 import { useMediaGrouping } from './useMedia';
+
+function getSessionsFromResponse(data) {
+  if (!isObject(data)) { return null; }
+  if (!Array.isArray(data.data)) { return null; }
+  return data.data;
+}
 
 function SessionsPage() {
   const { data, error, loading, get } = useFetchSessions();
@@ -19,10 +25,11 @@ function SessionsPage() {
       return <DefaultErrorMessage />;
     }
   } else {
+    const sessions = getSessionsFromResponse(data);
     return (
       <>
       { loading && <Spinner text="Loading sessions..."/> }
-      { data != null && <SessionsList sessions={data} reload={get} /> }
+      { sessions != null && <SessionsList sessions={sessions} reload={get} /> }
       </>
     );
   }

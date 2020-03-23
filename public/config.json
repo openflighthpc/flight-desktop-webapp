@@ -1,6 +1,6 @@
 {
-  "clusterName": "This deployment needs configuring",
-  "apiRootUrl": "https://gateway1.my.custer",
+  "clusterName": "Unconfigured cluster",
+  "apiRootUrl": "https://unconfigured.custer/desktop/api",
   "websocketPathPrefix": "/ws",
   "websocketPathIp": "127.0.0.1"
 }

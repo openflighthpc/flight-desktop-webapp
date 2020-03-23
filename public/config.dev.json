@@ -1,6 +1,6 @@
 {
   "clusterName": "bens-test-cluster",
-  "apiRootUrl": "http://localhost:9095",
+  "apiRootUrl": "http://localhost:9090/desktop/api",
   "websocketPathPrefix": "/ws",
   "websocketPathIp": "127.0.0.1",
   "devOnlyWebsocketRootUrl": "ws://localhost:9090"

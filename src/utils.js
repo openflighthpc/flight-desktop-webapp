@@ -21,7 +21,7 @@ export function errorCode(responseBody) {
 }
 
 
-function isObject(object) {
+export function isObject(object) {
   return (typeof object === 'function' || typeof object === 'object') && !!object;
 };
 
