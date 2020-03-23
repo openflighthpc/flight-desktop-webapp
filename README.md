@@ -14,16 +14,17 @@ sessions.
 ## Installation
 
  1. Download a packaged build from
-    https://github.com/openflighthpc/flight-desktop-client/releases.
+    https://github.com/openflighthpc/flight-desktop-client/releases.  The
+    packaged build is named `flight-desktop-client_build_<VERSION>.tar.gz`
 
- 2. Extract the packaged build to some path, say `/opt/flight-desktop-client`.
+ 2. Extract the packaged build over `/`.
 
- 3. Edit `/opt/flight-desktop-client/build/config.json` to be suitable for
-    your cluster.  In particular, you will likely want to change `clusterName`
-    and `apiRootUrl`.
+ 3. Edit `/opt/flight/opt/flight-desktop-client/build/config.json` to be
+    suitable for your cluster.  In particular, you will likely want to change
+    `clusterName` and `apiRootUrl`.
 
- 4. Configure nginx so that requests to `/desktop` are served from the files
-    in the `/opt/flight-desktop-client/build` directory.
+ 4. Restart or reload nginx to pick up the new configuration.
+
 
 # Developing
 
