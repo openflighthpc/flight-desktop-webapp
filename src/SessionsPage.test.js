@@ -34,14 +34,14 @@ afterEach(() => {
 
 test('renders without crashing', async () => {
   fetch.resetMocks();
-  fetch.mockResponseOnce(JSON.stringify([]));
+  fetch.mockResponseOnce(JSON.stringify({ data: [] }));
   await renderSessionsPage();
 });
 
 describe('when there are no running sessions', () => {
   beforeEach(() => {
     fetch.resetMocks();
-    fetch.mockResponseOnce(JSON.stringify([]));
+    fetch.mockResponseOnce(JSON.stringify({ data: [] }));
   });
 
   test('renders a no running sessions message', async () => {
@@ -63,7 +63,7 @@ describe('screenshots', () => {
 
   beforeEach(() => {
     fetch.resetMocks();
-    fetch.mockResponseOnce(JSON.stringify(sessions));
+    fetch.mockResponseOnce(JSON.stringify({ data: sessions }));
     fetch.mockResponse((req) => {
       const pathname = new URL(req.url).pathname;
       // console.log('req:', req.method, pathname);  // eslint-disable-line no-console
@@ -110,7 +110,7 @@ describe('when there are running sessions', () => {
 
   beforeEach(() => {
     fetch.resetMocks();
-    fetch.mockResponseOnce(JSON.stringify(sessions));
+    fetch.mockResponseOnce(JSON.stringify({ data: sessions }));
     fetch.mockReject(() => {
       return new Response(JSON.stringify("Not Found"), { status: 404 });
     })
@@ -189,14 +189,14 @@ describe('when session retrieval fails', () => {
 });
 
 describe('periodic reloading of the sessions data', () => {
-  const firstResponse = [
+  const firstResponse = { data: [
     {
       "id": "410bc483-710c-4795-a859-baeae17f08ce",
       "desktop": "terminal",
       "image": "totally some PNG image data",
     },
-  ];
-  const secondResponse = [
+  ]};
+  const secondResponse = { data: [
     {
       "id": "410bc483-710c-4795-a859-baeae17f08ce",
       "desktop": "terminal",
@@ -207,7 +207,7 @@ describe('periodic reloading of the sessions data', () => {
       "desktop": "chrome",
       "image": null,
     },
-  ];
+  ]};
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -235,7 +235,7 @@ describe('periodic reloading of the sessions data', () => {
 
     expect(cards).toHaveLength(1)
     cards.forEach((card, index) => {
-      const session = firstResponse[index];
+      const session = firstResponse.data[index];
       const name = session.id.split('-')[0];
       expect(card).toHaveTextContent(name);
     });
@@ -245,7 +245,7 @@ describe('periodic reloading of the sessions data', () => {
 
     expect(cards).toHaveLength(2)
     cards.forEach((card, index) => {
-      const session = secondResponse[index];
+      const session = secondResponse.data[index];
       const name = session.id.split('-')[0];
       expect(card).toHaveTextContent(name);
     });
