@@ -53,7 +53,10 @@ function useAuthCheck() {
 
 export function useFetchSessions() {
   const { currentUser } = useContext(CurrentUserContext);
-  return useFetch({ path: "/sessions" }, [ currentUser.authToken ]);
+  return useFetch({
+    path: "/sessions",
+    headers: { Accept: 'application/json' },
+  }, [ currentUser.authToken ]);
 }
 
 export function useFetchSession(id) {
@@ -65,6 +68,10 @@ export function useLaunchSession(desktop) {
   const request = useFetch({
     method: 'post',
     path: "/sessions",
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
     body: {
       desktop: desktop.type,
     },
@@ -96,6 +103,7 @@ export function useFetchScreenshot(id) {
 
   const { get, response } = useFetch({
     path: `/sessions/${id}/screenshot`,
+    headers: { Accept: 'image/*' },
     cachePolicy: 'cache-first',
     cacheLife: reloadInterval,
     // cachePolicy: 'no-cache',
