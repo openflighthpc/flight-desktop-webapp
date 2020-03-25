@@ -3,7 +3,7 @@ import useFetch from 'use-http';
 
 import { Context as CurrentUserContext } from './CurrentUserContext';
 
-export function useSignIn() {
+export function useSignIn({ onError }) {
   const {
     error,
     get,
@@ -18,8 +18,8 @@ export function useSignIn() {
         await get();
         if (response.ok) {
           userActions.promoteUser(tempUser);
-        } else if (response.status === 401) {
-          console.log('user unauthed');
+        } else {
+          typeof onError === 'function' && onError(response);
         }
       }
     }

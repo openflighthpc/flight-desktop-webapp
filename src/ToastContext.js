@@ -13,7 +13,10 @@ function Provider({ children }) {
         const id =  uuidv1();
         const newToast = { content, id };
         setToasts((toasts) => [ ...toasts, newToast ]);
-        return () => actions.removeToast(id);
+        return {
+          id,
+          removeToast() { actions.removeToast(id) },
+        };
       },
 
       removeToast(id) {

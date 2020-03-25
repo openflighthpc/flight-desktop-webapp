@@ -17,7 +17,7 @@ function DesktopCard({ desktop }) {
       if (response.ok) {
         history.push(`/sessions/${responseBody.id}`);
       } else {
-        const removeToast = addToast(
+        const { removeToast } = addToast(
           <LaunchErrorToast
             desktop={desktop}
             launchError={errorCode(responseBody)}
