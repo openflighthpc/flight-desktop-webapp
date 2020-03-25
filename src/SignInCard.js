@@ -1,25 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import SignInForm from './SignInForm';
-
-const ClusterName = styled.span`
-  font-weight: bold;
-  font-style: italic;
-`;
 
 function SignInCard({ clusterName }) {
   return (
     <div className="card mb-2">
       <div className="card-body">
         <h5 className="card-title text-center">
-          Sign in to <ClusterName>{clusterName}</ClusterName>
+          Sign in
         </h5>
         <div className="row">
           <div className="col">
             <p>
-              Sign in to your OpenFlightHPC environment account on
-              {' '}<ClusterName>{clusterName}</ClusterName>.
+              Sign in to your OpenFlightHPC environment account.
               You'll need your account username and password. Enter
               them below and click <i>Go!</i>.
             </p>
