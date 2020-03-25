@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Toast, ToastHeader, ToastBody } from 'reactstrap';
 
 import { CardFooter } from './CardParts';
 import { Context as ConfigContext } from './ConfigContext';
@@ -12,18 +11,17 @@ function DesktopCard({ desktop }) {
   const { loading, post, response } = useLaunchSession(desktop);
   const history = useHistory();
   const { addToast } = useToast();
+  const clusterName = useContext(ConfigContext).clusterName;
   const launchSession = () => {
     post().then((responseBody) => {
       if (response.ok) {
         history.push(`/sessions/${responseBody.id}`);
       } else {
-        const { removeToast } = addToast(
-          <LaunchErrorToast
-            desktop={desktop}
-            launchError={errorCode(responseBody)}
-            toggle={() => removeToast()}
-          />
-        );
+        addToast(launchErrorToast({
+          clusterName: clusterName,
+          desktop: desktop,
+          launchError: errorCode(responseBody),
+        }));
       }
     });
   };
@@ -60,8 +58,7 @@ function DesktopCard({ desktop }) {
   );
 }
 
-function LaunchErrorToast({ desktop, launchError, toggle }) {
-  const clusterName = useContext(ConfigContext).clusterName;
+function launchErrorToast({ clusterName, desktop, launchError }) {
   let body = (
     <div>
       Unfortunately there has been a problem launching your
@@ -81,19 +78,11 @@ function LaunchErrorToast({ desktop, launchError, toggle }) {
     );
   }
 
-  return (
-    <Toast isOpen={true}>
-      <ToastHeader
-        icon="danger"
-        toggle={toggle}
-      >
-        Failed to launch desktop
-      </ToastHeader>
-      <ToastBody>
-        {body}
-      </ToastBody>
-    </Toast>
-  );
+  return {
+    body,
+    icon: 'danger',
+    header: 'Failed to launch desktop',
+  };
 }
 
 export default DesktopCard;

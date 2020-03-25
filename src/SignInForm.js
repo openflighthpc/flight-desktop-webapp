@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Toast, ToastHeader, ToastBody } from 'reactstrap';
 
-import Portal from './Portal';
 import { errorCode } from './utils';
 import { useSignIn } from './api';
 import { useToast } from './ToastContext';
@@ -33,9 +31,8 @@ function SignInForm() {
   const removeToastRef = useRef(null);
 
   async function showToast(response) {
-    const code = errorCode(await response.json());
     const { removeToast } = addToast(
-      <LoginErrorToast errorCode={code} toggle={() => removeToast()} />
+      loginErrorToast({ errorCode: errorCode(await response.json()) })
     );
     removeToastRef.current = removeToast;
   }
@@ -88,7 +85,7 @@ function SignInForm() {
   );
 }
 
-function LoginErrorToast({ errorCode, toggle }) {
+function loginErrorToast({ errorCode }) {
   let body = (
     <div>
       Unfortunately there has been an unexpected problem authenticating your
@@ -105,21 +102,11 @@ function LoginErrorToast({ errorCode, toggle }) {
     );
   }
 
-  return (
-    <Portal id="toast-portal">
-      <Toast isOpen={true}>
-        <ToastHeader
-          icon="danger"
-          toggle={toggle}
-        >
-          Unable to sign in to your account
-        </ToastHeader>
-        <ToastBody>
-          {body}
-        </ToastBody>
-      </Toast>
-    </Portal>
-  );
+  return {
+    body,
+    icon: 'danger',
+    header: 'Unable to sign in to your account',
+  };
 }
 
 export default SignInForm;

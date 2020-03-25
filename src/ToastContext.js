@@ -1,4 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
+import { Toast, ToastHeader, ToastBody } from 'reactstrap';
 import { v1 as uuidv1 } from 'uuid';
 
 import Portal from './Portal';
@@ -47,11 +48,29 @@ function useToast() {
 }
 
 function Container() {
-  const { toasts } = useToast();
+  const { toasts, removeToast } = useToast();
 
   return (
     <Portal id="toast-portal">
-      { toasts.map(t => React.cloneElement(t.content, {key: t.id})) }
+      {
+        toasts.map(t => (
+          <Toast isOpen={true} key={t.id}>
+            <ToastHeader
+              icon={t.content.icon}
+              toggle={
+                t.content.toggle != null ?
+                  t.content.toggle :
+                  () => removeToast(t.id)
+              }
+            >
+              {t.content.header}
+            </ToastHeader>
+            <ToastBody>
+              {t.content.body}
+            </ToastBody>
+          </Toast>
+        ))
+      }
     </Portal>
   );
 }
