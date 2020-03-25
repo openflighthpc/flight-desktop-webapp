@@ -1,28 +1,30 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Toast, ToastHeader, ToastBody } from 'reactstrap';
 
-import Portal from './Portal';
 import { CardFooter } from './CardParts';
 import { Context as ConfigContext } from './ConfigContext';
+import { useToast } from './ToastContext';
 import { errorCode } from './utils';
 import { useLaunchSession } from './api';
 
 function DesktopCard({ desktop }) {
-  const [ launchError, setLaunchError ] = useState(null);
   const { loading, post, response } = useLaunchSession(desktop);
   const history = useHistory();
+  const { addToast } = useToast();
+  const clusterName = useContext(ConfigContext).clusterName;
   const launchSession = () => {
-    setLaunchError(null);
-    post().then(redirectToSession);
+    post().then((responseBody) => {
+      if (response.ok) {
+        history.push(`/sessions/${responseBody.id}`);
+      } else {
+        addToast(launchErrorToast({
+          clusterName: clusterName,
+          desktop: desktop,
+          launchError: errorCode(responseBody),
+        }));
+      }
+    });
   };
-  const redirectToSession = (responseBody) => {
-    if (response.ok) {
-      history.push(`/sessions/${responseBody.id}`);
-    } else {
-      setLaunchError(errorCode(responseBody));
-    }
-  }
 
   return (
     <div className="card border-primary mb-2">
@@ -52,21 +54,11 @@ function DesktopCard({ desktop }) {
           </button>
         </div>
       </CardFooter>
-      {
-        launchError != null ? (
-          <LaunchErrorToast
-            desktop={desktop}
-            launchError={launchError}
-            toggle={() => setLaunchError(null)}
-          />
-        ) : null
-      }
     </div>
   );
 }
 
-function LaunchErrorToast({ desktop, launchError, toggle }) {
-  const clusterName = useContext(ConfigContext).clusterName;
+function launchErrorToast({ clusterName, desktop, launchError }) {
   let body = (
     <div>
       Unfortunately there has been a problem launching your
@@ -86,21 +78,11 @@ function LaunchErrorToast({ desktop, launchError, toggle }) {
     );
   }
 
-  return (
-    <Portal id="toast-portal">
-      <Toast isOpen={launchError != null}>
-        <ToastHeader
-          icon="danger"
-          toggle={toggle}
-        >
-          Failed to launch desktop
-        </ToastHeader>
-        <ToastBody>
-          {body}
-        </ToastBody>
-      </Toast>
-    </Portal>
-  );
+  return {
+    body,
+    icon: 'danger',
+    header: 'Failed to launch desktop',
+  };
 }
 
 export default DesktopCard;
