@@ -22,7 +22,9 @@ function Provider({ children }) {
       removeToast(id) {
         setToasts((toasts) => {
           const idx = toasts.findIndex(t => t.id === id);
-          if (idx > -1) {
+          if (idx === -1) {
+            return toasts;
+          } else {
             const before = toasts.slice(0, idx);
             const after = toasts.slice(idx + 1, toasts.length);
             return [ ...before, ...after ];
