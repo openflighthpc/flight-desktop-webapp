@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Toast, ToastHeader, ToastBody } from 'reactstrap';
 
-import { CardFooter } from './CardParts';
-import { useLaunchSession } from './api';
-import { errorCode } from './utils';
 import Portal from './Portal';
+import { CardFooter } from './CardParts';
+import { Context as ConfigContext } from './ConfigContext';
+import { errorCode } from './utils';
+import { useLaunchSession } from './api';
 
 function DesktopCard({ desktop }) {
-  const [ showToast, setShowToast ] = useState(false);
+  const [ launchError, setLaunchError ] = useState(null);
   const { loading, post, response } = useLaunchSession(desktop);
   const history = useHistory();
   const launchSession = () => {
-    setShowToast(false);
+    setLaunchError(null);
     post().then(redirectToSession);
   };
   const redirectToSession = (responseBody) => {
     if (response.ok) {
       history.push(`/sessions/${responseBody.id}`);
     } else {
-      console.log('Error launch session', errorCode(responseBody));
-      setShowToast(true);
+      setLaunchError(errorCode(responseBody));
     }
   }
 
@@ -53,11 +53,11 @@ function DesktopCard({ desktop }) {
         </div>
       </CardFooter>
       {
-        showToast ? (
+        launchError != null ? (
           <LaunchErrorToast
             desktop={desktop}
-            showToast={showToast}
-            toggle={() => setShowToast(s => !s)}
+            launchError={launchError}
+            toggle={() => setLaunchError(null)}
           />
         ) : null
       }
@@ -65,10 +65,30 @@ function DesktopCard({ desktop }) {
   );
 }
 
-function LaunchErrorToast({ desktop, showToast, toggle }) {
+function LaunchErrorToast({ desktop, launchError, toggle }) {
+  const clusterName = useContext(ConfigContext).clusterName;
+  let body = (
+    <div>
+      Unfortunately there has been a problem launching your
+      {' '}<strong>{desktop.name}</strong> desktop session.  Please try
+      again and, if problems persist, help us to more quickly rectify the
+      problem by contacting us and letting us know.
+    </div>
+  );
+  if (launchError === 'Desktop Not Prepared') {
+    body = (
+      <div>
+        <strong>{desktop.name}</strong> has not yet been fully configured.  If
+        you would like to use this desktop please contact the system
+        administrator for {' '}<em>{clusterName}</em> and ask them to prepare
+        this desktop.
+      </div>
+    );
+  }
+
   return (
     <Portal id="toast-portal">
-      <Toast isOpen={showToast}>
+      <Toast isOpen={launchError != null}>
         <ToastHeader
           icon="danger"
           toggle={toggle}
@@ -76,10 +96,7 @@ function LaunchErrorToast({ desktop, showToast, toggle }) {
           Failed to launch desktop
         </ToastHeader>
         <ToastBody>
-          Unfortunately there has been a problem launching your
-          {' '}<strong>{desktop.name}</strong> desktop session.  Please try
-          again and, if problems persist, help us to more quickly rectify the
-          problem by contacting us and letting us know.
+          {body}
         </ToastBody>
       </Toast>
     </Portal>
