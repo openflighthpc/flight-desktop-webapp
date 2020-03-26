@@ -44,7 +44,7 @@ function SignInForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="input-group mb-3">
+      <div className="input-group">
         <input
           className="form-control"
           id="username"

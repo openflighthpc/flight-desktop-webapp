@@ -16,15 +16,11 @@ function ClusterCard() {
       <div className="card-body">
         <h5 className="card-title text-center">
         </h5>
-        <div className="row">
-          <div className="col">
-            { clusterLogo != null ? <ClusterLogo src={clusterLogo} /> : null }
-            <div className="text-center mb-3">
-              <ClusterName>{clusterName}</ClusterName>
-            </div>
-            { clusterDescription != null ? <p>{clusterDescription}</p> : null }
-          </div>
+        { clusterLogo != null ? <ClusterLogo src={clusterLogo} /> : null }
+        <div className="text-center mb-3">
+          <ClusterName>{clusterName}</ClusterName>
         </div>
+        { clusterDescription != null ? <p>{clusterDescription}</p> : null }
       </div>
     </div>
   );
