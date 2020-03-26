@@ -46,7 +46,6 @@ function SessionPage() {
     error: sessionLoadingError,
     loading: sessionLoading,
   } = useFetchSession(id);
-  const sessionName = id.split('-')[0];
   const vnc = useRef(null);
   const [connectionState, setConnectionState] = useState('connecting');
   const history = useHistory();
@@ -54,6 +53,8 @@ function SessionPage() {
     setConnectionState('terminating');
     del().then(() => history.push(`/sessions`));
   };
+  // `id` could be null when we are navigating away from the page.
+  const sessionName = id == null ? '' : id.split('-')[0];
 
   if (sessionLoading) {
     return (

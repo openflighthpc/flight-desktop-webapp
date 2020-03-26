@@ -7,21 +7,19 @@ function AuthenticatedRoute({ children, ...rest }) {
   const { currentUser } = useContext(CurrentUserContext);
 
   return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        currentUser != null ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/",
-              state: { from: location }
-            }}
-          />
-        )
-      }
-    />
+    <Route {...rest} >
+      {({ match, location, ...more }) => {
+        if (currentUser == null) {
+          return match == null ?
+            null :
+            <Redirect to={{ pathname: "/", state: { from: location } }} />;
+        } else {
+          return typeof children === 'function' ?
+            children({ match, location, ...more }) :
+            children;
+        }
+      }}
+    </Route>
   );
 }
 
