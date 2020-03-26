@@ -41,94 +41,109 @@ function buildWebsocketUrl(session, config) {
 }
 
 function SessionPage() {
-  const config = useContext(ConfigContext);
   const { id } = useParams();
-  const { del, loading: terminating } = useTerminateSession(id);
   const {
     data: session,
     error: sessionLoadingError,
     loading: sessionLoading,
   } = useFetchSession(id);
-  const vnc = useRef(null);
+  const { image: screenshot } = useFetchScreenshot(id);
+
+  if (sessionLoading) {
+    return <Loading screenshot={screenshot} />;
+  } else if (sessionLoadingError) {
+    return <DefaultErrorMessage />;
+  } else {
+    return (
+      <Connected
+        id={id}
+        screenshot={screenshot}
+        session={session}
+      />
+    );
+  }
+}
+
+function Loading({ screenshot }) {
+  return (
+    <Layout>
+      <Screenshot screenshot={screenshot} />
+      <Overlay>
+        <Spinner text="Loading session..." />
+      </Overlay>
+    </Layout>
+  );
+}
+
+function Connected({ id, screenshot, session }) {
   const [connectionState, setConnectionState] = useState('connecting');
+  const config = useContext(ConfigContext);
   const history = useHistory();
+  const vnc = useRef(null);
+  const { del, loading: terminating } = useTerminateSession(id);
   const terminateSession = () => {
     setConnectionState('terminating');
     del().then(() => history.push(`/sessions`));
   };
-  // `id` could be null when we are navigating away from the page.
-  const sessionName = id == null ? '' : id.split('-')[0];
-  const { image: screenshot } = useFetchScreenshot(id);
+  const websocketUrl = buildWebsocketUrl(session, config);
 
-  if (sessionLoading) {
-    return (
-      <Layout headerText={sessionName} id={id}>
-        <Screenshot screenshot={screenshot} />
-        <Overlay>
-          <Spinner text="Loading session..." />
-        </Overlay>
-      </Layout>
-    );
-  } else if (sessionLoadingError) {
-    return <DefaultErrorMessage />;
-  } else {
-    const websocketUrl = buildWebsocketUrl(session, config);
-    return (
-      <Layout
-        connectionState={connectionState}
-        headerText={sessionName}
-        onDisconnect={() => {
-          if (vnc.current) {
-            setConnectionState('disconnecting');
-            vnc.current.onUserDisconnect();
-          }
-        }}
-        onReconnect={() => {
-          if (vnc.current) {
-            setConnectionState('connecting');
-            vnc.current.onReconnect();
-          }
-        }}
-        onTerminate={terminateSession}
-        session={session}
-        terminating={terminating}
-      >
-        <ErrorBoundary>
-          <ConnectStateIndicator
-            connectionState={connectionState}
-            screenshot={screenshot}
+  return (
+    <Layout
+      connectionState={connectionState}
+      onDisconnect={() => {
+        if (vnc.current) {
+          setConnectionState('disconnecting');
+          vnc.current.onUserDisconnect();
+        }
+      }}
+      onReconnect={() => {
+        if (vnc.current) {
+          setConnectionState('connecting');
+          vnc.current.onReconnect();
+        }
+      }}
+      onTerminate={terminateSession}
+      session={session}
+      terminating={terminating}
+    >
+      <ErrorBoundary>
+        <ConnectStateIndicator
+          connectionState={connectionState}
+          screenshot={screenshot}
+        />
+        <div className={connectionState === 'connected' ? 'd-block' : 'd-none'}>
+          <NoVNC
+            connectionName={websocketUrl}
+            password={session.password}
+            onBeforeConnect={() => {
+              console.log('connected')
+              setConnectionState('connected')
+            }}
+            onDisconnected={(e) => {
+              console.log('disconnected', e);
+              setConnectionState('disconnected')
+            }}
+            ref={vnc}
           />
-          <div className={connectionState === 'connected' ? 'd-block' : 'd-none'}>
-            <NoVNC
-              connectionName={websocketUrl}
-              password={session.password}
-              onBeforeConnect={() => {
-                console.log('connected')
-                setConnectionState('connected')
-              }}
-              onDisconnected={(e) => {
-                console.log('disconnected', e);
-                setConnectionState('disconnected')
-              }}
-              ref={vnc}
-            />
-          </div>
-        </ErrorBoundary>
-      </Layout>
-    );
-  }
+        </div>
+      </ErrorBoundary>
+    </Layout>
+
+  );
 }
 
 function Layout({
   children,
   connectionState,
-  headerText,
   onDisconnect,
   onReconnect,
   onTerminate,
   session,
   terminating,
 }) {
+  // `id` could be null when we are navigating away from the page.
+  const { id } = useParams();
+  const sessionName = id == null ? '' : id.split('-')[0];
 
   return (
     <div className="overflow-auto">
@@ -140,7 +155,7 @@ function Layout({
                 <div className="col">
                   <div className="d-flex align-items-center">
                     <h5 className="flex-grow-1 mb-0">
-                      {headerText}
+                      {sessionName}
                     </h5>
                     <Toolbar
                       connectionState={connectionState}
