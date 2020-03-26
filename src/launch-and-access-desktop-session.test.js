@@ -68,7 +68,7 @@ async function signIn({ getByPlaceholderText, getByRole, getByText }) {
   fireEvent.change(passwordInput, { target: { value: 'password' } });
   fireEvent.click(button);
   await wait(
-    () => expect(getByText(/Signed in as alces/)).toBeInTheDocument()
+    () => expect(getByText(/alces \(bens-test-cluster\)/)).toBeInTheDocument()
   )
 }
 

@@ -31,6 +31,6 @@ test('can sign in', async () => {
   fireEvent.change(passwordInput, { target: { value: 'my-password' } });
   fireEvent.click(button);
   await wait(
-    () => expect(getByText(/Signed in as my-username/)).toBeInTheDocument()
+    () => expect(getByText(/my-username \(bens-test-cluster\)/)).toBeInTheDocument()
   )
 });

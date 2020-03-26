@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import Logo from './png_trans_logo-navbar.png';
 import { Context as CurrentUserContext } from './CurrentUserContext';
+import { Context as ConfigContext } from './ConfigContext';
 
 function BrandBar({ className }) {
   return (
@@ -65,13 +66,14 @@ function NavItems() {
 
 function UserNavItems() {
   const { currentUser, actions } = useContext(CurrentUserContext);
+  const { clusterName } = useContext(ConfigContext);
   if (currentUser == null) { return null; }
 
   return (
     <>
     <li className="nav-item">
       <span className="nav-link nav-menu-text">
-        Signed in as {currentUser.username}
+        {currentUser.username} ({clusterName})
       </span>
     </li>
     <li className="nav-item">
