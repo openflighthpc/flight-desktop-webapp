@@ -183,6 +183,7 @@ function Toolbar({
 
   const terminateBtn = session != null ? (
     <TerminateButton
+      className="btn-sm"
       session={session}
       terminateSession={onTerminate}
       terminating={terminating}
@@ -191,7 +192,7 @@ function Toolbar({
   ) : null;
 
   return (
-    <div className="btn-toolbar">
+    <div className="btn-toolbar" style={{ 'min-height': '31px' }}>
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}
