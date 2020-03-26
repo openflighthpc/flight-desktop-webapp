@@ -76,12 +76,15 @@ function SessionsList({ reload, sessions }) {
       );
     }
   );
+  const sessionOrSessions = sessions.length === 1 ? 'session' : 'sessions';
+
   return (
     <div>
       <p>
-        You have {sessions.length} currently running desktop sessions.  Use
-        the <i>Connect</i> button to establish a connection to a desktop
-        session or the <i>Terminate</i> button to shutdown a desktop session.
+        You have {sessions.length} currently running desktop
+        {' '}{sessionOrSessions}.  Use the <i>Connect</i> button to establish
+        a connection to a desktop session or the <i>Terminate</i> button to
+        shutdown a desktop session.
       </p>
       {decks}
     </div>
