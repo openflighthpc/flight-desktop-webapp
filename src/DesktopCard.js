@@ -28,7 +28,10 @@ function DesktopCard({ desktop }) {
 
   return (
     <div className="card border-primary mb-2">
-      <h5 className="card-header bg-primary text-light">
+      <h5
+        className="card-header bg-primary text-light text-truncate"
+        title={desktop.name}
+      >
         {desktop.name}
       </h5>
       <div className="card-body">
