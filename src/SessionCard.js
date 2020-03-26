@@ -27,15 +27,17 @@ function SessionCard({ reload, session }) {
         <div className="card-body">
           <div className="row mb-2">
             <div className="col">
-              <img
-                className="card-img"
-                src={
-                  screenshot != null ?
-                    `data:image/png;base64,${screenshot}` :
-                    placeholderImage
-                }
-                alt="Session screenshot"
-              />
+              <Link to={`/sessions/${session.id}`}>
+                <img
+                  className="card-img"
+                  src={
+                    screenshot != null ?
+                      `data:image/png;base64,${screenshot}` :
+                      placeholderImage
+                  }
+                  alt="Session screenshot"
+                />
+              </Link>
             </div>
           </div>
           <dl className="row">
