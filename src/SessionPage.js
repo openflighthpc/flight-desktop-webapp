@@ -3,10 +3,13 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import ErrorBoundary from './ErrorBoundary';
 import NoVNC from './NoVNC';
+import Overlay from './Overlay';
 import Spinner from './Spinner';
 import TerminateButton from './TerminateButton';
+import placeholderImage from './placeholder.jpg';
 import { Context as ConfigContext } from './ConfigContext';
 import { DefaultErrorMessage } from './ErrorBoundary';
+import { useFetchScreenshot } from './api';
 import { useFetchSession, useTerminateSession } from './api';
 
 function buildWebsocketUrl(session, config) {
@@ -55,11 +58,15 @@ function SessionPage() {
   };
   // `id` could be null when we are navigating away from the page.
   const sessionName = id == null ? '' : id.split('-')[0];
+  const { image: screenshot } = useFetchScreenshot(id);
 
   if (sessionLoading) {
     return (
-      <Layout headerText={sessionName}>
-        <Spinner text="Loading session..." />
+      <Layout headerText={sessionName} id={id}>
+        <Screenshot screenshot={screenshot} />
+        <Overlay>
+          <Spinner text="Loading session..." />
+        </Overlay>
       </Layout>
     );
   } else if (sessionLoadingError) {
@@ -87,7 +94,10 @@ function SessionPage() {
         terminating={terminating}
       >
         <ErrorBoundary>
-          <ConnectStateIndicator connectionState={connectionState} />
+          <ConnectStateIndicator
+            connectionState={connectionState}
+            screenshot={screenshot}
+          />
           <div className={connectionState === 'connected' ? 'd-block' : 'd-none'}>
             <NoVNC
               connectionName={websocketUrl}
@@ -119,6 +129,7 @@ function Layout({
   session,
   terminating,
 }) {
+
   return (
     <div className="overflow-auto">
       <div className="row no-gutters">
@@ -200,19 +211,62 @@ function Toolbar({
   );
 }
 
-function ConnectStateIndicator({ connectionState }) {
+function ConnectStateIndicator({ connectionState, screenshot }) {
+  let indicator;
   switch (connectionState) {
     case 'connecting':
-      return (<Spinner text="Initializing connection..." />);
+      indicator = (<Spinner text="Initializing connection..." />);
+      break;
     case 'disconnecting':
-      return (<Spinner text="Disconnecting..." />);
+      indicator = (<Spinner text="Disconnecting..." />);
+      break;
     case 'terminating':
-      return (<Spinner text="Terminating..." />);
+      indicator = (<Spinner text="Terminating..." />);
+      break;
     case 'disconnected':
-      return (<div className="text-center">Session has been disconnected.</div>);
+      indicator = (<div className="text-center">Session has been disconnected.</div>);
+      break;
     default:
-      return null;
+      indicator = null;
   }
+
+  if (indicator == null) {
+    return null;
+  }
+  return (
+    <>
+    <Screenshot screenshot={screenshot} />
+    <Overlay>{indicator}</Overlay>
+    </>
+  );
+}
+
+function Screenshot({ screenshot }) {
+  const height = [
+    "100vh",
+    "108px",  // header
+    "60px",   // footer
+    "24px",   // centernav margin
+    "56px",   // card header
+    "2px",    // card border
+    "0px",   // extra to make things nicer
+  ].join(' - ');
+
+  return (
+    <img
+      style={{
+        height: `calc( ${height} )`,
+        width: 'unset',
+      }}
+      className="d-block m-auto"
+      src={
+        screenshot != null ?
+          `data:image/png;base64,${screenshot}` :
+          placeholderImage
+      }
+      alt="Session screenshot"
+    />
+  );
 }
 
 export default SessionPage;
