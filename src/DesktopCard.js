@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { CardFooter } from './CardParts';
 import { Context as ConfigContext } from './ConfigContext';
 import { useToast } from './ToastContext';
-import { errorCode } from './utils';
+import { errorCode, prettyDesktopName } from './utils';
 import { useLaunchSession } from './api';
 
 function DesktopCard({ desktop }) {
@@ -25,19 +25,20 @@ function DesktopCard({ desktop }) {
       }
     });
   };
+  const desktopName = prettyDesktopName[desktop.id];
 
   return (
     <div className="card border-primary mb-2">
       <h5
         className="card-header bg-primary text-light text-truncate"
-        title={desktop.name}
+        title={desktopName}
       >
-        {desktop.name}
+        {desktopName}
       </h5>
       <div className="card-body">
         <div className="row mb-2">
           <div className="col">
-            {desktop.description}
+            {desktop.summary}
           </div>
         </div>
       </div>
@@ -62,10 +63,11 @@ function DesktopCard({ desktop }) {
 }
 
 function launchErrorToast({ clusterName, desktop, launchError }) {
+  const desktopName = prettyDesktopName[desktop.id];
   let body = (
     <div>
       Unfortunately there has been a problem launching your
-      {' '}<strong>{desktop.name}</strong> desktop session.  Please try
+      {' '}<strong>{desktopName}</strong> desktop session.  Please try
       again and, if problems persist, help us to more quickly rectify the
       problem by contacting us and letting us know.
     </div>
@@ -73,7 +75,7 @@ function launchErrorToast({ clusterName, desktop, launchError }) {
   if (launchError === 'Desktop Not Prepared') {
     body = (
       <div>
-        <strong>{desktop.name}</strong> has not yet been fully configured.  If
+        <strong>{desktopName}</strong> has not yet been fully configured.  If
         you would like to use this desktop please contact the system
         administrator for {' '}<em>{clusterName}</em> and ask them to prepare
         this desktop.

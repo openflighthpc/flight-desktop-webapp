@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Overlay from './Overlay';
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
+import UnauthorizedError from './UnauthorizedError';
 import { DefaultErrorMessage } from './ErrorBoundary';
 import { errorCode, isObject, useInterval } from './utils';
 import { useFetchSessions } from './api';
@@ -96,20 +97,6 @@ function SessionsList({ reload, sessions }) {
         shutdown a desktop session.
       </p>
       {decks}
-    </div>
-  );
-}
-
-function UnauthorizedError() {
-  return (
-    <div className="card">
-      <div className="card-body">
-        <h3>Unauthorized</h3>
-        <p>
-          There was a problem authorizing your username and password.  Please
-          check that they are entered correctly and try again.
-        </p>
-      </div>
     </div>
   );
 }

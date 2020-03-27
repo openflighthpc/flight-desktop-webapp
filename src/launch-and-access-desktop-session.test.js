@@ -6,7 +6,14 @@ import RFB from 'novnc-core';
 import App from './App';
 import testConfig from '../public/config.test.json';
 
+// XXX Better mock this to emit connection events, etc..
 jest.mock('novnc-core');
+
+const desktop = {
+  id: "terminal",
+  verified: true,
+  summary: "Preconfigured terminal for Flight HPC environments.",
+};
 
 const session = {
   "id": "1740a970-73e2-42bb-b740-baadb333175d",
@@ -49,6 +56,12 @@ beforeEach(() => {
         0
       ));
 
+    } else if (req.method === 'GET' && pathname.match(/desktops$/)) {
+      return new Promise(resolve => setTimeout(
+        () => resolve({ body: JSON.stringify({ data: [desktop] }), status: 200, }),
+        0
+      ));
+
     } else {
       return Promise.resolve('all good');
     }
@@ -76,7 +89,11 @@ function navigateToLaunchPage({ getByText }) {
   fireEvent.click(getByText('Launch new session'));
 }
 
-async function launchDesktop(desktopType, { getByRole }) {
+async function launchDesktop(desktopType, { getByText, getByRole, queryByText }) {
+  expect(getByText('Loading desktops...')).toBeInTheDocument();
+  await wait(
+    () => expect(queryByText('Loading desktops...')).toBeNull()
+  );
   const heading = getByRole('heading', { name: desktopType });
   const card = heading.closest('.card');
   const launchButton = within(card).getByRole('button', { name: 'Launch' });
