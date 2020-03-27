@@ -255,7 +255,7 @@ function ConnectStateIndicator({ connectionState, onReconnect, screenshot }) {
   return (
     <div
       onClick={onClick}
-      style={{ cursor: onClick ? 'pointer' : null }}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
       <Screenshot screenshot={screenshot} />
       <Overlay>{indicator}</Overlay>
@@ -264,26 +264,15 @@ function ConnectStateIndicator({ connectionState, onReconnect, screenshot }) {
 }
 
 function Screenshot({ screenshot }) {
-  const height = [
-    "100vh",
-    "108px",  // header
-    "60px",   // footer
-    "24px",   // centernav margin
-    "56px",   // card header
-    "2px",    // card border
-    "0px",    // extra to make things nicer
-  ].join(' - ');
-
   return (
     <img
       alt="Session screenshot"
-      className="d-block m-auto"
+      className="d-block m-auto vncHeight"
       src={
         screenshot != null ?
           `data:image/png;base64,${screenshot}` :
           placeholderImage
       }
-      style={{ height: `calc( ${height} )`, width: 'unset' }}
     />
   );
 }

@@ -46,7 +46,7 @@ const createConnection = ({
     rfb.addEventListener('connect', onConnect);
     rfb.addEventListener('disconnect', onDisconnect);
     rfb.addEventListener('credentialsrequired', onPasswordPrompt);
-    rfb.scaleViewport = false;
+    rfb.scaleViewport = true;
     rfb.resizeSession = false;
     rfb.viewOnly = viewOnly;
   } catch (err) {
@@ -127,12 +127,15 @@ export default class VncContainer extends React.Component {
   }
 
   render() {
-    const classNoVnc = this.props.isFullScreen ? 'fullscreen' : '';
+    const className = this.props.isFullScreen ?
+      'vncHeight fullscreen' :
+      'vncHeight';
+
     return (
       <div>
         <div
           ref={this.noVNCCanvas}
-          className={classNoVnc}
+          className={className}
         />
       </div>
     )
