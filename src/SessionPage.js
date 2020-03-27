@@ -86,6 +86,12 @@ function Connected({ id, screenshot, session }) {
     del().then(() => history.push(`/sessions`));
   };
   const websocketUrl = buildWebsocketUrl(session, config);
+  function onReconnect() {
+    if (vnc.current) {
+      setConnectionState('connecting');
+      vnc.current.onReconnect();
+    }
+  }
 
   return (
     <Layout
@@ -96,12 +102,7 @@ function Connected({ id, screenshot, session }) {
           vnc.current.onUserDisconnect();
         }
       }}
-      onReconnect={() => {
-        if (vnc.current) {
-          setConnectionState('connecting');
-          vnc.current.onReconnect();
-        }
-      }}
+      onReconnect={onReconnect}
       onTerminate={terminateSession}
       session={session}
       terminating={terminating}
@@ -109,6 +110,7 @@ function Connected({ id, screenshot, session }) {
       <ErrorBoundary>
         <ConnectStateIndicator
           connectionState={connectionState}
+          onReconnect={onReconnect}
           screenshot={screenshot}
         />
         <div className={connectionState === 'connected' ? 'd-block' : 'd-none'}>
@@ -226,8 +228,9 @@ function Toolbar({
   );
 }
 
-function ConnectStateIndicator({ connectionState, screenshot }) {
+function ConnectStateIndicator({ connectionState, onReconnect, screenshot }) {
   let indicator;
+  let onClick;
   switch (connectionState) {
     case 'connecting':
       indicator = (<Spinner text="Initializing connection..." />);
@@ -240,6 +243,7 @@ function ConnectStateIndicator({ connectionState, screenshot }) {
       break;
     case 'disconnected':
       indicator = (<div className="text-center">Session has been disconnected.</div>);
+      onClick = onReconnect;
       break;
     default:
       indicator = null;
@@ -249,10 +253,13 @@ function ConnectStateIndicator({ connectionState, screenshot }) {
     return null;
   }
   return (
-    <>
-    <Screenshot screenshot={screenshot} />
-    <Overlay>{indicator}</Overlay>
-    </>
+    <div
+      onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : null }}
+    >
+      <Screenshot screenshot={screenshot} />
+      <Overlay>{indicator}</Overlay>
+    </div>
   );
 }
 
@@ -264,22 +271,19 @@ function Screenshot({ screenshot }) {
     "24px",   // centernav margin
     "56px",   // card header
     "2px",    // card border
-    "0px",   // extra to make things nicer
+    "0px",    // extra to make things nicer
   ].join(' - ');
 
   return (
     <img
-      style={{
-        height: `calc( ${height} )`,
-        width: 'unset',
-      }}
+      alt="Session screenshot"
       className="d-block m-auto"
       src={
         screenshot != null ?
           `data:image/png;base64,${screenshot}` :
           placeholderImage
       }
-      alt="Session screenshot"
+      style={{ height: `calc( ${height} )`, width: 'unset' }}
     />
   );
 }
