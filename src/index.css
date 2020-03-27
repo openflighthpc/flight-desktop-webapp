@@ -82,3 +82,9 @@ footer {
      * extra to make things nicer. */
     height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 0px );
 }
+
+.desktop--unverified .card-header,
+.desktop--unverified .card-body,
+.desktop--unverified .card-footer {
+    opacity: 50%;
+}

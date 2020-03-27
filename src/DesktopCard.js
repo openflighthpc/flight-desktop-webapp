@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import classNames from 'classnames';
 import { useHistory } from 'react-router-dom';
 
 import { CardFooter } from './CardParts';
@@ -28,7 +29,11 @@ function DesktopCard({ desktop }) {
   const desktopName = prettyDesktopName[desktop.id];
 
   return (
-    <div className="card border-primary mb-2">
+    <div
+      className={
+        classNames('card border-primary mb-2', { 'desktop--unverified': !desktop.verified })
+      }
+    >
       <h5
         className="card-header bg-primary text-light text-truncate"
         title={desktopName}
@@ -45,9 +50,12 @@ function DesktopCard({ desktop }) {
       <CardFooter>
         <div className="btn-toolbar justify-content-center">
           <button
-            className={`btn btn-primary mr-2 ${loading ? 'disabled' : null}`}
+            className={
+              classNames("btn btn-primary mr-2", { 'disabled': loading })
+            }
             onClick={launchSession}
-            disabled={loading}
+            disabled={!desktop.verified || loading}
+            title={desktop.verified ? null : unverifiedMessage(clusterName)}
           >
             {
               loading ?
@@ -59,6 +67,14 @@ function DesktopCard({ desktop }) {
         </div>
       </CardFooter>
     </div>
+  );
+}
+
+function unverifiedMessage(clusterName) {
+  return (
+    "This desktop has not yet been fully configured. If you would like to use" +
+    ` this desktop please contact the system administrator for ${clusterName}` +
+    " and ask them to prepare this desktop."
   );
 }
 
