@@ -218,7 +218,7 @@ function Toolbar({
   ) : null;
 
   return (
-    <div className="btn-toolbar" style={{ 'min-height': '31px' }}>
+    <div className="btn-toolbar" style={{ minHeight: '31px' }}>
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}

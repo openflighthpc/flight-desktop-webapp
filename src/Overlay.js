@@ -5,7 +5,7 @@ function Overlay({ children }) {
     <div
       className="position-absolute"
       style={{
-        'font-size': 'x-large',
+        fontSize: 'x-large',
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
