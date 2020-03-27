@@ -77,8 +77,13 @@ footer {
   transition: opacity 300ms, transform 300ms;
 }
 
-.vncHeight {
+.vnc-height {
     /* Subtract header, footer, centernav margin, card header, card border,
      * extra to make things nicer. */
     height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 0px );
+}
+
+.sessions-loading-height {
+    /* Subtract header, footer, centernav margin */
+    height: calc( 100vh - 108px - 60px - 24px );
 }

@@ -267,7 +267,7 @@ function Screenshot({ screenshot }) {
   return (
     <img
       alt="Session screenshot"
-      className="d-block m-auto vncHeight"
+      className="d-block m-auto vnc-height"
       src={
         screenshot != null ?
           `data:image/png;base64,${screenshot}` :

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
+import Overlay from './Overlay';
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
 import { DefaultErrorMessage } from './ErrorBoundary';
@@ -27,10 +28,18 @@ function SessionsPage() {
   } else {
     const sessions = getSessionsFromResponse(data);
     return (
-      <>
-      { loading && <Spinner text="Loading sessions..."/> }
-      { sessions != null && <SessionsList sessions={sessions} reload={get} /> }
-      </>
+      <React.Fragment>
+        {
+          loading && (
+            <div className="sessions-loading-height">
+              <Overlay>
+                <Spinner text="Loading sessions..."/>
+              </Overlay>
+            </div>
+          )
+        }
+        { sessions != null && <SessionsList sessions={sessions} reload={get} /> }
+      </React.Fragment>
     );
   }
 }
