@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
-import Overlay from './Overlay';
+import Overlay, { OverlayContainer } from './Overlay';
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
 import UnauthorizedError from './UnauthorizedError';
@@ -32,11 +32,13 @@ function SessionsPage() {
       <React.Fragment>
         {
           loading && (
-            <div className="sessions-loading-height">
+            <OverlayContainer>
               <Overlay>
-                <Spinner text="Loading sessions..."/>
+                <Spinner
+                  text={ sessions == null ? 'Loading sessions...' : 'Refreshing sessions...' }
+                />
               </Overlay>
-            </div>
+            </OverlayContainer>
           )
         }
         { sessions != null && <SessionsList sessions={sessions} reload={get} /> }

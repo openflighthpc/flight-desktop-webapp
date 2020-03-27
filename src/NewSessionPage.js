@@ -1,7 +1,7 @@
 import React from 'react';
 
 import DesktopCard from './DesktopCard';
-import Overlay from './Overlay';
+import Overlay, { OverlayContainer } from './Overlay';
 import Spinner from './Spinner';
 import UnauthorizedError from './UnauthorizedError';
 import { DefaultErrorMessage } from './ErrorBoundary';
@@ -30,11 +30,11 @@ function NewSessionPage() {
       <React.Fragment>
         {
           loading && (
-            <div className="sessions-loading-height">
+            <OverlayContainer>
               <Overlay>
                 <Spinner text="Loading desktops..."/>
               </Overlay>
-            </div>
+            </OverlayContainer>
           )
         }
         { desktops != null && <DesktopsList desktops={desktops} /> }
