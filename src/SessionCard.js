@@ -30,11 +30,7 @@ function SessionCard({ reload, session }) {
               <Link to={`/sessions/${session.id}`}>
                 <img
                   className="card-img"
-                  src={
-                    screenshot != null ?
-                      `data:image/png;base64,${screenshot}` :
-                      placeholderImage
-                  }
+                  src={screenshot != null ? screenshot : placeholderImage}
                   alt="Session screenshot"
                 />
               </Link>

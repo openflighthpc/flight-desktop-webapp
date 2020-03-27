@@ -102,7 +102,7 @@ export function useFetchScreenshot(id) {
   }
 
   const { get, response } = useFetch({
-    path: `/sessions/${id}/screenshot`,
+    path: `/sessions/${id}/screenshot.png`,
     headers: { Accept: 'image/*' },
     cachePolicy: 'cache-first',
     cacheLife: reloadInterval,
@@ -110,13 +110,23 @@ export function useFetchScreenshot(id) {
   }, [lastLoadedAt])
 
   if (response.ok) {
-    response.blob().then((blob) => {
-      blob.text().then((newImage) => {
-        if (image !== newImage) {
-          setImage(newImage);
+    response.blob()
+      .then((blob) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      })
+      .then((base64Image) => {
+        if (image !== base64Image) {
+          setImage(base64Image);
         }
+      })
+      .catch((e) => {
+        console.log('Error base64 encoding screenshot:', e);  // eslint-disable-line no-console
       });
-    });
   }
 
   return { get, image };
