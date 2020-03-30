@@ -83,7 +83,8 @@ footer {
     height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 0px );
 }
 
-.sessions-loading-height {
-    /* Subtract header, footer, centernav margin */
-    height: calc( 100vh - 108px - 60px - 24px );
+.desktop--unverified .card-header,
+.desktop--unverified .card-body,
+.desktop--unverified .card-footer {
+    opacity: 50%;
 }

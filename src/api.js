@@ -51,6 +51,14 @@ function useAuthCheck() {
   });
 }
 
+export function useFetchDesktops() {
+  const { currentUser } = useContext(CurrentUserContext);
+  return useFetch({
+    path: "/desktops",
+    headers: { Accept: 'application/json' },
+  }, [ currentUser.authToken ]);
+}
+
 export function useFetchSessions() {
   const { currentUser } = useContext(CurrentUserContext);
   return useFetch({
@@ -73,7 +81,7 @@ export function useLaunchSession(desktop) {
       'Content-Type': 'application/json',
     },
     body: {
-      desktop: desktop.type,
+      desktop: desktop.id,
     },
     cachePolicy: 'no-cache',
   });

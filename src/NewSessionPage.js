@@ -1,44 +1,49 @@
 import React from 'react';
 
 import DesktopCard from './DesktopCard';
+import Overlay, { OverlayContainer } from './Overlay';
+import Spinner from './Spinner';
+import UnauthorizedError from './UnauthorizedError';
+import { DefaultErrorMessage } from './ErrorBoundary';
+import { errorCode, isObject } from './utils';
+import { useFetchDesktops } from './api';
 import { useMediaGrouping } from './useMedia';
 
-const desktops = [
-  {
-    type: "chrome",
-    name: "Google Chrome browser session",
-    description: "Full-screen Google Chrome browser session.\n\nhttps://www.google.com/chrome/",
-  },
-  {
-    type: "gnome",
-    name: "GNOME v3",
-    description: "GNOME v3, a free and open-source desktop environment for Unix-like operating systems.\n\nhttps://www.gnome.org/",
-  },
-  {
-    type: "terminal",
-    name: "Terminal",
-    description: "Preconfigured terminal for Flight HPC environments.",
-  },
-  {
-    type: "kde",
-    name: "KDE Plasma Desktop",
-    description: "KDE Plasma Desktop (KDE 4). Plasma is KDE's desktop environment. Simple by default, powerful when needed.\n\nhttps://kde.org/",
-  },
-
-  {
-    type: "xfce",
-    name: "Xfce desktop",
-    description: "Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources, while still being visually appealing and user friendly.\n\nhttps://xfce.org/",
-  },
-  {
-    type: "xterm",
-    name: "xterm",
-    description: "Minimal desktop environment with an xterm terminal window.\n\nhttps://invisible-island.net/xterm/xterm.html",
-  },
-];
-
+function getDesktopsFromResponse(data) {
+  if (!isObject(data)) { return null; }
+  if (!Array.isArray(data.data)) { return null; }
+  return data.data;
+}
 
 function NewSessionPage() {
+  const { data, error, loading } = useFetchDesktops();
+
+  if (error) {
+    if (errorCode(data) === 'Unauthorized') {
+      return <UnauthorizedError />;
+    } else {
+      return <DefaultErrorMessage />;
+    }
+  } else {
+    const desktops = getDesktopsFromResponse(data);
+    return (
+      <React.Fragment>
+        {
+          loading && (
+            <OverlayContainer>
+              <Overlay>
+                <Spinner text="Loading desktops..."/>
+              </Overlay>
+            </OverlayContainer>
+          )
+        }
+        { desktops != null && <DesktopsList desktops={desktops} /> }
+      </React.Fragment>
+    );
+  }
+}
+
+function DesktopsList({ desktops }) {
   const { groupedItems: groupedDesktops } = useMediaGrouping(
     ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
     [3, 2, 2, 1],
@@ -48,7 +53,7 @@ function NewSessionPage() {
   const decks = groupedDesktops.map(
     (group, index) => (
       <div key={index} className="card-deck">
-        {group.map((desktop) => <DesktopCard key={desktop.type} desktop={desktop} />)}
+        {group.map((desktop) => <DesktopCard key={desktop.id} desktop={desktop} />)}
       </div>
     )
   );
