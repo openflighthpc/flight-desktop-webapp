@@ -86,5 +86,5 @@ footer {
 .desktop--unverified .card-header,
 .desktop--unverified .card-body,
 .desktop--unverified .card-footer {
-    opacity: 50%;
+    opacity: 0.5;
 }
