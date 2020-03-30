@@ -5,11 +5,11 @@ import DesktopCard from './DesktopCard';
 import FetchProvider from './FetchProvider';
 import { Context as ConfigContext } from './ConfigContext';
 import { Context as CurrentUserContext } from './CurrentUserContext';
+import { prettyDesktopName } from './utils';
 
 const exampleDesktop = {
-  type: "example",
-  name: "Example name",
-  description: "Example description",
+  id: "gnome",
+  summary: "Placeholder summary",
 };
 
 function WrappedDesktopCard({ desktop }) {
@@ -31,8 +31,8 @@ function WrappedDesktopCard({ desktop }) {
 test('includes details of the desktop', () => {
   const { getByRole, getByText } = render(<WrappedDesktopCard desktop={exampleDesktop} />);
 
-  expect(getByRole('heading')).toHaveTextContent(exampleDesktop.name);
-  expect(getByText(exampleDesktop.description)).toBeInTheDocument();
+  expect(getByRole('heading')).toHaveTextContent(prettyDesktopName[exampleDesktop.id]);
+  expect(getByText(exampleDesktop.summary)).toBeInTheDocument();
 });
 
 test('includes a button to launch the desktop', () => {

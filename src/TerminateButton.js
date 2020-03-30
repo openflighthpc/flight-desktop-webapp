@@ -9,7 +9,7 @@ import {
 
 import { prettyDesktopName } from './utils';
 
-function TerminateButton({ terminating, terminateSession, session }) {
+function TerminateButton({ className, terminating, terminateSession, session }) {
   const [showConfirmation, setShowConfirmation]  = useState(false);
   const toggle = () => setShowConfirmation(!showConfirmation);
   const id = `terminate-session-${session.id}`;
@@ -17,7 +17,7 @@ function TerminateButton({ terminating, terminateSession, session }) {
   return (
     <>
     <Button
-      className={`btn btn-danger ${terminating ? 'disabled' : null}`}
+      className={`btn btn-danger ${terminating ? 'disabled' : null} ${className}`}
       disabled={terminating}
       id={id}
     >

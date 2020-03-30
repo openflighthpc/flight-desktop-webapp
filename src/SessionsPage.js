@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
+import Overlay, { OverlayContainer } from './Overlay';
 import SessionCard from './SessionCard';
 import Spinner from './Spinner';
+import UnauthorizedError from './UnauthorizedError';
 import { DefaultErrorMessage } from './ErrorBoundary';
 import { errorCode, isObject, useInterval } from './utils';
 import { useFetchSessions } from './api';
@@ -27,10 +29,20 @@ function SessionsPage() {
   } else {
     const sessions = getSessionsFromResponse(data);
     return (
-      <>
-      { loading && <Spinner text="Loading sessions..."/> }
-      { sessions != null && <SessionsList sessions={sessions} reload={get} /> }
-      </>
+      <React.Fragment>
+        {
+          loading && (
+            <OverlayContainer>
+              <Overlay>
+                <Spinner
+                  text={ sessions == null ? 'Loading sessions...' : 'Refreshing sessions...' }
+                />
+              </Overlay>
+            </OverlayContainer>
+          )
+        }
+        { sessions != null && <SessionsList sessions={sessions} reload={get} /> }
+      </React.Fragment>
     );
   }
 }
@@ -76,28 +88,17 @@ function SessionsList({ reload, sessions }) {
       );
     }
   );
+  const sessionOrSessions = sessions.length === 1 ? 'session' : 'sessions';
+
   return (
     <div>
       <p>
-        You have {sessions.length} currently running desktop sessions.  Use
-        the <i>Connect</i> button to establish a connection to a desktop
-        session or the <i>Terminate</i> button to shutdown a desktop session.
+        You have {sessions.length} currently running desktop
+        {' '}{sessionOrSessions}.  Use the <i>Connect</i> button to establish
+        a connection to a desktop session or the <i>Terminate</i> button to
+        shutdown a desktop session.
       </p>
       {decks}
-    </div>
-  );
-}
-
-function UnauthorizedError() {
-  return (
-    <div className="card">
-      <div className="card-body">
-        <h3>Unauthorized</h3>
-        <p>
-          There was a problem authorizing your username and password.  Please
-          check that they are entered correctly and try again.
-        </p>
-      </div>
     </div>
   );
 }

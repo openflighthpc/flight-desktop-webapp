@@ -1,9 +1,12 @@
 import React from 'react';
-import { Route, Switch, } from "react-router-dom";
+import { Route } from "react-router-dom";
+import { CSSTransition } from "react-transition-group";
 
+import AuthenticatedRoute from './AuthenticatedRoute';
 import BrandBar from './BrandBar';
 import ErrorBoundary from './ErrorBoundary';
 import Footer from './Footer';
+import routes from './routes';
 
 function AppLayout({ children }) {
   return (
@@ -14,14 +17,34 @@ function AppLayout({ children }) {
       id="main"
     >
       <div id="toast-portal"></div>
-      <div className="row content">
-        <SideNav />
-        <div className="col centernav mt-4">
-          <ErrorBoundary>
-            {children}
-          </ErrorBoundary>
-        </div>
-        <SideNav />
+      <div className="content">
+        {routes.map(({ path, Component, authenticated, sideNav }) => {
+          const MyRoute = authenticated ? AuthenticatedRoute : Route;
+          return (
+            <MyRoute key={path} exact path={path}>
+              {({ match }) => { 
+                return (
+                  <CSSTransition
+                    in={match != null}
+                    timeout={300}
+                    classNames="page"
+                    unmountOnExit
+                  >
+                    <div className="page row">
+                      <ErrorBoundary>
+                        { sideNav ? <SideNav /> : null }
+                        <div className="col centernav mt-4">
+                          <Component />
+                        </div>
+                        { sideNav ? <SideNav /> : null }
+                      </ErrorBoundary>
+                    </div>
+                  </CSSTransition>
+                );
+              }}
+            </MyRoute>
+          );
+        })}
       </div>
     </div>
     <Footer />
@@ -30,27 +53,8 @@ function AppLayout({ children }) {
 }
 
 function SideNav() {
-  const routes = [
-    { path: "/sessions/new", show: true },
-    { path: "/sessions/:id", show: false },
-    { path: "/",             show: true },
-  ];
-
   return (
-    <Switch>
-      { routes.map((route, index) =>
-        <Route
-          key={index}
-          path={route.path}
-        >
-          {
-            route.show ?
-            <div className="col-sm-2 sidenav"></div> :
-            null
-          }
-        </Route>
-      )}
-    </Switch>
+    <div className="col-sm-2 sidenav"></div>
   );
 }
 

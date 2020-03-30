@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import { Toast, ToastHeader, ToastBody } from 'reactstrap';
+import React, { useEffect, useRef, useState } from 'react';
 
-import Portal from './Portal';
+import { errorCode } from './utils';
 import { useSignIn } from './api';
+import { useToast } from './ToastContext';
 
 const useForm = (callback) => {
   const [inputs, setInputs] = useState({});
@@ -25,17 +25,26 @@ const useForm = (callback) => {
 
 
 function SignInForm() {
-  const { error, loading, startSignIn } = useSignIn();
-  const [ showToast, setShowToast ] = useState(false);
+  const { addToast } = useToast();
+  const { loading, startSignIn } = useSignIn({ onError: showToast });
   const { handleSubmit, handleInputChange, inputs } = useForm(startSignIn);
+  const removeToastRef = useRef(null);
 
-  useMemo(() => {
-    setShowToast(!loading && !!error);
-  }, [ error, loading ]);
+  async function showToast(response) {
+    const { removeToast } = addToast(
+      loginErrorToast({ errorCode: errorCode(await response.json()) })
+    );
+    removeToastRef.current = removeToast;
+  }
+
+  useEffect(
+    () => { if (loading && removeToastRef.current) { removeToastRef.current(); } },
+    [loading, removeToastRef]
+  );
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="input-group mb-3">
+      <div className="input-group">
         <input
           className="form-control"
           id="username"
@@ -72,35 +81,32 @@ function SignInForm() {
           </button>
         </div>
       </div>
-      {
-        showToast ? (
-          <LoginErrorToast
-            showToast={showToast}
-            toggle={() => setShowToast(s => !s)}
-          />
-        ) : null
-      }
     </form>
   );
 }
 
-function LoginErrorToast({ showToast, toggle }) {
-  return (
-    <Portal id="toast-portal">
-      <Toast isOpen={showToast}>
-        <ToastHeader
-          icon="danger"
-          toggle={toggle}
-        >
-          Unable to sign in to your account
-        </ToastHeader>
-        <ToastBody>
-          There was a problem authorizing your username and password.  Please
-          check that they are entered correctly and try again.
-        </ToastBody>
-      </Toast>
-    </Portal>
+function loginErrorToast({ errorCode }) {
+  let body = (
+    <div>
+      Unfortunately there has been an unexpected problem authenticating your
+      account.  Please try again and, if problems persist, help us to more
+      quickly rectify the problem by contacting us and letting us know.
+    </div>
   );
+  if (errorCode === 'Unauthorized') {
+    body = (
+      <div>
+        There was a problem authenticating your username and password.  Please
+        check that they are entered correctly and try again.
+      </div>
+    );
+  }
+
+  return {
+    body,
+    icon: 'danger',
+    header: 'Unable to sign in to your account',
+  };
 }
 
 export default SignInForm;

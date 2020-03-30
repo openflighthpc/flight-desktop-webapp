@@ -1,12 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
+import ClusterOverviewCard from './ClusterOverviewCard';
 import Logo from './png_trans_logo.png';
 import SignInCard from './SignInCard';
-import { Context as ConfigContext } from './ConfigContext';
 
 function UnauthenticatedDashboard() {
-  const { clusterName } = useContext(ConfigContext);
-
   return (
     <div>
       <img
@@ -32,9 +30,8 @@ function UnauthenticatedDashboard() {
       </p>
 
       <div className="card-deck">
-        <SignInCard
-          clusterName={clusterName}
-        />
+        <ClusterOverviewCard />
+        <SignInCard />
       </div>
     </div>
   );

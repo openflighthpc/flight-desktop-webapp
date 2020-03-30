@@ -3,7 +3,7 @@ import useFetch from 'use-http';
 
 import { Context as CurrentUserContext } from './CurrentUserContext';
 
-export function useSignIn() {
+export function useSignIn({ onError }) {
   const {
     error,
     get,
@@ -18,8 +18,8 @@ export function useSignIn() {
         await get();
         if (response.ok) {
           userActions.promoteUser(tempUser);
-        } else if (response.status === 401) {
-          console.log('user unauthed');
+        } else {
+          typeof onError === 'function' && onError(response);
         }
       }
     }
@@ -51,6 +51,14 @@ function useAuthCheck() {
   });
 }
 
+export function useFetchDesktops() {
+  const { currentUser } = useContext(CurrentUserContext);
+  return useFetch({
+    path: "/desktops",
+    headers: { Accept: 'application/json' },
+  }, [ currentUser.authToken ]);
+}
+
 export function useFetchSessions() {
   const { currentUser } = useContext(CurrentUserContext);
   return useFetch({
@@ -73,7 +81,7 @@ export function useLaunchSession(desktop) {
       'Content-Type': 'application/json',
     },
     body: {
-      desktop: desktop.type,
+      desktop: desktop.id,
     },
     cachePolicy: 'no-cache',
   });
@@ -102,7 +110,7 @@ export function useFetchScreenshot(id) {
   }
 
   const { get, response } = useFetch({
-    path: `/sessions/${id}/screenshot`,
+    path: `/sessions/${id}/screenshot.png`,
     headers: { Accept: 'image/*' },
     cachePolicy: 'cache-first',
     cacheLife: reloadInterval,
@@ -110,13 +118,23 @@ export function useFetchScreenshot(id) {
   }, [lastLoadedAt])
 
   if (response.ok) {
-    response.blob().then((blob) => {
-      blob.text().then((newImage) => {
-        if (image !== newImage) {
-          setImage(newImage);
+    response.blob()
+      .then((blob) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      })
+      .then((base64Image) => {
+        if (image !== base64Image) {
+          setImage(base64Image);
         }
+      })
+      .catch((e) => {
+        console.log('Error base64 encoding screenshot:', e);  // eslint-disable-line no-console
       });
-    });
   }
 
   return { get, image };

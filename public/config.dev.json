@@ -1,7 +1,8 @@
 {
-  "clusterName": "bens-test-cluster",
-  "apiRootUrl": "http://localhost:9090/desktop/api",
+  "clusterName": "Desktop Access Test 2",
+  "clusterDescription": "Self-managed in-cloud openflightHPC Cluster.  Interactive desktop sessions and much HPC.",
+  "clusterLogo": "https://s3.eu-west-2.amazonaws.com/alces-flight-center/logos/Alces_flight_logo_horiz.png",
+  "apiRootUrl": "https://34.242.188.243/desktop/api",
   "websocketPathPrefix": "/ws",
-  "websocketPathIp": "127.0.0.1",
-  "devOnlyWebsocketRootUrl": "ws://localhost:9090"
+  "websocketPathIp": "127.0.0.1"
 }
