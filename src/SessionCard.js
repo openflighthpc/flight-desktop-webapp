@@ -54,13 +54,14 @@ function SessionCard({ reload, session }) {
         <CardFooter>
           <div className="btn-toolbar justify-content-center">
             <Link
-              className="btn btn-primary mr-2"
+              className="btn btn-sm btn-primary mr-2"
               to={`/sessions/${session.id}`}
             >
               <i className="fa fa-bolt mr-1"></i>
               <span>Connect</span>
             </Link>
             <TerminateButton
+              className="btn-sm"
               session={session}
               terminateSession={terminateSession}
               terminating={loading}

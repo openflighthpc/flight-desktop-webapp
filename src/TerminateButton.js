@@ -20,6 +20,7 @@ function TerminateButton({ className, terminating, terminateSession, session }) 
       className={`btn btn-danger ${terminating ? 'disabled' : null} ${className}`}
       disabled={terminating}
       id={id}
+      size="sm"
     >
       {
         terminating ?
@@ -49,12 +50,14 @@ function TerminateButton({ className, terminating, terminateSession, session }) 
           <Button
             className="mr-2"
             onClick={toggle}
+            size="sm"
           >
             Cancel
           </Button>
           <Button
             color="danger"
             onClick={() => { toggle(); terminateSession(); }}
+            size="sm"
           >
             <i className="fa fa-trash mr-1"></i>
             <span>Terminate</span>

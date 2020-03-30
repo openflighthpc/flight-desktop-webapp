@@ -51,7 +51,7 @@ function DesktopCard({ desktop }) {
         <div className="btn-toolbar justify-content-center">
           <button
             className={
-              classNames("btn btn-primary mr-2", { 'disabled': loading })
+              classNames("btn btn-sm btn-primary mr-2", { 'disabled': loading })
             }
             onClick={launchSession}
             disabled={!desktop.verified || loading}
