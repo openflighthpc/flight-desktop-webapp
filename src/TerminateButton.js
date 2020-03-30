@@ -54,15 +54,10 @@ function TerminateButton({ className, terminating, terminateSession, session }) 
           </Button>
           <Button
             color="danger"
-            onClick={terminateSession}
-            disabled={terminating}
+            onClick={() => { toggle(); terminateSession(); }}
           >
-            {
-              terminating ?
-                <i className="fa fa-spinner fa-spin mr-1"></i> :
-                <i className="fa fa-trash mr-1"></i>
-            }
-            <span>{ terminating ? 'Terminating...' : 'Terminate' }</span>
+            <i className="fa fa-trash mr-1"></i>
+            <span>Terminate</span>
           </Button>
         </ButtonToolbar>
       </PopoverBody>
