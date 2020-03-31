@@ -7,7 +7,7 @@ import TerminateButton from './TerminateButton';
 import placeholderImage from './placeholder.jpg';
 import { CardFooter } from './CardParts';
 import { prettyDesktopName, useInterval } from './utils';
-import { useFetchScreenshot, useTerminateSession } from './api';
+import { useFetchScreenshot } from './api';
 
 const timeFormat = d3.timeFormat("%a %e %b %Y %H:%M");
 
@@ -19,10 +19,6 @@ function SessionCard({ reload, session }) {
   const { get: getScreenshot, image: screenshot } = useFetchScreenshot(session.id);
   useInterval(getScreenshot, 1 * 60 * 1000, { immediate: false });
   const session_name = session.name || session.id.split('-')[0];
-  const { loading, del } = useTerminateSession(session.id);
-  const terminateSession = () => {
-    del().then(() => reload());
-  };
 
   return (
       <div
@@ -68,9 +64,8 @@ function SessionCard({ reload, session }) {
         <CardFooter>
           <Buttons
             onCleaned={reload}
+            onTerminated={reload}
             session={session} 
-            terminateSession={terminateSession}
-            terminating={loading}
           />
         </CardFooter>
       </div>
@@ -100,7 +95,7 @@ function MetadataEntry({ name, value, format }) {
   );
 }
 
-function Buttons({ onCleaned, session, terminating, terminateSession }) {
+function Buttons({ onCleaned, onTerminated, session }) {
   if (session.state === 'Active') {
     return (
       <div className="btn-toolbar justify-content-center">
@@ -113,9 +108,8 @@ function Buttons({ onCleaned, session, terminating, terminateSession }) {
         </Link>
         <TerminateButton
           className="btn-sm"
+          onTerminated={onTerminated}
           session={session}
-          terminateSession={terminateSession}
-          terminating={terminating}
         />
       </div>
     );

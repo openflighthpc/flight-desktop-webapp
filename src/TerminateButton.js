@@ -2,14 +2,20 @@ import React from 'react';
 
 import ConfirmedActionButton from './ConfirmedActionButton';
 import { prettyDesktopName } from './utils';
+import { useTerminateSession } from './api';
 
 function TerminateButton({
   className,
+  onTerminate=()=>{},
+  onTerminated=()=>{},
   session,
-  terminating,
-  terminateSession,
 }) {
   const id = `terminate-session-${session.id}`;
+  const { loading: terminating, del } = useTerminateSession(session.id);
+  const terminateSession = () => {
+    onTerminate();
+    del().then(onTerminated);
+  };
 
   return (
     <ConfirmedActionButton
