@@ -1,71 +1,39 @@
-import React, { useState } from 'react';
-import {
-  Button,
-  ButtonToolbar,
-  Popover,
-  PopoverBody,
-  PopoverHeader,
-} from 'reactstrap';
+import React from 'react';
 
+import ConfirmedActionButton from './ConfirmedActionButton';
 import { prettyDesktopName } from './utils';
 
-function TerminateButton({ className, terminating, terminateSession, session }) {
-  const [showConfirmation, setShowConfirmation]  = useState(false);
-  const toggle = () => setShowConfirmation(!showConfirmation);
+function TerminateButton({
+  className,
+  session,
+  terminating,
+  terminateSession,
+}) {
   const id = `terminate-session-${session.id}`;
 
   return (
-    <>
-    <Button
-      className={`btn btn-danger ${terminating ? 'disabled' : null} ${className}`}
-      disabled={terminating}
-      id={id}
-      size="sm"
-    >
-      {
-        terminating ?
-          <i className="fa fa-spinner fa-spin mr-1"></i> :
-          <i className="fa fa-trash mr-1"></i>
+    <ConfirmedActionButton
+      act={terminateSession}
+      acting={terminating}
+      actingButtonText="Terminating..."
+      buttonText="Terminate"
+      className={className}
+      confirmationHeaderText="Confirm termination"
+      confirmationText={
+        <React.Fragment>
+          <p>
+            Are you sure you want to terminate this
+            {' '}<strong>{prettyDesktopName[session.desktop]}</strong> session?
+          </p>
+          <p>
+            All trace of this session will be removed and any unsaved work will
+            be lost.
+          </p>
+        </React.Fragment>
       }
-      <span>{ terminating ? 'Terminating...' : 'Terminate' }</span>
-    </Button>
-    <Popover
-      isOpen={showConfirmation}
-      target={id}
-      toggle={toggle}
-    >
-      <PopoverHeader>
-        Confirm termination
-      </PopoverHeader>
-      <PopoverBody>
-        <p>
-          Are you sure you want to terminate this
-          {' '}<strong>{prettyDesktopName[session.desktop]}</strong> session?
-        </p>
-        <p>
-          All trace of this session will be removed and any unsaved work will
-          be lost.
-        </p>
-        <ButtonToolbar className="justify-content-center">
-          <Button
-            className="mr-2"
-            onClick={toggle}
-            size="sm"
-          >
-            Cancel
-          </Button>
-          <Button
-            color="danger"
-            onClick={() => { toggle(); terminateSession(); }}
-            size="sm"
-          >
-            <i className="fa fa-trash mr-1"></i>
-            <span>Terminate</span>
-          </Button>
-        </ButtonToolbar>
-      </PopoverBody>
-    </Popover>
-    </>
+      icon="fa-trash"
+      id={id}
+    />
   );
 }
 

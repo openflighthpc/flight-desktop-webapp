@@ -88,6 +88,18 @@ export function useLaunchSession(desktop) {
   return request;
 }
 
+export function useCleanSession(id) {
+  const request = useFetch({
+    method: 'delete',
+    path: `/sessions/${id}`,
+    body: {
+      strategy: 'clean-only',
+    },
+    cachePolicy: 'no-cache',
+  });
+  return request;
+}
+
 export function useTerminateSession(id) {
   const request = useFetch({
     method: 'delete',

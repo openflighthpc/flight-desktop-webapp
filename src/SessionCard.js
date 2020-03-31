@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import * as d3 from "d3-time-format";
 
+import CleanButton from './CleanSessionButton';
 import TerminateButton from './TerminateButton';
 import placeholderImage from './placeholder.jpg';
 import { CardFooter } from './CardParts';
@@ -49,6 +50,10 @@ function SessionCard({ reload, session }) {
               value={prettyDesktopName[session.desktop] || session.desktop}
             />
             <MetadataEntry
+              name="State"
+              value={session.state}
+            />
+            <MetadataEntry
               name="Started"
               value={session.created_at}
               format={timestampFormat}
@@ -61,21 +66,12 @@ function SessionCard({ reload, session }) {
           </dl>
         </div>
         <CardFooter>
-          <div className="btn-toolbar justify-content-center">
-            <Link
-              className="btn btn-sm btn-primary mr-2"
-              to={`/sessions/${session.id}`}
-            >
-              <i className="fa fa-bolt mr-1"></i>
-              <span>Connect</span>
-            </Link>
-            <TerminateButton
-              className="btn-sm"
-              session={session}
-              terminateSession={terminateSession}
-              terminating={loading}
-            />
-          </div>
+          <Buttons
+            onCleaned={reload}
+            session={session} 
+            terminateSession={terminateSession}
+            terminating={loading}
+          />
         </CardFooter>
       </div>
   );
@@ -102,6 +98,38 @@ function MetadataEntry({ name, value, format }) {
       </dd>
     </React.Fragment>
   );
+}
+
+function Buttons({ onCleaned, session, terminating, terminateSession }) {
+  if (session.state === 'Active') {
+    return (
+      <div className="btn-toolbar justify-content-center">
+        <Link
+          className="btn btn-sm btn-primary mr-2"
+          to={`/sessions/${session.id}`}
+        >
+          <i className="fa fa-bolt mr-1"></i>
+          <span>Connect</span>
+        </Link>
+        <TerminateButton
+          className="btn-sm"
+          session={session}
+          terminateSession={terminateSession}
+          terminating={terminating}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div className="btn-toolbar justify-content-center">
+        <CleanButton
+          className="btn-sm"
+          onCleaned={onCleaned}
+          session={session}
+        />
+      </div>
+    );
+  }
 }
 
 export default SessionCard;
