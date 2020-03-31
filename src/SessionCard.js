@@ -1,11 +1,18 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import * as d3 from "d3-time-format";
 
 import TerminateButton from './TerminateButton';
 import placeholderImage from './placeholder.jpg';
 import { CardFooter } from './CardParts';
 import { prettyDesktopName, useInterval } from './utils';
 import { useFetchScreenshot, useTerminateSession } from './api';
+
+const timeFormat = d3.timeFormat("%a %e %b %Y %H:%M");
+
+function timestampFormat(timestamp) {
+  return timeFormat(new Date(timestamp));
+}
 
 function SessionCard({ reload, session }) {
   const { get: getScreenshot, image: screenshot } = useFetchScreenshot(session.id);
@@ -37,18 +44,20 @@ function SessionCard({ reload, session }) {
             </div>
           </div>
           <dl className="row">
-            <dt
-              className="col-sm-4 text-truncate"
-              title="Desktop"
-            >
-              Desktop
-            </dt>
-            <dd
-              className="col-sm-8 text-truncate"
-              title={prettyDesktopName[session.desktop]}
-            >
-              {prettyDesktopName[session.desktop]}
-            </dd>
+            <MetadataEntry
+              name="Desktop"
+              value={prettyDesktopName[session.desktop] || session.desktop}
+            />
+            <MetadataEntry
+              name="Started"
+              value={session.created_at}
+              format={timestampFormat}
+            />
+            <MetadataEntry
+              name="Last accessed"
+              value={session.last_accessed_at}
+              format={timestampFormat}
+            />
           </dl>
         </div>
         <CardFooter>
@@ -69,6 +78,29 @@ function SessionCard({ reload, session }) {
           </div>
         </CardFooter>
       </div>
+  );
+}
+
+function MetadataEntry({ name, value, format }) {
+  if (value == null) {
+    return null;
+  }
+  const formatted = typeof format === "function" ? format(value) : value;
+  return (
+    <React.Fragment>
+      <dt
+        className="col-sm-4 text-truncate"
+        title={name}
+      >
+        {name}
+      </dt>
+      <dd
+        className="col-sm-8 text-truncate"
+        title={formatted}
+      >
+        {formatted}
+      </dd>
+    </React.Fragment>
   );
 }
 
