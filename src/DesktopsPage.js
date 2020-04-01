@@ -15,7 +15,7 @@ function getDesktopsFromResponse(data) {
   return data.data;
 }
 
-function NewSessionPage() {
+function DesktopsPage() {
   const { data, error, loading } = useFetchDesktops();
 
   if (error) {
@@ -79,4 +79,4 @@ function DesktopsList({ desktops }) {
   );
 }
 
-export default NewSessionPage;
+export default DesktopsPage;

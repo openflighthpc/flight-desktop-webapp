@@ -1,5 +1,5 @@
 import Dashboard from './Dashboard';
-import NewSessionPage from './NewSessionPage';
+import DesktopsPage from './DesktopsPage';
 import SessionPage from './SessionPage';
 import SessionsPage from './SessionsPage';
 
@@ -11,7 +11,7 @@ const routes = [
   {
     path: '/sessions/new',
     name: 'Launch new session',
-    Component: NewSessionPage,
+    Component: DesktopsPage,
     authenticated: true,
     sideNav: true,
   },
