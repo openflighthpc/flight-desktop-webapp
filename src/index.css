@@ -88,3 +88,8 @@ footer {
 .desktop--unverified .card-footer {
     opacity: 0.5;
 }
+
+.session--broken .card-body img,
+.session--exited .card-body img {
+    opacity: 0.5;
+}

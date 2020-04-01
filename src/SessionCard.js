@@ -1,6 +1,7 @@
-import React from 'react';
-import { Link } from "react-router-dom";
 import * as d3 from "d3-time-format";
+import React from 'react';
+import classNames from 'classnames';
+import { Link } from "react-router-dom";
 
 import CleanButton from './CleanSessionButton';
 import TerminateButton from './TerminateButton';
@@ -22,13 +23,17 @@ function SessionCard({ reload, session }) {
 
   return (
       <div
-        className="card border-primary mb-2"
+        className={classNames('card border-primary mb-2', {
+          [`session--${session.state.toLowerCase()}`]: true,
+        })}
         data-testid="session-card"
       >
         <h5 className="card-header bg-primary text-light">
           {sessionName}
         </h5>
-        <div className="card-body">
+        <div className={
+          classNames("card-body", { 'text-muted': session.state !== 'Active' })
+        }>
           <div className="row mb-2">
             <div className="col">
               <Link to={`/sessions/${session.id}`}>
