@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { Link } from "react-router-dom";
 
 import CleanButton from './CleanSessionButton';
-import Screenshot from './Screenshot';
+import WrappedScreenshot from './Screenshot';
 import TerminateButton from './TerminateButton';
 import { CardFooter } from './CardParts';
 import { prettyDesktopName } from './utils';
@@ -130,6 +130,15 @@ function Buttons({ onCleaned, onTerminated, session }) {
         />
       </div>
     );
+  }
+}
+
+function Screenshot({ session }) {
+  const screenshot = <WrappedScreenshot className="card-img" session={session} />;
+  if (session.state === 'Active') {
+    return <Link to={`/sessions/${session.id}`}>{screenshot}</Link>;
+  } else {
+    return screenshot;
   }
 }
 

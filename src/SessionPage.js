@@ -4,12 +4,11 @@ import { useHistory, useParams } from 'react-router-dom';
 import ErrorBoundary from './ErrorBoundary';
 import NoVNC from './NoVNC';
 import Overlay from './Overlay';
+import WrappedScreenshot from './Screenshot';
 import Spinner from './Spinner';
 import TerminateButton from './TerminateButton';
-import placeholderImage from './placeholder.jpg';
 import { Context as ConfigContext } from './ConfigContext';
 import { DefaultErrorMessage } from './ErrorBoundary';
-import { useFetchScreenshot } from './api';
 import { useFetchSession } from './api';
 
 function buildWebsocketUrl(session, config) {
@@ -47,27 +46,25 @@ function SessionPage() {
     error: sessionLoadingError,
     loading: sessionLoading,
   } = useFetchSession(id);
-  const { image: screenshot } = useFetchScreenshot(id);
 
   if (sessionLoading) {
-    return <Loading screenshot={screenshot} />;
+    return <Loading id={id} />;
   } else if (sessionLoadingError) {
     return <DefaultErrorMessage />;
   } else {
     return (
       <Connected
         id={id}
-        screenshot={screenshot}
         session={session}
       />
     );
   }
 }
 
-function Loading({ screenshot }) {
+function Loading({ id }) {
   return (
     <Layout>
-      <Screenshot screenshot={screenshot} />
+      <Screenshot id={id} />
       <Overlay>
         <Spinner text="Loading session..." />
       </Overlay>
@@ -75,7 +72,7 @@ function Loading({ screenshot }) {
   );
 }
 
-function Connected({ id, screenshot, session }) {
+function Connected({ id, session }) {
   const [connectionState, setConnectionState] = useState('connecting');
   const config = useContext(ConfigContext);
   const history = useHistory();
@@ -105,8 +102,8 @@ function Connected({ id, screenshot, session }) {
       <ErrorBoundary>
         <ConnectStateIndicator
           connectionState={connectionState}
+          id={id}
           onReconnect={onReconnect}
-          screenshot={screenshot}
         />
         <div className={connectionState === 'connected' ? 'd-block' : 'd-none'}>
           <NoVNC
@@ -125,7 +122,6 @@ function Connected({ id, screenshot, session }) {
         </div>
       </ErrorBoundary>
     </Layout>
-
   );
 }
 
@@ -223,7 +219,7 @@ function Toolbar({
   );
 }
 
-function ConnectStateIndicator({ connectionState, onReconnect, screenshot }) {
+function ConnectStateIndicator({ connectionState, id, onReconnect }) {
   let indicator;
   let onClick;
   switch (connectionState) {
@@ -252,20 +248,14 @@ function ConnectStateIndicator({ connectionState, onReconnect, screenshot }) {
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
-      <Screenshot screenshot={screenshot} />
+      <Screenshot id={id} />
       <Overlay>{indicator}</Overlay>
     </div>
   );
 }
 
-function Screenshot({ screenshot }) {
-  return (
-    <img
-      alt="Session screenshot"
-      className="d-block m-auto vnc-height"
-      src={screenshot != null ? screenshot : placeholderImage}
-    />
-  );
+function Screenshot({ id }) {
+  return <WrappedScreenshot className="d-block m-auto vnc-height" session={{ id }} />;
 }
 
 export default SessionPage;
