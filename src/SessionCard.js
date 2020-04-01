@@ -43,11 +43,22 @@ function SessionCard({ reload, session }) {
           <dl className="row">
             <MetadataEntry
               name="Desktop"
-              value={prettyDesktopName[session.desktop] || session.desktop}
+              value={
+                prettyDesktopName[session.desktop] || session.desktop || <em>Unknown</em>
+              }
+              valueTitle={
+                prettyDesktopName[session.desktop] || session.desktop || 'Unknown'
+              }
             />
             <MetadataEntry
               name="State"
               value={session.state}
+              valueTitle={
+                session.state === 'Active' ?
+                  'This session is active.  You can connect to it to gain access.' :
+                  'This session is no longer available.  To remove it from ' +
+                  'this list, click the "Clean" button below.'
+              }
             />
             <MetadataEntry
               name="Started"
@@ -72,7 +83,7 @@ function SessionCard({ reload, session }) {
   );
 }
 
-function MetadataEntry({ name, value, format }) {
+function MetadataEntry({ name, value, format, valueTitle }) {
   if (value == null) {
     return null;
   }
@@ -87,7 +98,7 @@ function MetadataEntry({ name, value, format }) {
       </dt>
       <dd
         className="col-sm-8 text-truncate"
-        title={formatted}
+        title={valueTitle || formatted}
       >
         {formatted}
       </dd>
