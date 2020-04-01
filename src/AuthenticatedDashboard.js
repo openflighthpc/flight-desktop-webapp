@@ -46,8 +46,8 @@ function AuthenticatedDashboard() {
               Start a new desktop session
             </h5>
             <p className="card-text">
-              You can click the <i>Launch</i> button to fire up a new
-              desktop session.
+              You can launch a new desktop session by clicking on the button
+              below and selecting the desktop session you wish to launch.
             </p>
           </div>
           <CardFooter>
