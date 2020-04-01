@@ -1,8 +1,9 @@
 import React from 'react';
 
 import ConfirmedActionButton from './ConfirmedActionButton';
-import { prettyDesktopName } from './utils';
+import { errorCode, prettyDesktopName } from './utils';
 import { useTerminateSession } from './api';
+import { useToast } from './ToastContext';
 
 function TerminateButton({
   className,
@@ -11,10 +12,26 @@ function TerminateButton({
   session,
 }) {
   const id = `terminate-session-${session.id}`;
-  const { loading: terminating, del } = useTerminateSession(session.id);
-  const terminateSession = () => {
+  const { loading: terminating, del, response } = useTerminateSession(session.id);
+  const { addToast } = useToast();
+  const terminateSession = async () => {
     onTerminate();
-    del().then(onTerminated);
+    try {
+      const responseBody = await del();
+      if (response.ok) {
+        onTerminated();
+      } else {
+        addToast(terminateFailedToast({
+          session: session,
+          errorCode: errorCode(responseBody),
+        }));
+      }
+    } catch (e) {
+      addToast(terminateFailedToast({
+        session: session,
+        errorCode: undefined,
+      }));
+    }
   };
 
   return (
@@ -41,6 +58,27 @@ function TerminateButton({
       id={id}
     />
   );
+}
+
+function terminateFailedToast({ session, errorCode }) {
+  const desktopName = prettyDesktopName[session.desktop];
+  const sessionName = session.name || session.id.split('-')[0];
+
+  let body = (
+    <div>
+      Unfortunately there has been a problem terminating your
+      {' '}<strong>{desktopName}</strong> desktop session
+      {' '}<strong>{sessionName}</strong>.  Please try again and, if problems
+      persist, help us to more quickly rectify the problem by contacting us
+      and letting us know.
+    </div>
+  );
+
+  return {
+    body,
+    icon: 'danger',
+    header: 'Failed to terminate session',
+  };
 }
 
 export default TerminateButton;

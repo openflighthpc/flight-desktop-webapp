@@ -18,7 +18,7 @@ function timestampFormat(timestamp) {
 function SessionCard({ reload, session }) {
   const { get: getScreenshot, image: screenshot } = useFetchScreenshot(session.id);
   useInterval(getScreenshot, 1 * 60 * 1000, { immediate: false });
-  const session_name = session.name || session.id.split('-')[0];
+  const sessionName = session.name || session.id.split('-')[0];
 
   return (
       <div
@@ -26,7 +26,7 @@ function SessionCard({ reload, session }) {
         data-testid="session-card"
       >
         <h5 className="card-header bg-primary text-light">
-          {session_name}
+          {sessionName}
         </h5>
         <div className="card-body">
           <div className="row mb-2">
