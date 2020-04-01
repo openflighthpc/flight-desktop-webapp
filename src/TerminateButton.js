@@ -1,72 +1,84 @@
-import React, { useState } from 'react';
-import {
-  Button,
-  ButtonToolbar,
-  Popover,
-  PopoverBody,
-  PopoverHeader,
-} from 'reactstrap';
+import React from 'react';
 
-import { prettyDesktopName } from './utils';
+import ConfirmedActionButton from './ConfirmedActionButton';
+import { errorCode, prettyDesktopName } from './utils';
+import { useTerminateSession } from './api';
+import { useToast } from './ToastContext';
 
-function TerminateButton({ className, terminating, terminateSession, session }) {
-  const [showConfirmation, setShowConfirmation]  = useState(false);
-  const toggle = () => setShowConfirmation(!showConfirmation);
+function TerminateButton({
+  className,
+  onTerminate=()=>{},
+  onTerminated=()=>{},
+  session,
+}) {
   const id = `terminate-session-${session.id}`;
+  const { loading: terminating, del, response } = useTerminateSession(session.id);
+  const { addToast } = useToast();
+  const terminateSession = async () => {
+    onTerminate();
+    try {
+      const responseBody = await del();
+      if (response.ok) {
+        onTerminated();
+      } else {
+        addToast(terminateFailedToast({
+          session: session,
+          errorCode: errorCode(responseBody),
+        }));
+      }
+    } catch (e) {
+      addToast(terminateFailedToast({
+        session: session,
+        errorCode: undefined,
+      }));
+    }
+  };
 
   return (
-    <>
-    <Button
-      className={`btn btn-danger ${terminating ? 'disabled' : null} ${className}`}
-      disabled={terminating}
-      id={id}
-      size="sm"
-    >
-      {
-        terminating ?
-          <i className="fa fa-spinner fa-spin mr-1"></i> :
-          <i className="fa fa-trash mr-1"></i>
+    <ConfirmedActionButton
+      act={terminateSession}
+      acting={terminating}
+      actingButtonText="Terminating..."
+      buttonText="Terminate"
+      className={className}
+      confirmationHeaderText="Confirm termination"
+      confirmationText={
+        <React.Fragment>
+          <p>
+            Are you sure you want to terminate this
+            {' '}<strong>{prettyDesktopName[session.desktop]}</strong> session?
+          </p>
+          <p>
+            All trace of this session will be removed and any unsaved work will
+            be lost.
+          </p>
+        </React.Fragment>
       }
-      <span>{ terminating ? 'Terminating...' : 'Terminate' }</span>
-    </Button>
-    <Popover
-      isOpen={showConfirmation}
-      target={id}
-      toggle={toggle}
-    >
-      <PopoverHeader>
-        Confirm termination
-      </PopoverHeader>
-      <PopoverBody>
-        <p>
-          Are you sure you want to terminate this
-          {' '}<strong>{prettyDesktopName[session.desktop]}</strong> session?
-        </p>
-        <p>
-          All trace of this session will be removed and any unsaved work will
-          be lost.
-        </p>
-        <ButtonToolbar className="justify-content-center">
-          <Button
-            className="mr-2"
-            onClick={toggle}
-            size="sm"
-          >
-            Cancel
-          </Button>
-          <Button
-            color="danger"
-            onClick={() => { toggle(); terminateSession(); }}
-            size="sm"
-          >
-            <i className="fa fa-trash mr-1"></i>
-            <span>Terminate</span>
-          </Button>
-        </ButtonToolbar>
-      </PopoverBody>
-    </Popover>
-    </>
+      icon="fa-trash"
+      id={id}
+    />
   );
+}
+
+function terminateFailedToast({ session, errorCode }) {
+  const desktopName = prettyDesktopName[session.desktop];
+  const sessionName = session.name || session.id.split('-')[0];
+
+  let body = (
+    <div>
+      Unfortunately there has been a problem terminating your
+      {' '}<strong>{desktopName}</strong> desktop session
+      {' '}<strong>{sessionName}</strong>.  Please try again and, if problems
+      persist, help us to more quickly rectify the problem by contacting us
+      and letting us know.
+    </div>
+  );
+
+  return {
+    body,
+    icon: 'danger',
+    header: 'Failed to terminate session',
+  };
 }
 
 export default TerminateButton;

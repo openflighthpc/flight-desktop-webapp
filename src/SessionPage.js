@@ -10,7 +10,7 @@ import placeholderImage from './placeholder.jpg';
 import { Context as ConfigContext } from './ConfigContext';
 import { DefaultErrorMessage } from './ErrorBoundary';
 import { useFetchScreenshot } from './api';
-import { useFetchSession, useTerminateSession } from './api';
+import { useFetchSession } from './api';
 
 function buildWebsocketUrl(session, config) {
   if (config.devOnlyWebsocketRootUrl) {
@@ -80,11 +80,6 @@ function Connected({ id, screenshot, session }) {
   const config = useContext(ConfigContext);
   const history = useHistory();
   const vnc = useRef(null);
-  const { del, loading: terminating } = useTerminateSession(id);
-  const terminateSession = () => {
-    setConnectionState('terminating');
-    del().then(() => history.push(`/sessions`));
-  };
   const websocketUrl = buildWebsocketUrl(session, config);
   function onReconnect() {
     if (vnc.current) {
@@ -103,9 +98,9 @@ function Connected({ id, screenshot, session }) {
         }
       }}
       onReconnect={onReconnect}
-      onTerminate={terminateSession}
+      onTerminate={() => setConnectionState('terminating')}
+      onTerminated={() => history.push('/sessions')}
       session={session}
-      terminating={terminating}
     >
       <ErrorBoundary>
         <ConnectStateIndicator
@@ -140,8 +135,8 @@ function Layout({
   onDisconnect,
   onReconnect,
   onTerminate,
+  onTerminated,
   session,
-  terminating,
 }) {
   // `id` could be null when we are navigating away from the page.
   const { id } = useParams();
@@ -164,8 +159,8 @@ function Layout({
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
                       onTerminate={onTerminate}
+                      onTerminated={onTerminated}
                       session={session}
-                      terminating={terminating}
                     />
                   </div>
                 </div>
@@ -186,8 +181,8 @@ function Toolbar({
   onDisconnect,
   onReconnect,
   onTerminate,
+  onTerminated,
   session,
-  terminating,
 }) {
   const disconnectBtn = connectionState === 'connected' ? (
     <button
@@ -213,8 +208,8 @@ function Toolbar({
     <TerminateButton
       className="btn-sm"
       session={session}
-      terminateSession={onTerminate}
-      terminating={terminating}
+      onTerminate={onTerminate}
+      onTerminated={onTerminated}
     >
     </TerminateButton>
   ) : null;
