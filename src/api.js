@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import useFetch from 'use-http';
 
 import { Context as CurrentUserContext } from './CurrentUserContext';
+import { useInterval } from './utils';
 
 export function useSignIn({ onError }) {
   const {
@@ -109,8 +110,7 @@ export function useTerminateSession(id) {
   return request;
 }
 
-export function useFetchScreenshot(id) {
-  const reloadInterval = 1 * 60 * 1000;
+export function useFetchScreenshot(id, { reloadInterval=1*60*1000 }={}) {
   const lastLoadedAt = useRef(null);
   const [ image, setImage ] = useState(null);
 
@@ -128,6 +128,8 @@ export function useFetchScreenshot(id) {
     cacheLife: reloadInterval,
     // cachePolicy: 'no-cache',
   }, [lastLoadedAt])
+
+  useInterval(get, reloadInterval, { immediate: false });
 
   if (response.ok) {
     response.blob()
