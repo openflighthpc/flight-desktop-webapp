@@ -128,16 +128,14 @@ export default class VncContainer extends React.Component {
 
   render() {
     const className = this.props.isFullScreen ?
-      'vnc-height fullscreen' :
-      'vnc-height';
+      'vnc-wrapper vnc-height fullscreen' :
+      'vnc-wrapper vnc-height';
 
     return (
-      <div>
-        <div
-          ref={this.noVNCCanvas}
-          className={className}
-        />
-      </div>
+      <div
+        ref={this.noVNCCanvas}
+        className={className}
+      />
     )
   }
 }

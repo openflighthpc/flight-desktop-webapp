@@ -83,6 +83,10 @@ footer {
     height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 0px );
 }
 
+.vnc-wrapper > * {
+    background-color: #fff !important;
+}
+
 .desktop--unverified .card-header,
 .desktop--unverified .card-body,
 .desktop--unverified .card-footer {
