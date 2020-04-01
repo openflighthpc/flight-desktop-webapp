@@ -97,3 +97,26 @@ footer {
 .session--exited .card-body img {
     opacity: 0.5;
 }
+
+.launch-session .card-body, .view-running-sessions .card-body {
+    position:relative;
+}    
+.launch-session .card-body:before, .view-running-sessions .card-body:before {
+    bottom: 0;
+    color: #2296d9;
+    color: var(--success);
+    font-family: FontAwesome;
+    font-size: 900%;
+    left: 0;
+    opacity: 0.2;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+}
+.view-running-sessions .card-body:before {
+    content: "\f108";
+}
+.launch-session .card-body:before {
+    content: "\f135";
+}
