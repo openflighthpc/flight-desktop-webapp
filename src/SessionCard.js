@@ -4,11 +4,10 @@ import classNames from 'classnames';
 import { Link } from "react-router-dom";
 
 import CleanButton from './CleanSessionButton';
+import Screenshot from './Screenshot';
 import TerminateButton from './TerminateButton';
-import placeholderImage from './placeholder.jpg';
 import { CardFooter } from './CardParts';
-import { prettyDesktopName, useInterval } from './utils';
-import { useFetchScreenshot } from './api';
+import { prettyDesktopName } from './utils';
 
 const timeFormat = d3.timeFormat("%a %e %b %Y %H:%M");
 
@@ -17,8 +16,6 @@ function timestampFormat(timestamp) {
 }
 
 function SessionCard({ reload, session }) {
-  const { get: getScreenshot, image: screenshot } = useFetchScreenshot(session.id);
-  useInterval(getScreenshot, 1 * 60 * 1000, { immediate: false });
   const sessionName = session.name || session.id.split('-')[0];
 
   return (
@@ -36,13 +33,7 @@ function SessionCard({ reload, session }) {
         }>
           <div className="row mb-2">
             <div className="col">
-              <Link to={`/sessions/${session.id}`}>
-                <img
-                  className="card-img"
-                  src={screenshot != null ? screenshot : placeholderImage}
-                  alt="Session screenshot"
-                />
-              </Link>
+              <Screenshot session={session} />
             </div>
           </div>
           <dl className="row">
