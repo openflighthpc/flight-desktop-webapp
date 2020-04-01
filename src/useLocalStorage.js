@@ -18,7 +18,7 @@ function createStorage(provider) {
   }
 };
 
-const storage = createStorage(window.localStorage);
+const storage = createStorage(window.sessionStorage);
 
 export default function useLocalStorage(key, initialValue) {
   const [storedValue, setStoredValue] = useState(() => {
