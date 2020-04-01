@@ -62,7 +62,7 @@ export function useFetchDesktops() {
 export function useFetchSessions() {
   const { currentUser } = useContext(CurrentUserContext);
   return useFetch({
-    path: "/sessions",
+    path: "/sessions?include=screenshot",
     headers: { Accept: 'application/json' },
   }, [ currentUser.authToken ]);
 }
