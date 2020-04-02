@@ -63,27 +63,18 @@ function DesktopsList({ desktops }) {
   return (
     <React.Fragment>
       <StyledJumbotron className="bg-white py-4">
-        <div className="row">
-          <div className="col">
-            <h1>
-              Launch a new desktop session
-            </h1>
-            <p>
-              To launch a new desktop session
-            </p>
-            <ul>
-              <li>Select the desktop session type from the list below.</li>
-              <li>Click "Launch".</li>
-              <li>When your session is ready you will be automatically connected to it.</li>
-              <li>Start working!</li>
-            </ul>
-          </div>
-          {/*
-          <div className="col-2">
-            <i className="fa fa-rocket fa-4x text-success"></i>
-          </div>
-          */}
-        </div>
+        <h1>
+          Launch a new desktop session
+        </h1>
+        <p>
+          To launch a new desktop session
+        </p>
+        <ul>
+          <li>Select the desktop session type from the list below.</li>
+          <li>Click "Launch".</li>
+          <li>When your session is ready you will be automatically connected to it.</li>
+          <li>Start working!</li>
+        </ul>
       </StyledJumbotron>
       {decks}
     </React.Fragment>
@@ -117,19 +108,6 @@ const StyledJumbotron = styled(Jumbotron)`
       transform: translateY(-50%);
     }
   }
-  /*
-
-  .fa {
-    transform: translate(-50%, -50%);
-    top: 50%;
-    position: absolute;
-    left: 50%;
-    font-size: 8em;
-    opacity: 0.2;
-  }
-
-  */
-
 `;
 
 export default DesktopsPage;
