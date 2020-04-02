@@ -66,9 +66,6 @@ function DesktopsList({ desktops }) {
         <h1>
           Launch a new desktop session
         </h1>
-        <p>
-          To launch a new desktop session
-        </p>
         <ul>
           <li>Select the desktop session type from the list below.</li>
           <li>Click "Launch".</li>
@@ -91,16 +88,15 @@ const StyledJumbotron = styled(Jumbotron)`
     font-size: 12em;
     opacity: 0.2;
     position: absolute;
-    text-align: center;
 
-    @media (max-width: 1099.98px) {
+    @media (max-width: 1199.98px) {
       top: 50%;
       left: 50%;
       bottom: unset;
       right: unset;
       transform: translate(-50%, -50%);
     }
-    @media (min-width: 1100px) {
+    @media (min-width: 1200px) {
       top: 50%;
       left: unset;
       bottom: unset;
