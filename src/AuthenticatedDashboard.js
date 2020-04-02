@@ -16,13 +16,10 @@ function AuthenticatedDashboard() {
       </img>
 
       <div className="card-deck">
-        <div className="card">
+        <div className="card view-running-sessions">
           <div className="card-body">
             <h5 className="card-title text-center">
-              <div className="d-flex align-items-center">
-                <span className="flex-grow-1">View your running desktop sessions</span>
-                <i className="fa fa-desktop fa-2x text-primary"></i>
-              </div>
+              View your running desktop sessions
             </h5>
             <p className="card-text">
               You can view your running desktops session by clicking on the
@@ -43,15 +40,10 @@ function AuthenticatedDashboard() {
             </Link>
           </CardFooter>
         </div>
-        <div className="card">
+        <div className="card launch-session">
           <div className="card-body">
             <h5 className="card-title text-center">
-              <div className="d-flex align-items-center">
-                <span className="flex-grow-1">
-                  Start a new desktop session
-                </span>
-                <i className="fa fa-rocket fa-2x text-primary"></i>
-              </div>
+              Start a new desktop session
             </h5>
             <p className="card-text">
               You can launch a new desktop session by clicking on the button
