@@ -63,18 +63,27 @@ function DesktopsList({ desktops }) {
   return (
     <React.Fragment>
       <StyledJumbotron className="bg-white py-4">
-        <h1>
-          Launch a new desktop session
-        </h1>
-        <p>
-          To launch a new desktop session
-        </p>
-        <ul>
-          <li>Select the desktop session type from the list below.</li>
-          <li>Click "Launch".</li>
-          <li>When your session is ready you will be automatically connected to it.</li>
-          <li>Start working!</li>
-        </ul>
+        <div className="row">
+          <div className="col">
+            <h1>
+              Launch a new desktop session
+            </h1>
+            <p>
+              To launch a new desktop session
+            </p>
+            <ul>
+              <li>Select the desktop session type from the list below.</li>
+              <li>Click "Launch".</li>
+              <li>When your session is ready you will be automatically connected to it.</li>
+              <li>Start working!</li>
+            </ul>
+          </div>
+          {/*
+          <div className="col-2">
+            <i className="fa fa-rocket fa-4x text-success"></i>
+          </div>
+          */}
+        </div>
       </StyledJumbotron>
       {decks}
     </React.Fragment>
@@ -85,18 +94,42 @@ const StyledJumbotron = styled(Jumbotron)`
   position:relative;
 
   :before {
-    bottom: 0;
     color: var(--success);
+    content: "\f135";
     font-family: FontAwesome;
-    font-size: 900%;
-    /* left: 0; */
+    font-size: 12em;
     opacity: 0.2;
     position: absolute;
-    right: 1.5rem;
     text-align: center;
-    top: 0;
-    content: "\f135";
+
+    @media (max-width: 1099.98px) {
+      top: 50%;
+      left: 50%;
+      bottom: unset;
+      right: unset;
+      transform: translate(-50%, -50%);
+    }
+    @media (min-width: 1100px) {
+      top: 50%;
+      left: unset;
+      bottom: unset;
+      right: 32px;
+      transform: translateY(-50%);
+    }
   }
+  /*
+
+  .fa {
+    transform: translate(-50%, -50%);
+    top: 50%;
+    position: absolute;
+    left: 50%;
+    font-size: 8em;
+    opacity: 0.2;
+  }
+
+  */
+
 `;
 
 export default DesktopsPage;
