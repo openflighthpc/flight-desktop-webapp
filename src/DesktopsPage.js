@@ -1,4 +1,6 @@
 import React from 'react';
+import { Jumbotron } from 'reactstrap';
+import styled from 'styled-components'
 
 import DesktopCard from './DesktopCard';
 import Overlay, { OverlayContainer } from './Overlay';
@@ -59,24 +61,49 @@ function DesktopsList({ desktops }) {
   );
 
   return (
-    <div>
-      <div className="jumbotron bg-white py-4">
+    <React.Fragment>
+      <StyledJumbotron className="bg-white py-4">
         <h1>
           Launch a new desktop session
         </h1>
-        <p>
-          To launch a new desktop session
-        </p>
         <ul>
           <li>Select the desktop session type from the list below.</li>
           <li>Click "Launch".</li>
           <li>When your session is ready you will be automatically connected to it.</li>
           <li>Start working!</li>
         </ul>
-      </div>
+      </StyledJumbotron>
       {decks}
-    </div>
+    </React.Fragment>
   );
 }
+
+const StyledJumbotron = styled(Jumbotron)`
+  position:relative;
+
+  :before {
+    color: var(--success);
+    content: "\f135";
+    font-family: FontAwesome;
+    font-size: 12em;
+    opacity: 0.2;
+    position: absolute;
+
+    @media (max-width: 1199.98px) {
+      top: 50%;
+      left: 50%;
+      bottom: unset;
+      right: unset;
+      transform: translate(-50%, -50%);
+    }
+    @media (min-width: 1200px) {
+      top: 50%;
+      left: unset;
+      bottom: unset;
+      right: 32px;
+      transform: translateY(-50%);
+    }
+  }
+`;
 
 export default DesktopsPage;
