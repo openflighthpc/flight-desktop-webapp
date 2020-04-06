@@ -273,7 +273,20 @@ function FullscreenButton({ session }) {
       }
 
     }; 
-    return () => document.onfullscreenchange = null;
+
+    function handleKeypress(e) {
+      if (!(e.ctrlKey || e.shiftKey || e.altKey) && e.code === "F11") {
+        document.documentElement.requestFullscreen();
+        e.preventDefault();
+      }
+    }
+
+    window.addEventListener('keydown', handleKeypress);
+
+    return () => {
+      document.onfullscreenchange = null;
+      window.removeEventListener('keydown', handleKeypress);
+    };
   }, [setFullscreen]);
   if (session != null) {
     return (
