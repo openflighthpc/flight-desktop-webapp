@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import ErrorBoundary from './ErrorBoundary';
@@ -210,8 +210,11 @@ function Toolbar({
     </TerminateButton>
   ) : null;
 
+  const fullscreenBtn = <FullscreenButton session={session} />;
+
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
+      {fullscreenBtn}
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}
@@ -256,6 +259,39 @@ function ConnectStateIndicator({ connectionState, id, onReconnect }) {
 
 function Screenshot({ id }) {
   return <WrappedScreenshot className="d-block m-auto vnc-height" session={{ id }} />;
+}
+
+
+function FullscreenButton({ session }) {
+  const [isFullscreen, setFullscreen] = useState(false);
+  useEffect(() => {
+    document.onfullscreenchange = function ( event ) { 
+      if (document.fullscreenElement == null) {
+        setFullscreen(false);
+      } else {
+        setFullscreen(true);
+      }
+
+    }; 
+    return () => document.onfullscreenchange = null;
+  }, [setFullscreen]);
+  if (session != null) {
+    return (
+      <button
+        className="btn btn-light btn-sm mr-1"
+        onClick={() => {
+          isFullscreen ?
+            document.exitFullscreen() :
+            document.documentElement.requestFullscreen() ;
+        }}
+      >
+        <i className={`fa ${isFullscreen ? 'fa-compress' : 'fa-expand'} mr-1`}></i>
+        <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
+      </button>
+    );
+  } else {
+    return null;
+  }
 }
 
 export default SessionPage;

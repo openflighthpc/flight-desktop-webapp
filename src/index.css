@@ -77,16 +77,6 @@ footer {
   transition: opacity 300ms, transform 300ms;
 }
 
-.vnc-height {
-    /* Subtract header, footer, centernav margin, card header, card border,
-     * extra to make things nicer. */
-    height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 0px );
-}
-
-.vnc-wrapper > * {
-    background-color: #fff !important;
-}
-
 .desktop--unverified .card-header,
 .desktop--unverified .card-body,
 .desktop--unverified .card-footer {
@@ -119,4 +109,31 @@ footer {
 }
 .launch-session .card-body:before {
     content: "\f135";
+}
+
+.vnc-wrapper > * {
+    background-color: #fff !important;
+}
+
+.vnc-height {
+    /* Subtract header, footer, centernav margin, card header, card border,
+     * extra to make things nicer. */
+    height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 0px );
+}
+
+html:fullscreen .vnc-height {
+    /* Subtract card header, card border, #main top and bottom margins.
+     * extra to make things nicer. */
+    height: calc( 100vh - 56px - 2px - 10px - 10px - 0px );
+}
+html:fullscreen nav.navbar,
+html:fullscreen footer {
+    display: none;
+}
+html:fullscreen .centernav {
+    margin: 0 !important;
+}
+html:fullscreen #main {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
 }
