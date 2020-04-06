@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components'
 import { Link } from "react-router-dom";
 
 import Overlay, { OverlayContainer } from './Overlay';
@@ -88,19 +89,47 @@ function SessionsList({ reload, sessions }) {
       );
     }
   );
+
+  return (
+    <React.Fragment>
+      <IntroCard sessions={sessions} />
+      {decks}
+    </React.Fragment>
+  );
+}
+
+const IntroCard = styled(({ className, sessions }) => {
   const sessionOrSessions = sessions.length === 1 ? 'session' : 'sessions';
 
   return (
-    <div>
-      <p>
+    <div className={`${className} card card-body mb-2`}>
+      <p className="card-text">
         You have {sessions.length} currently running desktop
         {' '}{sessionOrSessions}.  Use the <i>Connect</i> button to establish
         a connection to a desktop session or the <i>Terminate</i> button to
         shutdown a desktop session.
       </p>
-      {decks}
     </div>
   );
-}
+})`
+  :before {
+    color: var(--success);
+    content: "\f108";
+    font-family: FontAwesome;
+    opacity: 0.2;
+    position: absolute;
+    top: 50%;
+    left: 24px;
+    bottom: unset;
+    right: 32px;
+    right: unset;
+    transform: translateY(-50%);
+    font-size: 3em;
+  }
+
+  .card-text {
+    padding-left: 64px;
+  }
+`;
 
 export default SessionsPage;

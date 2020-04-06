@@ -58,6 +58,7 @@ describe('screenshots', () => {
     {
       "id": "410bc483-710c-4795-a859-baeae17f08ce",
       "desktop": "terminal",
+      "state": "Active",
     },
   ];
 
@@ -102,10 +103,12 @@ describe('when there are running sessions', () => {
     {
       "id": "410bc483-710c-4795-a859-baeae17f08ce",
       "desktop": "terminal",
+      "state": "Active",
     },
     {
       "id": "1740a970-73e2-42bb-b740-baadb333175d",
       "desktop": "chrome",
+      "state": "Exited",
     },
   ];
 
@@ -136,18 +139,32 @@ describe('when there are running sessions', () => {
   });
 
   test('session cards have correct buttons', async () => {
+    expect(sessions).toHaveLength(2)
+    expect(sessions[0].state).toEqual('Active');
+    expect(sessions[1].state).toEqual('Exited');
+
     const { getAllByTestId } = await renderSessionsPage();
     const cards = getAllByTestId('session-card');
 
+    expect(cards).toHaveLength(2);
     cards.forEach((card, index) => {
       const session = sessions[index];
-      const { getByRole } = within(card);
+      const { queryByRole } = within(card);
 
-      const connectLink = getByRole("link", { name: "Connect" });
-      expect(connectLink).toHaveAttribute("href", `/sessions/${session.id}`);
+      const connectLink = queryByRole("link", { name: "Connect" });
+      const terminateBtn = queryByRole("button", { name: "Terminate" });
+      const cleanButton = queryByRole("button", { name: "Clean" });
 
-      const terminateBtn = getByRole("button", { name: "Terminate" });
-      expect(terminateBtn).toBeInTheDocument();
+      if (session.state === "Active") {
+        expect(connectLink).toBeInTheDocument("href", `/sessions/${session.id}`);
+        expect(connectLink).toHaveAttribute("href", `/sessions/${session.id}`);
+        expect(terminateBtn).toBeInTheDocument();
+        expect(cleanButton).toBeNull();
+      } else {
+        expect(connectLink).toBeNull();
+        expect(terminateBtn).toBeNull();
+        expect(cleanButton).toBeInTheDocument();
+      }
     });
   });
 });
@@ -195,6 +212,7 @@ describe('periodic reloading of the sessions data', () => {
       "id": "410bc483-710c-4795-a859-baeae17f08ce",
       "desktop": "terminal",
       "image": "totally some PNG image data",
+      "state": "Active",
     },
   ]};
   const secondResponse = { data: [
@@ -202,11 +220,13 @@ describe('periodic reloading of the sessions data', () => {
       "id": "410bc483-710c-4795-a859-baeae17f08ce",
       "desktop": "terminal",
       "image": "totally some PNG image data",
+      "state": "Active",
     },
     {
       "id": "1740a970-73e2-42bb-b740-baadb333175d",
       "desktop": "chrome",
       "image": null,
+      "state": "Active",
     },
   ]};
 

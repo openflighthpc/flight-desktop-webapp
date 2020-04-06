@@ -1,5 +1,7 @@
 {
   "clusterName": "Unconfigured cluster",
+  "clusterDescription": "Description of the cluster.",
+  "clusterLogo": "https://example.com/url/for/a/cluster/logo",
   "apiRootUrl": "https://unconfigured.custer/desktop/api",
   "websocketPathPrefix": "/ws",
   "websocketPathIp": "127.0.0.1"

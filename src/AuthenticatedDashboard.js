@@ -16,7 +16,7 @@ function AuthenticatedDashboard() {
       </img>
 
       <div className="card-deck">
-        <div className="card">
+        <div className="card view-running-sessions">
           <div className="card-body">
             <h5 className="card-title text-center">
               View your running desktop sessions
@@ -40,14 +40,14 @@ function AuthenticatedDashboard() {
             </Link>
           </CardFooter>
         </div>
-        <div className="card">
+        <div className="card launch-session">
           <div className="card-body">
             <h5 className="card-title text-center">
               Start a new desktop session
             </h5>
             <p className="card-text">
-              You can click the <i>Launch</i> button to fire up a new
-              desktop session.
+              You can launch a new desktop session by clicking on the button
+              below and selecting the desktop session you wish to launch.
             </p>
           </div>
           <CardFooter>

@@ -41,17 +41,26 @@ function DesktopCard({ desktop }) {
         {desktopName}
       </h5>
       <div className="card-body">
-        <div className="row mb-2">
-          <div className="col">
-            {desktop.summary}
-          </div>
-        </div>
+        <p>
+          {desktop.summary}
+        </p>
+        {
+          desktop.homepage == null ? null : (
+            <a
+              href={desktop.homepage}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {desktop.homepage}
+            </a>
+          )
+        }
       </div>
       <CardFooter>
         <div className="btn-toolbar justify-content-center">
           <button
             className={
-              classNames("btn btn-primary mr-2", { 'disabled': loading })
+              classNames("btn btn-sm btn-primary mr-2", { 'disabled': loading })
             }
             onClick={launchSession}
             disabled={!desktop.verified || loading}

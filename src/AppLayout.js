@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Route } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 
@@ -9,6 +9,15 @@ import Footer from './Footer';
 import routes from './routes';
 
 function AppLayout({ children }) {
+  const pageRef = useRef(null);
+  useEffect(() => {
+    if (pageRef.current != null) {
+      // Add this class when the app first renders.  Afterwards, the
+      // CSSTransition component will add it and remove it as needed.
+      pageRef.current.classList.add('page-enter-done');
+    }
+  }, []);
+
   return (
     <>
     <BrandBar />
@@ -30,7 +39,7 @@ function AppLayout({ children }) {
                     classNames="page"
                     unmountOnExit
                   >
-                    <div className="page row">
+                    <div className="page row" ref={pageRef}>
                       <ErrorBoundary>
                         { sideNav ? <SideNav /> : null }
                         <div className="col centernav mt-4">
