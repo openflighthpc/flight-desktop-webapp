@@ -93,8 +93,11 @@ export function useCleanSession(id) {
   const request = useFetch({
     method: 'delete',
     path: `/sessions/${id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: {
-      strategy: 'clean-only',
+      strategy: 'clean',
     },
     cachePolicy: 'no-cache',
   });
