@@ -1,39 +1,39 @@
-# Flight Desktop Client
+# Flight Desktop Webapp
 
 Web app to provide access to graphical user interface desktops via the
 `flight-desktop` tool.
 
 ## Overview
 
-Flight Desktop Client is a web application that in conjunction with [Flight
-Desktop Server](https://github.com/openflighthpc/flight-desktop-server) and
+Flight Desktop Webapp is a web application that in conjunction with [Flight
+Desktop Rest API](https://github.com/openflighthpc/flight-desktop-restapi) and
 [Flight Desktop](https://github.com/openflighthpc/flight-desktop) provides
-access to VNC desktop sessions over websockets.  User's can sign in and
-launch, manage and connect to desktop sessions.
+browser access to interactive GUI desktop sessions within HPC environments.
+User's can sign in and launch, manage and connect to desktop sessions.
 
 ## Installation
 
 ### From source
 
-Flight Desktop Client requires a recent version of Node and `yarn`.
+Flight Desktop Webapp requires a recent version of Node and `yarn`.
 
 The following will install from source using `git`:
 
 ```
-git clone https://github.com/alces-flight/flight-desktop-client.git
-cd flight-desktop-client
+git clone https://github.com/alces-flight/flight-desktop-webapp.git
+cd flight-desktop-webapp
 yarn install
 yarn run build
 ```
 
-Flight Desktop Client has been built into `build/`.  It can be served by any
-web server configured to serve static files from that directory.  By default,
-Flight Desktop Client expects to be served from a path of `/desktop`.  If that
+Flight Desktop Webapp has been built into `build/`.  It can be served by any
+webserver configured to serve static files from that directory.  By default,
+Flight Desktop Webapp expects to be served from a path of `/desktop`.  If that
 does not suit your needs, see the configuration section below for details on
 how to configure it.
 
-Before Flight Desktop Client is ready for use some additional configuration to
-inform Flight Desktop Client about the cluster is required.
+Before Flight Desktop Webapp is ready for use some additional configuration to
+inform Flight Desktop Webapp about the cluster is required.
 
 This is done by editing the file `build/config.json`.  You will need to
 provide values for the following:
@@ -48,8 +48,8 @@ or the features that it supports.
 **clusterLogo**: Optionally, set it to the URL for a logo for this cluster.
 Or leave it unset.
 
-**apiRootUrl**: Set this to the root URL for the Flight Desktop Server for the
-cluster that is being managed.
+**apiRootUrl**: Set this to the root URL for the Flight Desktop Rest API for
+the cluster that is being managed.
 
 **websocketPathPrefix**: Set this to the path prefix that is proxied to
 websocket connections.
@@ -65,7 +65,7 @@ you probably want to not have this set.
 ### Installing with Flight Runway
 
 Flight Runway provides a Ruby environment and command-line helpers for
-running openflightHPC tools.  Flight Desktop Client integrates with Flight
+running openflightHPC tools.  Flight Desktop Webapp integrates with Flight
 Runway to provide easier installation and configuration.
 
 To install Flight Runway, see the [Flight Runway installation
@@ -89,15 +89,15 @@ installed and the environment activated with the `flight start` command.
     yum makecache
     ```
     
- * Install the `flight-desktop-client` RPM:
+ * Install the `flight-desktop-webapp` RPM:
 
     ```
-    [root@myhost ~]# yum install flight-desktop-client
+    [root@myhost ~]# yum install flight-desktop-webapp
     ```
 
  * Enable HTTPs support
 
-    Flight Desktop Client is designed to operate over HTTPs connections.  You
+    Flight Desktop Webapp is designed to operate over HTTPs connections.  You
     can enable HTTPs with self-signed certificates by running the commands
     below.  You will be asked to enter a passphrase and to answer some
     questions about your organization.
@@ -108,7 +108,7 @@ installed and the environment activated with the `flight start` command.
 
  * Configure details about your cluster
 
-    Flight Desktop Client needs to be configured with some details about the
+    Flight Desktop Webapp needs to be configured with some details about the
     cluster it is providing access to.  This can be done with the `flight
     service configure` command as described below.  You will be asked to
     provide values for:
@@ -126,17 +126,17 @@ installed and the environment activated with the `flight start` command.
     hostname for your server or its IP address.  If using the hostname, make
     sure that it can be resolved correctly.
 
-    Once you have values for the above, you can configure the client by running:
+    Once you have values for the above, you can configure the webapp by running:
 
     ```
-    [root@myhost ~]# flight service configure desktop-client
+    [root@myhost ~]# flight service configure desktop-webapp
     ```
 
 
 ## Configuration
 
 The installation section details the configuration that is required for Flight
-Desktop Client.  Additionally, when installing from source, you may also
+Desktop Webapp.  Additionally, when installing from source, you may also
 configure the path at which the built application is to be mounted.
 
 **Mount point**
@@ -175,7 +175,7 @@ or alternative license terms made available by Alces Flight Ltd -
 please direct inquiries about licensing to
 [licensing@alces-flight.com](mailto:licensing@alces-flight.com).
 
-Flight Desktop Client is distributed in the hope that it will be
+Flight Desktop Webapp is distributed in the hope that it will be
 useful, but WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER
 EXPRESS OR IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR
 CONDITIONS OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR

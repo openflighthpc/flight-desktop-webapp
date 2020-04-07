@@ -11,9 +11,9 @@
   # The URL of a logo for the cluster if any.
   "clusterLogo": "",
 
-  # The root URL for the API server.
+  # The root URL for the REST API server.
   #
-  # The relative paths for the API server are added to this URL.  To load the
+  # The relative paths for the REST API server are added to this URL.  To load the
   # sessions data a request is made to the relative URL `/sessions`, which is
   # tranformed into the absolute URL `${apiRootUrl}/sessions`.
   "apiRootUrl": "https://gateway1.my.custer/desktop/api",
