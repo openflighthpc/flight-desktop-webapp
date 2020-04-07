@@ -108,6 +108,12 @@ export function useTerminateSession(id) {
   const request = useFetch({
     method: 'delete',
     path: `/sessions/${id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: {
+      strategy: 'kill',
+    },
     cachePolicy: 'no-cache',
   });
   return request;
