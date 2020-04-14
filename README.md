@@ -9,7 +9,7 @@ Flight Desktop Webapp is a web application that in conjunction with [Flight
 Desktop Rest API](https://github.com/openflighthpc/flight-desktop-restapi) and
 [Flight Desktop](https://github.com/openflighthpc/flight-desktop) provides
 browser access to interactive GUI desktop sessions within HPC environments.
-User's can sign in and launch, manage and connect to desktop sessions.
+User's can sign in and then launch, manage and connect to desktop sessions.
 
 ## Installation
 
@@ -73,9 +73,10 @@ docs](https://github.com/openflighthpc/flight-runway#installation).
 
 These instructions assume that `flight-runway` has been installed from
 the openflightHPC yum repository and that either [system-wide
-integration](https://github.com/openflighthpc/flight-runway#system-wide-integration) has been enabled or the
-[`flight-starter`](https://github.com/openflighthpc/flight-starter) tool has been
-installed and the environment activated with the `flight start` command.
+integration](https://github.com/openflighthpc/flight-runway#system-wide-integration)
+has been enabled or the
+[`flight-starter`](https://github.com/openflighthpc/flight-starter) tool has
+been installed and the environment activated with the `flight start` command.
 
  * Enable the Alces Flight RPM repository:
 
@@ -153,7 +154,14 @@ contain the desired mount path.
 
 ## Operation
 
-XXX TBC
+Open your browser and visit the URL for your cluster with path `/desktop`.
+E.g., if you have installed on a machine called `my.cluster.com` visit the URL
+https://my.cluster.com/desktop.
+
+Enter your username and password for the cluster.  You can then create new
+sessions, list your current sessions and connect to your current sessions by
+following the appropriate links.
+
 
 # Contributing
 
