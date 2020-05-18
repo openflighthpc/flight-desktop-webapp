@@ -18,7 +18,7 @@ test('renders without crashing', async () => {
 
 test('can sign in', async () => {
   const {
-    getByText, getByRole, getByPlaceholderText, queryByText
+    getByText, getByRole, getByPlaceholderText, queryByText,
   } = await renderApp();
 
   expect(queryByText(/You are signed in as my-username/)).toBeNull();

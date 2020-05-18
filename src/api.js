@@ -37,85 +37,92 @@ export function useSignIn({ onError }) {
 
 function useAuthCheck() {
   const { tempUser } = useContext(CurrentUserContext);
+  const tempUserRef = useRef(tempUser);
 
-  return useFetch({
-    path: "/ping",
-    interceptors: {
-      request: async (options, url, path, route) => {
-        if (tempUser) {
-          if (options.headers == null) { options.headers = {}; }
-          options.headers.Authorization = tempUser.authToken;
-        }
-        return options;
+  useEffect(() => { tempUserRef.current = tempUser; }, [ tempUser ]);
+
+  return useFetch(
+    "/ping",
+    {
+      interceptors: {
+        request: async ({ options }) => {
+          if (tempUserRef.current) {
+            if (options.headers == null) { options.headers = {}; }
+            options.headers.Authorization = tempUserRef.current.authToken;
+          }
+          return options;
+        },
       },
-    },
-  });
+    });
 }
 
 export function useFetchDesktops() {
   const { currentUser } = useContext(CurrentUserContext);
-  return useFetch({
-    path: "/desktops",
-    headers: { Accept: 'application/json' },
-  }, [ currentUser.authToken ]);
+  return useFetch(
+    "/desktops",
+    { headers: { Accept: 'application/json' } },
+    [ currentUser.authToken ]);
 }
 
 export function useFetchSessions() {
   const { currentUser } = useContext(CurrentUserContext);
-  return useFetch({
-    path: "/sessions",
-    headers: { Accept: 'application/json' },
-  }, [ currentUser.authToken ]);
+  return useFetch(
+    "/sessions",
+    { headers: { Accept: 'application/json' } },
+    [ currentUser.authToken ]);
 }
 
 export function useFetchSession(id) {
   const { currentUser } = useContext(CurrentUserContext);
-  return useFetch({ path: `/sessions/${id}` }, [ id, currentUser.authToken ]);
+  return useFetch(`/sessions/${id}`, [ id, currentUser.authToken ]);
 }
 
 export function useLaunchSession(desktop) {
-  const request = useFetch({
-    method: 'post',
-    path: "/sessions",
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: {
-      desktop: desktop.id,
-    },
-    cachePolicy: 'no-cache',
-  });
+  const request = useFetch(
+    "/sessions",
+    {
+      method: 'post',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: {
+        desktop: desktop.id,
+      },
+      cachePolicy: 'no-cache',
+    });
   return request;
 }
 
 export function useCleanSession(id) {
-  const request = useFetch({
-    method: 'delete',
-    path: `/sessions/${id}`,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: {
-      strategy: 'clean',
-    },
-    cachePolicy: 'no-cache',
-  });
+  const request = useFetch(
+    `/sessions/${id}`,
+    {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: {
+        strategy: 'clean',
+      },
+      cachePolicy: 'no-cache',
+    });
   return request;
 }
 
 export function useTerminateSession(id) {
-  const request = useFetch({
-    method: 'delete',
-    path: `/sessions/${id}`,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: {
-      strategy: 'kill',
-    },
-    cachePolicy: 'no-cache',
-  });
+  const request = useFetch(
+    `/sessions/${id}`,
+    {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: {
+        strategy: 'kill',
+      },
+      cachePolicy: 'no-cache',
+    });
   return request;
 }
 
@@ -130,13 +137,14 @@ export function useFetchScreenshot(id, { reloadInterval=1*60*1000 }={}) {
     lastLoadedAt.current = now;
   }
 
-  const { get, response } = useFetch({
-    path: `/sessions/${id}/screenshot.png`,
-    headers: { Accept: 'image/*' },
-    cachePolicy: 'cache-first',
-    cacheLife: reloadInterval,
-    // cachePolicy: 'no-cache',
-  }, [lastLoadedAt])
+  const { get, response } = useFetch(
+    `/sessions/${id}/screenshot.png`,
+    {
+      headers: { Accept: 'image/*' },
+      cachePolicy: 'cache-first',
+      cacheLife: reloadInterval,
+      // cachePolicy: 'no-cache',
+    }, [lastLoadedAt])
 
   useInterval(get, reloadInterval, { immediate: false });
 
