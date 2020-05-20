@@ -88,26 +88,24 @@ footer {
     opacity: 0.5;
 }
 
-.launch-session .card-body, .view-running-sessions .card-body {
+.fa-background {
     position:relative;
 }    
-.launch-session .card-body:before, .view-running-sessions .card-body:before {
-    bottom: 0;
+.fa-background:before {
     color: #2296d9;
     color: var(--success);
     font-family: FontAwesome;
     font-size: 900%;
-    left: 0;
+    left: 50%;
     opacity: 0.2;
     position: absolute;
-    right: 0;
-    text-align: center;
-    top: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
-.view-running-sessions .card-body:before {
+.fa-background-desktop:before {
     content: "\f108";
 }
-.launch-session .card-body:before {
+.fa-background-rocket:before {
     content: "\f135";
 }
 
