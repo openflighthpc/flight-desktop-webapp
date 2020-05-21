@@ -102,6 +102,9 @@ footer {
     top: 50%;
     transform: translate(-50%, -50%);
 }
+.fa-background ~ * {
+    z-index: 100;
+}
 .fa-background-desktop:before {
     content: "\f108";
 }
