@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import ErrorBoundary from './ErrorBoundary';
+import FullscreenButton from './FullscreenButton';
 import NoVNC from './NoVNC';
 import Overlay from './Overlay';
-import WrappedScreenshot from './Screenshot';
 import Spinner from './Spinner';
 import TerminateButton from './TerminateButton';
+import WrappedScreenshot from './Screenshot';
 import { Context as ConfigContext } from './ConfigContext';
 import { DefaultErrorMessage } from './ErrorBoundary';
 import { useFetchSession } from './api';
@@ -210,7 +211,7 @@ function Toolbar({
     </TerminateButton>
   ) : null;
 
-  const fullscreenBtn = <FullscreenButton session={session} />;
+  const fullscreenBtn = <FullscreenButton />;
 
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
@@ -261,50 +262,5 @@ function Screenshot({ id }) {
   return <WrappedScreenshot className="d-block m-auto vnc-height" session={{ id }} />;
 }
 
-
-function FullscreenButton({ session }) {
-  const [isFullscreen, setFullscreen] = useState(false);
-  useEffect(() => {
-    document.onfullscreenchange = function ( event ) { 
-      if (document.fullscreenElement == null) {
-        setFullscreen(false);
-      } else {
-        setFullscreen(true);
-      }
-
-    }; 
-
-    function handleKeypress(e) {
-      if (!(e.ctrlKey || e.shiftKey || e.altKey) && e.code === "F11") {
-        document.documentElement.requestFullscreen();
-        e.preventDefault();
-      }
-    }
-
-    window.addEventListener('keydown', handleKeypress);
-
-    return () => {
-      document.onfullscreenchange = null;
-      window.removeEventListener('keydown', handleKeypress);
-    };
-  }, [setFullscreen]);
-  if (session != null) {
-    return (
-      <button
-        className="btn btn-light btn-sm mr-1"
-        onClick={() => {
-          isFullscreen ?
-            document.exitFullscreen() :
-            document.documentElement.requestFullscreen() ;
-        }}
-      >
-        <i className={`fa ${isFullscreen ? 'fa-compress' : 'fa-expand'} mr-1`}></i>
-        <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
-      </button>
-    );
-  } else {
-    return null;
-  }
-}
 
 export default SessionPage;
