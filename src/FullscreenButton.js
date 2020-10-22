@@ -61,6 +61,11 @@ function FullscreenButton({ onFullscreenChange, onZenChange }) {
     });
   }
 
+  // Turn zen mode off when this component is unmounted.
+  useEffect(() => {
+    return () => { document.body.classList.remove('zen-mode'); };
+  }, []);
+
   function defaultAction() {
     if (isFullscreen) {
       toggleFullscreen();
