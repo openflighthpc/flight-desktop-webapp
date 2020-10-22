@@ -100,6 +100,7 @@ function Connected({ id, session }) {
       onTerminated={() => history.push('/sessions')}
       onZenChange={() => vnc.current && vnc.current.resize()}
       session={session}
+      vnc={vnc}
     >
       <ErrorBoundary>
         <ConnectStateIndicator
@@ -136,6 +137,7 @@ function Layout({
   onTerminated,
   onZenChange,
   session,
+  vnc,
 }) {
   // `id` could be null when we are navigating away from the page.
   const { id } = useParams();
@@ -161,6 +163,7 @@ function Layout({
                       onTerminated={onTerminated}
                       onZenChange={onZenChange}
                       session={session}
+                      vnc={vnc}
                     />
                   </div>
                 </div>
@@ -184,6 +187,7 @@ function Toolbar({
   onTerminated,
   onZenChange,
   session,
+  vnc,
 }) {
   const disconnectBtn = connectionState === 'connected' ? (
     <button
@@ -207,7 +211,7 @@ function Toolbar({
 
   const terminateBtn = session != null ? (
     <TerminateButton
-      className="btn-sm"
+      className="btn-sm mr-1"
       session={session}
       onTerminate={onTerminate}
       onTerminated={onTerminated}
@@ -217,12 +221,32 @@ function Toolbar({
 
   const fullscreenBtn = <FullscreenButton onZenChange={onZenChange} />;
 
+  const pasteBtn = (
+    <button
+      className="btn btn-sm btn-light"
+      onClick={async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text !== "" && vnc.current) {
+            vnc.current.setClipboardText(text);
+          }
+        } catch (e) {
+          console.log('e:', e);  // eslint-disable-line no-console
+        }
+      }}
+    >
+      <i className="fa fa-paste mr-1"></i>
+      Prepare paste
+    </button>
+  );
+
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
       {fullscreenBtn}
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}
+      {pasteBtn}
     </div>
   );
 }

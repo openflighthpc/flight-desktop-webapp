@@ -29,6 +29,7 @@ import RFB from 'novnc-core'
 const createConnection = ({
   connectionName,
   domEl,
+  onClipboard,
   onDisconnect,
   onConnect,
   onPasswordPrompt,
@@ -46,6 +47,7 @@ const createConnection = ({
     rfb.addEventListener('connect', onConnect);
     rfb.addEventListener('disconnect', onDisconnect);
     rfb.addEventListener('credentialsrequired', onPasswordPrompt);
+    rfb.addEventListener('clipboard', onClipboard);
     rfb.scaleViewport = true;
     rfb.resizeSession = false;
     rfb.viewOnly = viewOnly;
@@ -90,6 +92,21 @@ export default class VncContainer extends React.Component {
     this.props.onBeforeConnect();
   };
 
+  onClipboard = async (ev) => {
+    if (ev && ev.detail && ev.detail.text) {
+      try {
+        await navigator.clipboard.write([
+          // eslint-disable-next-line no-undef
+          new ClipboardItem({
+            'text/plain': new Blob([ev.detail.text], { type: 'text/plain' }),
+          })
+        ]);
+      } catch (err) {
+        console.log('err:', err);  // eslint-disable-line no-console
+      }
+    }
+  }
+
   onDisconnect = (e) => {
     this.props.onDisconnected(
       !e.detail.clean || this.state.status !== 'connected'
@@ -118,6 +135,7 @@ export default class VncContainer extends React.Component {
     this.rfb = createConnection({
       connectionName: this.props.connectionName,
       domEl: this.noVNCCanvas.current,
+      onClipboard: this.onClipboard,
       onDisconnect: this.onDisconnect,
       onConnect: this.onStatusChange,
       onPasswordPrompt: this.onPasswordRequired,
@@ -129,6 +147,12 @@ export default class VncContainer extends React.Component {
   resize() {
     if (this.rfb != null && typeof this.rfb._windowResize === 'function') {
       this.rfb._windowResize();
+    }
+  }
+
+  setClipboardText(text) {
+    if (this.rfb != null) {
+      this.rfb.clipboardPasteFrom(text);
     }
   }
 
