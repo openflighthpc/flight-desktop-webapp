@@ -98,6 +98,7 @@ function Connected({ id, session }) {
       onReconnect={onReconnect}
       onTerminate={() => setConnectionState('terminating')}
       onTerminated={() => history.push('/sessions')}
+      onZenChange={() => vnc.current && vnc.current.resize()}
       session={session}
     >
       <ErrorBoundary>
@@ -133,6 +134,7 @@ function Layout({
   onReconnect,
   onTerminate,
   onTerminated,
+  onZenChange,
   session,
 }) {
   // `id` could be null when we are navigating away from the page.
@@ -157,6 +159,7 @@ function Layout({
                       onReconnect={onReconnect}
                       onTerminate={onTerminate}
                       onTerminated={onTerminated}
+                      onZenChange={onZenChange}
                       session={session}
                     />
                   </div>
@@ -179,6 +182,7 @@ function Toolbar({
   onReconnect,
   onTerminate,
   onTerminated,
+  onZenChange,
   session,
 }) {
   const disconnectBtn = connectionState === 'connected' ? (
@@ -211,7 +215,7 @@ function Toolbar({
     </TerminateButton>
   ) : null;
 
-  const fullscreenBtn = <FullscreenButton />;
+  const fullscreenBtn = <FullscreenButton onZenChange={onZenChange} />;
 
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
