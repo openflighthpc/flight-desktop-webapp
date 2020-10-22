@@ -126,6 +126,12 @@ export default class VncContainer extends React.Component {
     });
   }
 
+  resize() {
+    if (this.rfb != null && typeof this.rfb._windowResize === 'function') {
+      this.rfb._windowResize();
+    }
+  }
+
   render() {
     const className = this.props.isFullScreen ?
       'vnc-wrapper vnc-height fullscreen' :
