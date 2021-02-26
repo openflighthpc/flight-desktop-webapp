@@ -1,7 +1,7 @@
-import React from 'react';
-import { within } from '@testing-library/dom';
-import { fireEvent, render, wait } from '@testing-library/react';
 import RFB from 'novnc-core';
+import React from 'react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import { within } from '@testing-library/dom';
 
 import App from './App';
 import testConfig from '../public/config.test.json';
@@ -32,11 +32,26 @@ beforeEach(() => {
     const pathname = url.pathname;
     // console.log('req:', req.method, pathname);  // eslint-disable-line no-console
 
-    if (pathname === `${process.env.REACT_APP_MOUNT_PATH}/ping`) {
-      return Promise.resolve("OK");
+    if (pathname === `${process.env.REACT_APP_LOGIN_API_BASE_URL}/session`) {
+      return Promise.resolve({status: 403});
+
+    } else if (pathname === `${process.env.REACT_APP_LOGIN_API_BASE_URL}/sign-in`) {
+      return Promise.resolve(JSON.stringify({
+        user: {
+          username: 'test-user',
+          name: 'Test user',
+          authentication_token: 'test-token'
+        }
+      }));
 
     } else if (url.toString() === process.env.REACT_APP_CONFIG_FILE) {
       return Promise.resolve(JSON.stringify(testConfig));
+
+    } else if (url.toString() === process.env.REACT_APP_BRANDING_FILE) {
+      return Promise.resolve(JSON.stringify({}));
+
+    } else if (url.toString() === process.env.REACT_APP_ENVIRONMENT_FILE) {
+      return Promise.resolve(JSON.stringify({}));
 
     } else if (req.method === 'POST' && pathname.match(/sessions$/)) {
       return new Promise(resolve => setTimeout(
@@ -53,6 +68,13 @@ beforeEach(() => {
     } else if (req.method === 'GET' && pathname.match(new RegExp(`sessions/${session.id}$`))) {
       return new Promise(resolve => setTimeout(
         () => resolve({ body: JSON.stringify(session), status: 200, }),
+        0
+      ));
+
+    } else if (req.method === 'GET' && pathname.match(new RegExp(`sessions/.*/screenshot.png$`))) {
+
+      return new Promise(resolve => setTimeout(
+        () => resolve({ status: 404 }),
         0
       ));
 
@@ -73,27 +95,32 @@ afterEach(() => {
 });
 
 
-async function signIn({ getByPlaceholderText, getByRole, getByText }) {
-  const nameInput = getByPlaceholderText('Enter username');
-  const passwordInput = getByPlaceholderText('Enter password');
-  const button = getByRole('button', { name: 'Go!' });
-  fireEvent.change(nameInput, { target: { value: 'alces' } });
-  fireEvent.change(passwordInput, { target: { value: 'password' } });
+async function signIn({ getByLabelText, getByRole, getByText, queryByText }) {
+  const loginButton = getByText(/Log in/);
+  expect(loginButton).toBeInTheDocument();
+  fireEvent.click(loginButton)
+
+  const nameInput = getByLabelText('Enter your username');
+  const passwordInput = getByLabelText('Enter your password');
+  const button = getByRole('button', { name: 'Sign in' });
+  fireEvent.change(nameInput, { target: { value: 'test-user' } });
+  fireEvent.change(passwordInput, { target: { value: 'test-password' } });
   fireEvent.click(button);
-  await wait(
-    () => expect(getByText(/alces \(bens-test-cluster\)/)).toBeInTheDocument()
+  await waitFor(
+    () => expect(queryByText(/Log in/)).toBeNull()
+  )
+  await waitFor(
+    () => expect(queryByText('Enter your username')).toBeNull()
   )
 }
 
-function navigateToLaunchPage({ getByText }) {
+async function navigateToLaunchPage({ getByText, queryByText }) {
   fireEvent.click(getByText('Launch new session'));
+  await waitFor(() => expect(getByText('Loading desktops...')).toBeInTheDocument());
+  await waitFor(() => expect(queryByText('Loading desktops...')).toBeNull());
 }
 
 async function launchDesktop(desktopType, { getByText, getByRole, queryByText }) {
-  expect(getByText('Loading desktops...')).toBeInTheDocument();
-  await wait(
-    () => expect(queryByText('Loading desktops...')).toBeNull()
-  );
   const heading = getByRole('heading', { name: desktopType });
   const card = heading.closest('.card');
   const launchButton = within(card).getByRole('button', { name: 'Launch' });
@@ -103,9 +130,10 @@ async function launchDesktop(desktopType, { getByText, getByRole, queryByText })
 async function renderApp() {
   const utils = render(<App />);
   expect(utils.getByText('Loading...')).toBeInTheDocument();
-  await wait(
+  await waitFor(
     () => expect(utils.queryByText('Loading...')).toBeNull()
   );
+  expect(utils.queryByText('An error has occurred')).toBeNull();
   return utils;
 }
 
@@ -113,9 +141,9 @@ test('launch a new desktop session', async () => {
   const queries = await renderApp();
 
   await signIn(queries);
-  navigateToLaunchPage(queries);
+  await navigateToLaunchPage(queries);
   launchDesktop('Terminal', queries);
-  await wait(
+  await waitFor(
     () => expect(queries.queryByText(/Initializing connection/)).toBeInTheDocument()
   )
 

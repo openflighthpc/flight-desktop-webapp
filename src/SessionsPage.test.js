@@ -1,11 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { act, render, wait, within } from '@testing-library/react';
+import { act, render, waitFor, within } from '@testing-library/react';
 
-import FetchProvider from './FetchProvider';
+import {
+  ConfigContext,
+  CurrentUserContext,
+  FetchProvider,
+} from 'flight-webapp-components';
+
 import SessionsPage from './SessionsPage';
-import { Context as CurrentUserContext } from './CurrentUserContext';
-import { Context as ConfigContext } from './ConfigContext';
 
 async function renderSessionsPage() {
   const currentUser = { username: 'test', authToken: 'testAuthToken' };
@@ -23,7 +26,7 @@ async function renderSessionsPage() {
   );
 
   expect(getByText(/Loading sessions/)).toBeInTheDocument();
-  await wait(() => expect(queryByText(/Loading sessions/)).not.toBeInTheDocument());
+  await waitFor(() => expect(queryByText(/Loading sessions/)).not.toBeInTheDocument());
 
   return { getByText, queryByText, ...rest };
 }
@@ -80,22 +83,23 @@ describe('screenshots', () => {
     });
   });
 
-  // XXX Fix this test and re-enable.
-  // test('session cards show the screenshot', async () => {
-  //   const { getAllByTestId } = await renderSessionsPage();
-  //   const cards = getAllByTestId('session-card');
+  // XXX Fix this test and re-enable.  Need a way to base64 encode the image
+  // that runs correctly under tests.
+  xtest('session cards show the screenshot', async () => {
+    const { getAllByTestId } = await renderSessionsPage();
+    const cards = getAllByTestId('session-card');
 
-  //   // This test is much easier to write if we only check the first card.
-  //   const card = cards[0];
-  //   const { getByRole } = within(card);
-  //   expect(getByRole("img")).toHaveAttribute("src", "placeholder.jpg");
-  //   await wait(() => {
-  //     expect(getByRole("img")).toHaveAttribute(
-  //       "src",
-  //       "data:image/png;base64,totally a base64 encoded png"
-  //     );
-  //   })
-  // });
+    // This test is much easier to write if we only check the first card.
+    const card = cards[0];
+    const { getByRole } = within(card);
+    expect(getByRole("img")).toHaveAttribute("src", "placeholder.jpg");
+    await waitFor(() => {
+      expect(getByRole("img")).toHaveAttribute(
+        "src",
+        "data:image/png;base64,totally a base64 encoded png"
+      );
+    })
+  });
 });
 
 describe('when there are running sessions', () => {

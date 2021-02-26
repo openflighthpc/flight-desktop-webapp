@@ -19,7 +19,7 @@ function UnauthenticatedDashboard() {
 
       <p>
         To start interacting with desktop sessions and gain access to your
-        HPC environment sign in below.
+        HPC environment sign in above.
       </p>
 
       <div className="card-deck">

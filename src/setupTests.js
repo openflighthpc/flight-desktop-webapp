@@ -5,6 +5,7 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { enableFetchMocks } from 'jest-fetch-mock';
+
 import testConfig from '../public/config.test.json';
 
 // The lightest possible MutationObserver shim.  We may need to upgrade this
@@ -24,11 +25,26 @@ beforeEach(() => {
     const pathname = url.pathname;
     // console.log('req:', req.method, pathname);  // eslint-disable-line no-console
 
-    if (pathname === `${process.env.REACT_APP_MOUNT_PATH}/ping`) {
-      return Promise.resolve("OK");
+    if (pathname === `${process.env.REACT_APP_LOGIN_API_BASE_URL}/session`) {
+      return Promise.resolve({status: 403});
+
+    } else if (pathname === `${process.env.REACT_APP_LOGIN_API_BASE_URL}/sign-in`) {
+      return Promise.resolve(JSON.stringify({
+        user: {
+          username: 'test-user',
+          name: 'Test user',
+          authentication_token: 'test-token'
+        }
+      }));
 
     } else if (url.toString() === process.env.REACT_APP_CONFIG_FILE) {
       return Promise.resolve(JSON.stringify(testConfig));
+
+    } else if (url.toString() === process.env.REACT_APP_BRANDING_FILE) {
+      return Promise.resolve(JSON.stringify({}));
+
+    } else if (url.toString() === process.env.REACT_APP_ENVIRONMENT_FILE) {
+      return Promise.resolve(JSON.stringify({}));
     }
   });
 });
@@ -36,7 +52,6 @@ beforeEach(() => {
 afterEach(() => {
   fetch.resetMocks();
 });
-
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
