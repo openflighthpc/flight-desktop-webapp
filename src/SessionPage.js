@@ -1,15 +1,18 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import ErrorBoundary from './ErrorBoundary';
-import FullscreenButton from './FullscreenButton';
+import {
+  ConfigContext,
+  DefaultErrorMessage,
+  ErrorBoundary,
+  FullscreenButton,
+  Overlay,
+  Spinner,
+} from 'flight-webapp-components';
+
 import NoVNC from './NoVNC';
-import Overlay from './Overlay';
-import Spinner from './Spinner';
 import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
-import { Context as ConfigContext } from './ConfigContext';
-import { DefaultErrorMessage } from './ErrorBoundary';
 import { useFetchSession } from './api';
 
 function buildWebsocketUrl(session, config) {

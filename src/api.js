@@ -1,7 +1,8 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import useFetch from 'use-http';
 
-import { Context as CurrentUserContext } from './CurrentUserContext';
+import { CurrentUserContext } from 'flight-webapp-components';
+
 import { useInterval } from './utils';
 
 export function useSignIn({ onError }) {

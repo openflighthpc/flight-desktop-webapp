@@ -1,20 +1,13 @@
 import React from 'react';
 
-import ClusterOverviewCard from './ClusterOverviewCard';
-import Logo from './png_trans_logo.png';
-import SignInCard from './SignInCard';
+import { DashboardLogo } from 'flight-webapp-components';
+
+import ClusterOverview from './ClusterOverview';
 
 function UnauthenticatedDashboard() {
   return (
     <div>
-      <img
-        src={Logo}
-        alt="OpenflightHPC Logo"
-        className="center"
-        width="100%"
-      >
-      </img>
-
+      <DashboardLogo />
       <p>
         The Flight Desktop Access Service allows you to access interactive
         GUI (graphical user interface) desktop sessions running on your
@@ -30,8 +23,7 @@ function UnauthenticatedDashboard() {
       </p>
 
       <div className="card-deck">
-        <ClusterOverviewCard />
-        <SignInCard />
+        <ClusterOverview />
       </div>
     </div>
   );

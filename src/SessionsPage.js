@@ -1,34 +1,34 @@
 import React from 'react';
-import styled from 'styled-components'
 import { Link } from "react-router-dom";
 
-import Overlay, { OverlayContainer } from './Overlay';
-import SessionCard from './SessionCard';
-import Spinner from './Spinner';
-import UnauthorizedError from './UnauthorizedError';
-import { DefaultErrorMessage } from './ErrorBoundary';
-import { errorCode, isObject, useInterval } from './utils';
-import { useFetchSessions } from './api';
-import { useMediaGrouping } from './useMedia';
+import {
+  Overlay,
+  OverlayContainer,
+  Spinner,
+  UnauthorizedError,
+  DefaultErrorMessage,
+  utils,
+  // useInterval,
+  useMediaGrouping,
+} from 'flight-webapp-components';
 
-function getSessionsFromResponse(data) {
-  if (!isObject(data)) { return null; }
-  if (!Array.isArray(data.data)) { return null; }
-  return data.data;
-}
+import SessionCard from './SessionCard';
+import styles from './SessionsPage.module.css';
+import { useFetchSessions } from './api';
+import { useInterval } from './utils';
 
 function SessionsPage() {
   const { data, error, loading, get } = useFetchSessions();
   useInterval(get, 1 * 60 * 1000);
 
   if (error) {
-    if (errorCode(data) === 'Unauthorized') {
+    if (utils.errorCode(data) === 'Unauthorized') {
       return <UnauthorizedError />;
     } else {
       return <DefaultErrorMessage />;
     }
   } else {
-    const sessions = getSessionsFromResponse(data);
+    const sessions = utils.getResourcesFromResponse(data);
     return (
       <React.Fragment>
         {
@@ -98,12 +98,12 @@ function SessionsList({ reload, sessions }) {
   );
 }
 
-const IntroCard = styled(({ className, sessions }) => {
+function IntroCard({ sessions }) {
   const sessionOrSessions = sessions.length === 1 ? 'session' : 'sessions';
 
   return (
-    <div className={`${className} card card-body mb-2`}>
-      <p className="card-text">
+    <div className={`${styles.IntroCard} card card-body mb-2`}>
+      <p className={`${styles.IntroCardText} card-text`}>
         You have {sessions.length} currently running desktop
         {' '}{sessionOrSessions}.  Use the <i>Connect</i> button to establish
         a connection to a desktop session or the <i>Terminate</i> button to
@@ -111,25 +111,6 @@ const IntroCard = styled(({ className, sessions }) => {
       </p>
     </div>
   );
-})`
-  :before {
-    color: var(--success);
-    content: "\f108";
-    font-family: FontAwesome;
-    opacity: 0.2;
-    position: absolute;
-    top: 50%;
-    left: 24px;
-    bottom: unset;
-    right: 32px;
-    right: unset;
-    transform: translateY(-50%);
-    font-size: 3em;
-  }
-
-  .card-text {
-    padding-left: 64px;
-  }
-`;
+}
 
 export default SessionsPage;

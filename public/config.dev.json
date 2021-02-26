@@ -1,8 +1,5 @@
 {
-  "clusterName": "Desktop Access Test 5",
-  "clusterDescription": "Self-managed in-cloud openflightHPC Cluster.  Interactive desktop sessions and much HPC.",
-  "clusterLogo": "https://s3.eu-west-2.amazonaws.com/alces-flight-center/logos/Alces_flight_logo_horiz.png",
-  "apiRootUrl": "https://52.212.74.7/desktop/api",
+  "apiRootUrl": "http://localhost:6305/",
   "websocketPathPrefix": "/ws",
   "websocketPathIp": "127.0.0.1"
 }
