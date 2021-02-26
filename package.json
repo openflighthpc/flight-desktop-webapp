@@ -38,6 +38,7 @@
     ]
   },
   "devDependencies": {
+    "http-proxy-middleware": "^1.0.6",
     "jest-fetch-mock": "^3.0.3",
     "jest-junit": "^12.0.0"
   },
