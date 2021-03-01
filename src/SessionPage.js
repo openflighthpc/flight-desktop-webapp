@@ -26,8 +26,8 @@ function buildWebsocketUrl(session, config) {
     return `${rootUrl}${prefix}/${pathIP}/${session.port}`;
 
   } else {
-    const apiUrl = new URL(config.apiRootUrl);
-    const wsUrl = new URL(config.apiRootUrl);
+    const apiUrl = new URL(config.apiRootUrl, window.location.origin);
+    const wsUrl = new URL(config.apiRootUrl, window.location.origin);
 
     if (apiUrl.protocol.match(/https/)) {
       wsUrl.protocol = 'wss';
