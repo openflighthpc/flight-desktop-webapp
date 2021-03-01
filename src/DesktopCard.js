@@ -7,10 +7,11 @@ import {
   utils,
 } from 'flight-webapp-components';
 
+import styles from './DesktopCard.module.css';
 import { CardFooter } from './CardParts';
-import { useToast } from './ToastContext';
 import { prettyDesktopName } from './utils';
 import { useLaunchSession } from './api';
+import { useToast } from './ToastContext';
 
 function DesktopCard({ desktop }) {
   const { loading, post, response } = useLaunchSession(desktop);
@@ -35,7 +36,7 @@ function DesktopCard({ desktop }) {
   return (
     <div
       className={
-        classNames('card border-primary mb-2', { 'desktop--unverified': !desktop.verified })
+        classNames('card border-primary mb-2', { [styles.DesktopUnverified]: !desktop.verified })
       }
     >
       <h5
