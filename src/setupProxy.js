@@ -1,7 +1,7 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function(app) {
-  // Proxy requests to the api.
+  // Proxy requests to the desktop api.
   app.use(
     '/desktop/api/v2',
     createProxyMiddleware({
@@ -14,6 +14,7 @@ module.exports = function(app) {
     })
   );
 
+  // Proxy requests to the login api.
   app.use(
     '/login/api/v0',
     createProxyMiddleware({
@@ -22,6 +23,19 @@ module.exports = function(app) {
       pathRewrite: {
         '^/login/api/': '/', // Remove base path.
       },
+      logLevel: 'debug',
+    })
+  );
+
+  // Proxy requests to the landing page.
+  app.use(
+    [
+      '/data/',
+      '/styles/branding.css',
+    ],
+    createProxyMiddleware({
+      target: 'http://localhost:3001',
+      changeOrigin: false,
       logLevel: 'debug',
     })
   );
