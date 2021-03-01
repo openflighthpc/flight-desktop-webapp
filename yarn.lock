@@ -1608,8 +1608,8 @@
     "@testing-library/dom" "^7.28.1"
 
 "@testing-library/user-event@^12.1.10":
-  version "12.7.3"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.7.3.tgz#ef674ccb91794e52123b3532c336485d16f453b3"
+  version "12.8.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.8.0.tgz#e07e52d4109a606772f72fa40641b284e8686221"
   dependencies:
     "@babel/runtime" "^7.12.5"
 
@@ -3636,15 +3636,15 @@ cyclist@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
 
-d3-time-format@^2.2.3:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/d3-time-format/-/d3-time-format-2.3.0.tgz#107bdc028667788a8924ba040faf1fbccd5a7850"
+d3-time-format@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/d3-time-format/-/d3-time-format-3.0.0.tgz#df8056c83659e01f20ac5da5fdeae7c08d5f1bb6"
   dependencies:
-    d3-time "1"
+    d3-time "1 - 2"
 
-d3-time@1:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-1.1.0.tgz#b1e19d307dae9c900b7e5b25ffc5dcc249a8a0f1"
+"d3-time@1 - 2":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-2.0.0.tgz#ad7c127d17c67bd57a4c61f3eaecb81108b1e0ab"
 
 d@1, d@^1.0.1:
   version "1.0.1"
@@ -6996,9 +6996,9 @@ normalize-url@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-3.3.0.tgz#b2e1c4dc4f7c6d57743df733a4f5978d18650559"
 
-novnc-core@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/novnc-core/-/novnc-core-0.2.1.tgz#13b4c607204cd82d7972250f8d931dde54c3bce7"
+novnc-core@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/novnc-core/-/novnc-core-0.3.0.tgz#92a5c823727e2154287b239a987f2b1c9dce6e34"
 
 npm-run-path@^2.0.0:
   version "2.0.2"
