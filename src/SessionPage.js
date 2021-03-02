@@ -13,6 +13,7 @@ import {
 import NoVNC from './NoVNC';
 import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
+import styles from './NoVNC.module.css';
 import { useFetchSession } from './api';
 
 function buildWebsocketUrl(session, config) {
@@ -290,7 +291,12 @@ function ConnectStateIndicator({ connectionState, id, onReconnect }) {
 }
 
 function Screenshot({ id }) {
-  return <WrappedScreenshot className="d-block m-auto vnc-height" session={{ id }} />;
+  return (
+    <WrappedScreenshot
+      className={`d-block m-auto ${styles.NoVNCWrapper}`}
+      session={{ id }}
+    />
+  );
 }
 
 
