@@ -1,7 +1,7 @@
 .NoVNCWrapper {
     /* Subtract header, footer, centernav margin, card header, card border,
      * extra to make things nicer. */
-    height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 0px );
+    height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 10px );
 }
 
 .NoVNCWrapper > * {
