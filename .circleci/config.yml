@@ -26,11 +26,6 @@ jobs:
             - ~/.cache/yarn
 
       - run:
-          name: Sanity check
-          # Runs jest with "--maxWorkers=2" argument to avoid OOM issues
-          command: node --version
-
-      - run:
           name: Run tests
           # Runs jest with "--maxWorkers=2" argument to avoid OOM issues
           command: yarn run test --maxWorkers=2 --ci --coverage --reporters=default --reporters=jest-junit
