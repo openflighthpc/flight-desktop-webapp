@@ -1,10 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router } from "react-router-dom";
 import { render } from '@testing-library/react';
+
+import {
+  ConfigContext,
+  CurrentUserContext,
+  FetchProvider,
+} from 'flight-webapp-components';
+
 import Dashboard from './Dashboard';
-import { Context as CurrentUserContext } from './CurrentUserContext';
-import FetchProvider from './FetchProvider';
-import { Context as ConfigContext } from './ConfigContext';
 
 test('renders anonymous dashboard without a user', () => {
   const { getByText } = render(
@@ -18,7 +22,7 @@ test('renders anonymous dashboard without a user', () => {
       </Router>
     </ConfigContext.Provider>
   );
-  expect(getByText(/Sign in to your OpenFlightHPC environment/)).toBeInTheDocument();
+  expect(getByText(/sign in above/)).toBeInTheDocument();
 });
 
 test('renders authenticated dashboard with a user', () => {

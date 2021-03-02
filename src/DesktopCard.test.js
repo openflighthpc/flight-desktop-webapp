@@ -1,10 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
+
+import {
+  ConfigContext,
+  CurrentUserContext,
+  FetchProvider,
+} from 'flight-webapp-components';
+
 import DesktopCard from './DesktopCard';
-import FetchProvider from './FetchProvider';
-import { Context as ConfigContext } from './ConfigContext';
-import { Context as CurrentUserContext } from './CurrentUserContext';
 import { prettyDesktopName } from './utils';
 
 const exampleDesktop = {

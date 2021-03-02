@@ -1,7 +1,11 @@
 import React from 'react';
 
-import ConfirmedActionButton from './ConfirmedActionButton';
-import { errorCode, prettyDesktopName } from './utils';
+import {
+  ConfirmedActionButton,
+  utils,
+} from 'flight-webapp-components';
+
+import { prettyDesktopName } from './utils';
 import { useTerminateSession } from './api';
 import { useToast } from './ToastContext';
 
@@ -23,7 +27,7 @@ function TerminateButton({
       } else {
         addToast(terminateFailedToast({
           session: session,
-          errorCode: errorCode(responseBody),
+          errorCode: utils.errorCode(responseBody),
         }));
       }
     } catch (e) {

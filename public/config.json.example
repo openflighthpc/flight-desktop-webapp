@@ -1,22 +1,14 @@
-
 {
-  # The human-friendly name of the cluster that we are connecting to.
-  "clusterName": "This deployment needs configuring",
-
-  # The human-friendly description of the cluster that we are connecting to.
-  # This could be used to describe its purpose or the features that it
-  # supports.
-  "clusterDescription": "",
-
-  # The URL of a logo for the cluster if any.
-  "clusterLogo": "",
-
   # The root URL for the REST API server.
+  #
+  # This can be an absolute URL or a URL relative to the authority this app is
+  # served from.
   #
   # The relative paths for the REST API server are added to this URL.  To load the
   # sessions data a request is made to the relative URL `/sessions`, which is
-  # tranformed into the absolute URL `${apiRootUrl}/sessions`.
-  "apiRootUrl": "https://gateway1.my.custer/desktop/api",
+  # tranformed into the URL `${apiRootUrl}/sessions`.
+  # "apiRootUrl": "/desktop/api/v2",
+  "apiRootUrl": "https://gateway1.my.custer/desktop/api/v2",
 
   # The path prefix used for websocket connections.
   "websocketPathPrefix": "/ws",

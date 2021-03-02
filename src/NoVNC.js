@@ -26,6 +26,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import RFB from 'novnc-core'
 
+import styles from './NoVNC.module.css';
+
 const createConnection = ({
   connectionName,
   domEl,
@@ -157,14 +159,10 @@ export default class VncContainer extends React.Component {
   }
 
   render() {
-    const className = this.props.isFullScreen ?
-      'vnc-wrapper vnc-height fullscreen' :
-      'vnc-wrapper vnc-height';
-
     return (
       <div
         ref={this.noVNCCanvas}
-        className={className}
+        className={`${styles.NoVNCWrapper} fullscreen-content`}
       />
     )
   }

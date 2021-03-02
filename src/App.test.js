@@ -1,36 +1,43 @@
 import React from 'react';
-import { render, fireEvent, wait } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import App from './App';
 
 async function renderApp() {
   const utils = render(<App />);
   expect(utils.getByText('Loading...')).toBeInTheDocument();
-  await wait(
+  await waitFor(
     () => expect(utils.queryByText('Loading...')).toBeNull()
   );
   return utils;
 }
 
 test('renders without crashing', async () => {
-  await renderApp();
+  const { queryByText } = await renderApp();
+  expect(queryByText('An error has occurred')).toBeNull();
 });
 
 
 test('can sign in', async () => {
   const {
-    getByText, getByRole, getByPlaceholderText, queryByText,
+    getByText, getByRole, getByLabelText, queryByText,
   } = await renderApp();
 
-  expect(queryByText(/You are signed in as my-username/)).toBeNull();
-  expect(getByText(/Sign in to your OpenFlightHPC environment/)).toBeInTheDocument();
+  expect(queryByText(/test-user/)).toBeNull();
+  expect(queryByText(/Test user/)).toBeNull();
 
-  const nameInput = getByPlaceholderText('Enter username');
-  const passwordInput = getByPlaceholderText('Enter password');
-  const button = getByRole('button', { name: 'Go!' });
-  fireEvent.change(nameInput, { target: { value: 'my-username' } });
-  fireEvent.change(passwordInput, { target: { value: 'my-password' } });
+  const loginButton = getByText(/Log in/);
+  expect(loginButton).toBeInTheDocument();
+  fireEvent.click(loginButton)
+
+  const nameInput = getByLabelText('Enter your username');
+  const passwordInput = getByLabelText('Enter your password');
+  const button = getByRole('button', { name: 'Sign in' });
+  fireEvent.change(nameInput, { target: { value: 'test-user' } });
+  fireEvent.change(passwordInput, { target: { value: 'test-password' } });
   fireEvent.click(button);
-  await wait(
-    () => expect(getByText(/my-username \(bens-test-cluster\)/)).toBeInTheDocument()
+  await waitFor(
+    () => expect(queryByText(/Log in/)).toBeNull()
   )
+  expect(getByText('test-user')).toBeInTheDocument();
+  expect(getByText('Test user')).toBeInTheDocument();
 });

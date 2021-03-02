@@ -1,15 +1,19 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import ErrorBoundary from './ErrorBoundary';
-import FullscreenButton from './FullscreenButton';
+import {
+  ConfigContext,
+  DefaultErrorMessage,
+  ErrorBoundary,
+  FullscreenButton,
+  Overlay,
+  Spinner,
+} from 'flight-webapp-components';
+
 import NoVNC from './NoVNC';
-import Overlay from './Overlay';
-import Spinner from './Spinner';
 import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
-import { Context as ConfigContext } from './ConfigContext';
-import { DefaultErrorMessage } from './ErrorBoundary';
+import styles from './NoVNC.module.css';
 import { useFetchSession } from './api';
 
 function buildWebsocketUrl(session, config) {
@@ -23,8 +27,8 @@ function buildWebsocketUrl(session, config) {
     return `${rootUrl}${prefix}/${pathIP}/${session.port}`;
 
   } else {
-    const apiUrl = new URL(config.apiRootUrl);
-    const wsUrl = new URL(config.apiRootUrl);
+    const apiUrl = new URL(config.apiRootUrl, window.location.origin);
+    const wsUrl = new URL(config.apiRootUrl, window.location.origin);
 
     if (apiUrl.protocol.match(/https/)) {
       wsUrl.protocol = 'wss';
@@ -287,7 +291,12 @@ function ConnectStateIndicator({ connectionState, id, onReconnect }) {
 }
 
 function Screenshot({ id }) {
-  return <WrappedScreenshot className="d-block m-auto vnc-height" session={{ id }} />;
+  return (
+    <WrappedScreenshot
+      className={`d-block m-auto ${styles.NoVNCWrapper}`}
+      session={{ id }}
+    />
+  );
 }
 
 

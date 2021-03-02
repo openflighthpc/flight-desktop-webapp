@@ -1,5 +1,4 @@
 {
-  "clusterName": "bens-test-cluster",
   "apiRootUrl": "https://my.cluster.com/desktop",
   "websocketPathPrefix": "/ws",
   "websocketPathIp": "127.0.0.1"

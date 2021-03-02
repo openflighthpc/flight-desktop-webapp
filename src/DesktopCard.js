@@ -2,11 +2,16 @@ import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { useHistory } from 'react-router-dom';
 
+import {
+  ConfigContext,
+  utils,
+} from 'flight-webapp-components';
+
+import styles from './DesktopCard.module.css';
 import { CardFooter } from './CardParts';
-import { Context as ConfigContext } from './ConfigContext';
-import { useToast } from './ToastContext';
-import { errorCode, prettyDesktopName } from './utils';
+import { prettyDesktopName } from './utils';
 import { useLaunchSession } from './api';
+import { useToast } from './ToastContext';
 
 function DesktopCard({ desktop }) {
   const { loading, post, response } = useLaunchSession(desktop);
@@ -21,7 +26,7 @@ function DesktopCard({ desktop }) {
         addToast(launchErrorToast({
           clusterName: clusterName,
           desktop: desktop,
-          launchError: errorCode(responseBody),
+          launchError: utils.errorCode(responseBody),
         }));
       }
     });
@@ -31,7 +36,7 @@ function DesktopCard({ desktop }) {
   return (
     <div
       className={
-        classNames('card border-primary mb-2', { 'desktop--unverified': !desktop.verified })
+        classNames('card border-primary mb-2', { [styles.DesktopUnverified]: !desktop.verified })
       }
     >
       <h5

@@ -1,9 +1,13 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+
+import {
+  ConfigContext,
+  CurrentUserContext,
+  FetchProvider,
+} from 'flight-webapp-components';
+
 import UnauthenticatedDashboard from './UnauthenticatedDashboard';
-import FetchProvider from './FetchProvider';
-import { Context as CurrentUserContext } from './CurrentUserContext';
-import { Context as ConfigContext } from './ConfigContext';
 
 test('renders without crashing', () => {
   const currentUser = { username: 'alces' };

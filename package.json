@@ -1,20 +1,17 @@
 {
-  "name": "my-app-foo-bar",
+  "name": "flight-desktop-webapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "d3-time-format": "^2.2.3",
+    "d3-time-format": "^3.0.0",
+    "flight-webapp-components": "git+https://github.com/openflighthpc/flight-webapp-components#0.1.2",
     "novnc-core": "^0.2.1",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
+    "react-scripts": "4.0.3",
     "reactstrap": "^8.4.1",
-    "styled-components": "^5.0.1",
-    "use-http": "1.0.12"
+    "use-http": "^1.0.12"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -38,8 +35,12 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "http-proxy-middleware": "^1.0.6",
     "jest-fetch-mock": "^3.0.3",
-    "jest-junit": "^10.0.0"
+    "jest-junit": "^12.0.0"
   },
   "jest-junit": {
     "suiteName": "jest tests",
