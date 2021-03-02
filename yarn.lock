@@ -6996,9 +6996,9 @@ normalize-url@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-3.3.0.tgz#b2e1c4dc4f7c6d57743df733a4f5978d18650559"
 
-novnc-core@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/novnc-core/-/novnc-core-0.2.1.tgz#13b4c607204cd82d7972250f8d931dde54c3bce7"
+novnc-core@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/novnc-core/-/novnc-core-0.3.0.tgz#92a5c823727e2154287b239a987f2b1c9dce6e34"
 
 npm-run-path@^2.0.0:
   version "2.0.2"
