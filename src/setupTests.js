@@ -2,9 +2,10 @@
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
-import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
+import 'regenerator-runtime/runtime'
 import { enableFetchMocks } from 'jest-fetch-mock';
+
 
 import testConfig from '../public/config.test.json';
 
@@ -66,11 +67,3 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 });
-
-jest.mock('react-transition-group', () => {
-  const FakeTransition = jest.fn(({ children }) => children)
-  const FakeCSSTransition = jest.fn(props =>
-    props.in ? <FakeTransition>{props.children}</FakeTransition> : null
-  )
-  return { CSSTransition: FakeCSSTransition, Transition: FakeTransition }
-})
