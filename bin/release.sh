@@ -21,7 +21,7 @@ main() {
         commit_version_bump
     fi
     header "Building"
-    build_and_pack
+    build_and_test
     header "Merging, tagging, and pushing"
     run_merge_script
 }
@@ -104,10 +104,12 @@ commit_version_bump() {
     git commit -m "Bump version to $(get_current_version)" "${VERSION_FILE}"
 }
 
-build_and_pack() {
+build_and_test() {
+    # We don't use this build, but its a good sanity check to have before
+    # tagging a release.
     yarn run clean
     yarn run build
-    yarn pack
+    CI=true yarn run test
 }
 
 run_merge_script() {
