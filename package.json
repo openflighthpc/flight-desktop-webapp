@@ -1,6 +1,6 @@
 {
   "name": "flight-desktop-webapp",
-  "version": "1.4.0-rc7",
+  "version": "1.4.1",
   "private": true,
   "dependencies": {
     "d3-time-format": "^3.0.0",
