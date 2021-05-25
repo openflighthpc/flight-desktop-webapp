@@ -97,7 +97,8 @@ following the appropriate links.
 Fork the project. Make your feature addition or bug fix. Send a pull
 request. Bonus points for topic branches.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) and [DEVELOPMENT.md](DEVELOPMENT.md)
+for more details.
 
 # Copyright and License
 
