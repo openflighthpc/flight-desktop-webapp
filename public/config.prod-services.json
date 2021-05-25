@@ -1,5 +1,5 @@
 {
-  "apiRootUrl": "/dev/desktop/api/v2",
+  "apiRootUrl": "/desktop/api/v2",
   "websocketPathPrefix": "/ws",
   "websocketPathIp": "127.0.0.1"
 }

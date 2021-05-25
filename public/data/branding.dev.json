@@ -1,16 +1,16 @@
 {
   "brandbar": {
     "logo": {
-      "url": "/desktop/images/bigv-uni-50x50.png",
+      "url": "/dev/desktop/images/bigv-uni-50x50.png",
       "alt": "BigV dev env logo",
       "classNames": "foo"
     },
-    "text": "University of BigV"
+    "text": ""
   },
   "apps": {
     "dashboard": {
       "logo": {
-        "url": "/desktop/images/bigv-uni.png",
+        "url": "/dev/desktop/images/bigv-uni.png",
         "alt": "BigV dev env logo",
         "classNames": "mb-4"
       }
