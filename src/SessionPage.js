@@ -1,5 +1,6 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { useToast } from './ToastContext';
 
 import {
   ConfigContext,
@@ -195,6 +196,8 @@ function Toolbar({
   session,
   vnc,
 }) {
+  const { addToast } = useToast();
+
   const disconnectBtn = connectionState === 'connected' ? (
     <button
       className="btn btn-secondary btn-sm mr-1"
@@ -238,6 +241,23 @@ function Toolbar({
           }
         } catch (e) {
           console.log('e:', e);  // eslint-disable-line no-console
+          var body;
+          if (navigator.userAgent.indexOf("Firefox") !== -1) {
+            body = (
+              <div>
+                Pasting content to VNC sessions is unsupported in Firefox!
+                Please trying again using a different browser.
+              </div>
+            );
+          } else { // The paste will fail unless using HTTPs
+            body = (
+              <div>
+                Paste is currently disabled! Please contact your system
+                administrator for further assistance.
+              </div>
+            );
+          }
+          addToast({body, icon: 'danger', header: 'Paste Disabled' });
         }
       }}
     >

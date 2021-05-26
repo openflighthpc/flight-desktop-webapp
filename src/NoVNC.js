@@ -121,7 +121,7 @@ export default class VncContainer extends React.Component {
           if (document.execCommand('copy')) {
             console.log("Copy succeeded!");
           } else {
-            console.log("Copy failed");
+            console.log("Copy failed!");
           }
         } catch(fallback_err) {
           console.log('err:', fallback_err);  // eslint-disable-line no-console
