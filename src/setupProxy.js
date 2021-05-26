@@ -31,7 +31,7 @@ module.exports = function(app) {
     app.use(
       process.env.REACT_APP_PROXY_LOGIN_API_PATH || '/login/api/v0',
       createProxyMiddleware({
-        target: process.env.REACT_APP_PROXY_LOGIN_API_PATH || 'http://localhost:6311',
+        target: process.env.REACT_APP_PROXY_LOGIN_API_URL || 'http://localhost:6311',
         changeOrigin: false,
         pathRewrite: {
           [rewriteFrom]: rewriteTo,
