@@ -9,7 +9,7 @@ module.exports = function(app) {
       '/';
 
     app.use(
-      process.env.REACT_APP_PROXY_API_PATH || '/desktop/api/v2',
+      process.env.REACT_APP_PROXY_API_PATH || '/dev/desktop/api/v2',
       createProxyMiddleware({
         target: process.env.REACT_APP_PROXY_API_URL || 'http://localhost:6305',
         changeOrigin: false,
@@ -29,7 +29,7 @@ module.exports = function(app) {
       '/';
 
     app.use(
-      process.env.REACT_APP_PROXY_LOGIN_API_PATH || '/login/api/v0',
+      process.env.REACT_APP_PROXY_LOGIN_API_PATH || '/dev/login/api/v0',
       createProxyMiddleware({
         target: process.env.REACT_APP_PROXY_LOGIN_API_URL || 'http://localhost:6311',
         changeOrigin: false,
@@ -40,17 +40,4 @@ module.exports = function(app) {
       })
     );
   }
-
-  // Proxy requests to the landing page.
-  // app.use(
-  //   [
-  //     '/data/',
-  //     '/styles/branding.css',
-  //   ],
-  //   createProxyMiddleware({
-  //     target: 'http://localhost:3001',
-  //     changeOrigin: false,
-  //     logLevel: 'debug',
-  //   })
-  // );
 };
