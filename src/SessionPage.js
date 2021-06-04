@@ -128,8 +128,6 @@ function Connected({ id, session }) {
             ref={vnc}
           />
         </div>
-        <div id="copy-fallback-div">
-        </div>
       </ErrorBoundary>
     </Layout>
   );
