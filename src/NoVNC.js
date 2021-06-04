@@ -105,8 +105,8 @@ export default class VncContainer extends React.Component {
         ]);
       } catch (err) {
         console.log('err:', err);  // eslint-disable-line no-console
-        var div = document.getElementById("copy-fallback-div")
-        var input = document.createElement("textarea");
+        let div = document.getElementById("copy-fallback-div")
+        let input = document.createElement("textarea");
         try {
           // Firefox does not support the ClipboardItem API at the time or writing.
           // It should *hopefully* support it in the future, so it is still attempted.
