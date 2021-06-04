@@ -186,7 +186,9 @@ export default class VncContainer extends React.Component {
           ref={this.noVNCCanvas}
           className={`${styles.NoVNCWrapper} fullscreen-content`}
         />
-        <textarea ref={this.copyFallback} style={{display: "none"}}></textarea>
+        <textarea ref={this.copyFallback} style={{
+          display: "none", height: "1px", maxHeight: "1px"
+        }}></textarea>
       </React.Fragment>
     )
   }
