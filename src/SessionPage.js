@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useToast } from './ToastContext';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 
 import {
   ConfigContext,
@@ -195,6 +196,9 @@ function Toolbar({
   vnc,
 }) {
   const { addToast } = useToast();
+  const [showFallback, setShowFallback] = useState(false);
+  const handleShowFallback = () => setShowFallback(true);
+  const handleCloseFallback = () => setShowFallback(false);
 
   const disconnectBtn = connectionState === 'connected' ? (
     <button
@@ -228,41 +232,51 @@ function Toolbar({
 
   const fullscreenBtn = <FullscreenButton onZenChange={onZenChange} />;
 
-  const pasteBtn = (
+  const pasteButton = <React.Fragment>
     <button
       className="btn btn-sm btn-light"
       onClick={async () => {
         try {
           const text = await navigator.clipboard.readText();
-          if (text !== "" && vnc.current) {
-            vnc.current.setClipboardText(text);
+          if (text !== "" && this.vnc.current) {
+            this.vnc.current.setClipboardText(text);
           }
         } catch (e) {
           console.log('e:', e);  // eslint-disable-line no-console
-          var body;
           if (navigator.userAgent.indexOf("Firefox") !== -1) {
-            body = (
-              <div>
-                Pasting content to VNC sessions is unsupported in Firefox!
-                Please trying again using a different browser.
-              </div>
-            );
+            console.log("Attempting firefox fallback");
+            handleShowFallback();
           } else { // The paste will fail unless using HTTPs
-            body = (
+            console.log("Paste failed!");
+            var body = (
               <div>
                 Paste is currently disabled! Please contact your system
                 administrator for further assistance.
               </div>
             );
+            addToast({body, icon: 'danger', header: 'Paste Disabled' });
           }
-          addToast({body, icon: 'danger', header: 'Paste Disabled' });
         }
       }}
     >
       <i className="fa fa-paste mr-1"></i>
       Prepare paste
     </button>
-  );
+    <Modal isOpen={showFallback}>
+      <ModalHeader>Paste Text</ModalHeader>
+      <ModalBody>
+        Please paste the text in the box below and press submit...
+      </ModalBody>
+      <ModalFooter>
+        <button variant="secondary" onClick={handleCloseFallback}>
+          Cancel
+        </button>
+        <button variant="primary" onClick={handleCloseFallback}>
+          Submit
+        </button>
+      </ModalFooter>
+    </Modal>
+  </React.Fragment>
 
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
@@ -270,7 +284,7 @@ function Toolbar({
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}
-      {pasteBtn}
+      {pasteButton}
     </div>
   );
 }
