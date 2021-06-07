@@ -279,7 +279,7 @@ function Toolbar({
     <Modal isOpen={showFallback}>
       <ModalHeader>Paste Text</ModalHeader>
       <ModalBody>
-        Please paste the text in the box below and press submit...
+        You must buffer the text before pasting within firefox.
         <textarea ref={fallbackText} style={{ width: "100%", height: "100%" }}></textarea>
       </ModalBody>
       <ModalFooter>
@@ -288,16 +288,13 @@ function Toolbar({
         </button>
         <button variant="primary" onClick={ () => {
           try {
-            console.log(vncRef.current);
-            // The following line does not work:
-            // TypeError: vncRef.current.currentSetClipboardText is not a function
-            vncRef.current.currentSetClipboardText(fallbackText.current.value);
+            vnc.current.setClipboardText(fallbackText.current.value);
           } catch(e) {
             console.log("e:", e);
           }
           handleCloseFallback();
         }}>
-          Submit
+          Buffer
         </button>
       </ModalFooter>
     </Modal>
