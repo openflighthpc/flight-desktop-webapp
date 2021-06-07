@@ -278,10 +278,10 @@ function Toolbar({
         <textarea ref={fallbackText} style={{ width: "100%", height: "100%" }}></textarea>
       </ModalBody>
       <ModalFooter>
-        <button variant="secondary" onClick={toggleFallback}>
+        <button className="btn btn-secondary" onClick={toggleFallback}>
           Cancel
         </button>
-        <button variant="primary" onClick={ () => {
+        <button className="btn btn-primary" onClick={ () => {
           try {
             vnc.current.setClipboardText(fallbackText.current.value);
           } catch(e) {
