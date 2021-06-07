@@ -197,12 +197,7 @@ function Toolbar({
 }) {
   const { addToast } = useToast();
   const fallbackText = useRef();
-  const vncRef = useRef();
   const [showFallback, setShowFallback] = useState(false);
-
-  // The vnc may not be defined on the initial rendering, so setting
-  // the reference needs to be delayed
-  if (vnc) { vncRef.current = vnc.current; }
 
   const toggleFallback = function() {
     try {
