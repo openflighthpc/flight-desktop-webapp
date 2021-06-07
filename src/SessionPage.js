@@ -204,13 +204,13 @@ function Toolbar({
   // the reference needs to be delayed
   if (vnc) { vncRef.current = vnc.current; }
 
-  const handleCloseFallback = function() {
+  const toggleFallback = function() {
     try {
       fallbackText.current.value = "";
     } catch(e) {
       console.log("Failed to clear textarea:", e);
     }
-    setShowFallback(false);
+    setShowFallback(!showFallback);
   }
 
   const disconnectBtn = connectionState === 'connected' ? (
@@ -258,7 +258,7 @@ function Toolbar({
           console.log('e:', e);  // eslint-disable-line no-console
           if (navigator.userAgent.indexOf("Firefox") !== -1) {
             console.log("Attempting firefox fallback");
-            setShowFallback(true);
+            toggleFallback();
 
           } else { // The paste will fail unless using HTTPs
             console.log("Paste failed!");
@@ -276,14 +276,14 @@ function Toolbar({
       <i className="fa fa-paste mr-1"></i>
       Prepare paste
     </button>
-    <Modal isOpen={showFallback}>
+    <Modal isOpen={showFallback} toggle={toggleFallback}>
       <ModalHeader>Paste Text</ModalHeader>
       <ModalBody>
         You must buffer the text before pasting within firefox.
         <textarea ref={fallbackText} style={{ width: "100%", height: "100%" }}></textarea>
       </ModalBody>
       <ModalFooter>
-        <button variant="secondary" onClick={handleCloseFallback}>
+        <button variant="secondary" onClick={toggleFallback}>
           Cancel
         </button>
         <button variant="primary" onClick={ () => {
@@ -292,7 +292,7 @@ function Toolbar({
           } catch(e) {
             console.log("e:", e);
           }
-          handleCloseFallback();
+          toggleFallback();
         }}>
           Buffer
         </button>
