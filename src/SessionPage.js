@@ -196,9 +196,22 @@ function Toolbar({
   vnc,
 }) {
   const { addToast } = useToast();
+  const fallbackText = useRef();
+  const vncRef = useRef();
   const [showFallback, setShowFallback] = useState(false);
-  const handleShowFallback = () => setShowFallback(true);
-  const handleCloseFallback = () => setShowFallback(false);
+
+  // The vnc may not be defined on the initial rendering, so setting
+  // the reference needs to be delayed
+  if (vnc) { vncRef.current = vnc.current; }
+
+  const handleCloseFallback = function() {
+    try {
+      fallbackText.current.value = "";
+    } catch(e) {
+      console.log("Failed to clear textarea:", e);
+    }
+    setShowFallback(false);
+  }
 
   const disconnectBtn = connectionState === 'connected' ? (
     <button
@@ -245,7 +258,8 @@ function Toolbar({
           console.log('e:', e);  // eslint-disable-line no-console
           if (navigator.userAgent.indexOf("Firefox") !== -1) {
             console.log("Attempting firefox fallback");
-            handleShowFallback();
+            setShowFallback(true);
+
           } else { // The paste will fail unless using HTTPs
             console.log("Paste failed!");
             var body = (
@@ -266,12 +280,23 @@ function Toolbar({
       <ModalHeader>Paste Text</ModalHeader>
       <ModalBody>
         Please paste the text in the box below and press submit...
+        <textarea ref={fallbackText} style={{ width: "100%", height: "100%" }}></textarea>
       </ModalBody>
       <ModalFooter>
         <button variant="secondary" onClick={handleCloseFallback}>
           Cancel
         </button>
-        <button variant="primary" onClick={handleCloseFallback}>
+        <button variant="primary" onClick={ () => {
+          try {
+            console.log(vncRef.current);
+            // The following line does not work:
+            // TypeError: vncRef.current.currentSetClipboardText is not a function
+            vncRef.current.currentSetClipboardText(fallbackText.current.value);
+          } catch(e) {
+            console.log("e:", e);
+          }
+          handleCloseFallback();
+        }}>
           Submit
         </button>
       </ModalFooter>
