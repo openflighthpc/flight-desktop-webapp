@@ -76,6 +76,7 @@ export default class VncContainer extends React.Component {
   constructor(props) {
     super(props);
     this.noVNCCanvas = React.createRef();
+    this.copyFallback = React.createRef();
   }
 
   componentDidMount() {
@@ -105,6 +106,26 @@ export default class VncContainer extends React.Component {
         ]);
       } catch (err) {
         console.log('err:', err);  // eslint-disable-line no-console
+        try {
+          // Firefox does not support the ClipboardItem API at the time or writing.
+          // It should *hopefully* support it in the future, so it is still attempted.
+          // Until then, a fallback on a text area is used.
+          //
+          // The textarea must be visible in order to copy from it
+          this.copyFallback.current.value = ev.detail.text;
+          this.copyFallback.current.style.display = 'block';
+          this.copyFallback.current.select();
+
+          if (document.execCommand('copy')) {
+            console.log("Copy succeeded!");
+          } else {
+            console.log("Copy failed!");
+          }
+        } catch(fallback_err) {
+          console.log('err:', fallback_err);  // eslint-disable-line no-console
+        }
+        this.copyFallback.current.style.display = 'none';
+        this.copyFallback.current.value = '';
       }
     }
   }
@@ -160,10 +181,15 @@ export default class VncContainer extends React.Component {
 
   render() {
     return (
-      <div
-        ref={this.noVNCCanvas}
-        className={`${styles.NoVNCWrapper} fullscreen-content`}
-      />
+      <React.Fragment>
+        <div
+          ref={this.noVNCCanvas}
+          className={`${styles.NoVNCWrapper} fullscreen-content`}
+        />
+        <textarea ref={this.copyFallback} style={{
+          display: "none", height: "1px", maxHeight: "1px"
+        }}></textarea>
+      </React.Fragment>
     )
   }
 }

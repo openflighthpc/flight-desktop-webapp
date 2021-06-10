@@ -1,5 +1,6 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { useToast } from './ToastContext';
 
 import {
   ConfigContext,
@@ -11,6 +12,7 @@ import {
 } from 'flight-webapp-components';
 
 import NoVNC from './NoVNC';
+import PreparePasteButton from './PreparePasteButton';
 import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
 import styles from './NoVNC.module.css';
@@ -193,6 +195,8 @@ function Toolbar({
   session,
   vnc,
 }) {
+  const { addToast } = useToast();
+
   const disconnectBtn = connectionState === 'connected' ? (
     <button
       className="btn btn-secondary btn-sm mr-1"
@@ -225,24 +229,35 @@ function Toolbar({
 
   const fullscreenBtn = <FullscreenButton onZenChange={onZenChange} />;
 
-  const pasteBtn = (
-    <button
-      className="btn btn-sm btn-light"
-      onClick={async () => {
-        try {
-          const text = await navigator.clipboard.readText();
-          if (text !== "" && vnc.current) {
-            vnc.current.setClipboardText(text);
-          }
-        } catch (e) {
-          console.log('e:', e);  // eslint-disable-line no-console
-        }
-      }}
-    >
-      <i className="fa fa-paste mr-1"></i>
-      Prepare paste
-    </button>
-  );
+  function handlePaste(text) {
+    vnc.current.setClipboardText(text);
+    const body = (
+      <div>
+        Your session's clipboard has been updated. You can now paste
+        normally within your session.
+      </div>
+    );
+    addToast({body: body, icon: 'success', header: 'Paste prepared'});
+  }
+
+  function handleFallbackError() {
+    console.log('Giving up.');  // eslint-disable-line no-console
+    const body = (
+      <div>
+        An unexpected error has occurred whilst preparing paste.  Please
+        contact your system administrator for further assistance.
+      </div>
+    );
+    addToast({body, icon: 'danger', header: 'Unexpected error' });
+  }
+
+  const pasteButton = connectionState === 'connected' ? (
+    <PreparePasteButton
+      onPaste={handlePaste}
+      onFallbackError={handleFallbackError}
+      onFallbackPaste={handlePaste}
+    />
+  ) : null;
 
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
@@ -250,7 +265,7 @@ function Toolbar({
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}
-      {pasteBtn}
+      {pasteButton}
     </div>
   );
 }
@@ -298,6 +313,5 @@ function Screenshot({ id }) {
     />
   );
 }
-
 
 export default SessionPage;
