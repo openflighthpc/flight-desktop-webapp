@@ -249,37 +249,39 @@ function Toolbar({
     }
   }
 
-  const pasteButton = <React.Fragment>
-    <button
-      className="btn btn-sm btn-light"
-      onClick={async () => {
-        try {
-          const text = await navigator.clipboard.readText();
-          if (text !== "" && vnc.current) {
-            vnc.current.setClipboardText(text);
-            const body = (
-              <div>
-                Your session's clipboard has been updated. You can now paste
-                normally within your session.
-              </div>
-            );
-            addToast({body: body, icon: 'success', header: 'Paste prepared'});
+  const pasteButton = connectionState === 'connected' ? (
+    <React.Fragment>
+      <button
+        className="btn btn-sm btn-light"
+        onClick={async () => {
+          try {
+            const text = await navigator.clipboard.readText();
+            if (text !== "" && vnc.current) {
+              vnc.current.setClipboardText(text);
+              const body = (
+                <div>
+                  Your session's clipboard has been updated. You can now paste
+                  normally within your session.
+                </div>
+              );
+              addToast({body: body, icon: 'success', header: 'Paste prepared'});
+            }
+          } catch (e) {
+            console.log('Paste failed. Attempting fallback.', e);  // eslint-disable-line no-console
+            toggleFallback();
           }
-        } catch (e) {
-          console.log('Paste failed. Attempting fallback.', e);  // eslint-disable-line no-console
-          toggleFallback();
-        }
-      }}
-    >
-      <i className="fa fa-paste mr-1"></i>
-      Prepare paste
-    </button>
-    <FallbackPasteModal
-      isOpen={showFallback}
-      toggle={toggleFallback}
-      onPaste={handleFallbackPaste}
-    />
-  </React.Fragment>
+        }}
+      >
+        <i className="fa fa-paste mr-1"></i>
+        Prepare paste
+      </button>
+      <FallbackPasteModal
+        isOpen={showFallback}
+        toggle={toggleFallback}
+        onPaste={handleFallbackPaste}
+      />
+    </React.Fragment>
+  ) : null;
 
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
