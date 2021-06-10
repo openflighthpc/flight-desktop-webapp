@@ -257,6 +257,13 @@ function Toolbar({
           const text = await navigator.clipboard.readText();
           if (text !== "" && vnc.current) {
             vnc.current.setClipboardText(text);
+            const body = (
+              <div>
+                Your session's clipboard has been updated. You can now paste
+                normally within your session.
+              </div>
+            );
+            addToast({body: body, icon: 'success', header: 'Paste prepared'});
           }
         } catch (e) {
           console.log('Paste failed. Attempting fallback.', e);  // eslint-disable-line no-console
