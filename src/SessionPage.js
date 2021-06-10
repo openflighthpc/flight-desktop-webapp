@@ -196,15 +196,9 @@ function Toolbar({
   vnc,
 }) {
   const { addToast } = useToast();
-  const fallbackText = useRef();
   const [showFallback, setShowFallback] = useState(false);
 
   const toggleFallback = function() {
-    try {
-      fallbackText.current.value = "";
-    } catch(e) {
-      console.log("Failed to clear textarea:", e);
-    }
     setShowFallback(!showFallback);
   }
 
@@ -240,6 +234,21 @@ function Toolbar({
 
   const fullscreenBtn = <FullscreenButton onZenChange={onZenChange} />;
 
+  function handleFallbackPaste(text) {
+    try {
+      vnc.current.setClipboardText(text);
+    } catch (e) {
+      console.log('Fallback failed. Giving up.', e);  // eslint-disable-line no-console
+      const body = (
+        <div>
+          An unexpected error has occurred whilst preparing paste.  Please
+          contact your system administrator for further assistance.
+        </div>
+      );
+      addToast({body, icon: 'danger', header: 'Unexpected error' });
+    }
+  }
+
   const pasteButton = <React.Fragment>
     <button
       className="btn btn-sm btn-light"
@@ -250,49 +259,19 @@ function Toolbar({
             vnc.current.setClipboardText(text);
           }
         } catch (e) {
-          console.log('e:', e);  // eslint-disable-line no-console
-          if (navigator.userAgent.indexOf("Firefox") !== -1) {
-            console.log("Attempting firefox fallback");
-            toggleFallback();
-
-          } else { // The paste will fail unless using HTTPs
-            console.log("Paste failed!");
-            var body = (
-              <div>
-                Paste is currently disabled! Please contact your system
-                administrator for further assistance.
-              </div>
-            );
-            addToast({body, icon: 'danger', header: 'Paste Disabled' });
-          }
+          console.log('Paste failed. Attempting fallback.', e);  // eslint-disable-line no-console
+          toggleFallback();
         }
       }}
     >
       <i className="fa fa-paste mr-1"></i>
       Prepare paste
     </button>
-    <Modal isOpen={showFallback} toggle={toggleFallback}>
-      <ModalHeader>Paste Text</ModalHeader>
-      <ModalBody>
-        You must buffer the text before pasting within firefox.
-        <textarea ref={fallbackText} style={{ width: "100%", height: "100%" }}></textarea>
-      </ModalBody>
-      <ModalFooter>
-        <button className="btn btn-secondary" onClick={toggleFallback}>
-          Cancel
-        </button>
-        <button className="btn btn-primary" onClick={ () => {
-          try {
-            vnc.current.setClipboardText(fallbackText.current.value);
-          } catch(e) {
-            console.log("e:", e);
-          }
-          toggleFallback();
-        }}>
-          Buffer
-        </button>
-      </ModalFooter>
-    </Modal>
+    <FallbackPasteModal
+      isOpen={showFallback}
+      toggle={toggleFallback}
+      onPaste={handleFallbackPaste}
+    />
   </React.Fragment>
 
   return (
@@ -350,5 +329,40 @@ function Screenshot({ id }) {
   );
 }
 
+function FallbackPasteModal({isOpen, toggle, onPaste}) {
+  const textRef = useRef();
+
+  return (
+    <Modal isOpen={isOpen} toggle={toggle}>
+      <ModalHeader toggle={toggle}>Paste Text</ModalHeader>
+      <ModalBody>
+        <p>
+          To allow your desktop session to gain access to the pasted text,
+          paste your text in the text area below and click "OK".
+        </p>
+        <p>
+          The pasted text will be added to the clipboard within your desktop
+          session and you will be able to paste normally from within your
+          session.
+        </p>
+        <textarea ref={textRef} style={{ width: "100%", height: "7em" }}></textarea>
+      </ModalBody>
+      <ModalFooter>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            onPaste(textRef.current.value);
+            toggle();
+          }}
+        >
+          OK
+        </button>
+        <button className="btn btn-link" onClick={toggle}>
+          Cancel
+        </button>
+      </ModalFooter>
+    </Modal>
+  );
+}
 
 export default SessionPage;
