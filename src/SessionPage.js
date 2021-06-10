@@ -246,8 +246,8 @@ function Toolbar({
       onClick={async () => {
         try {
           const text = await navigator.clipboard.readText();
-          if (text !== "" && this.vnc.current) {
-            this.vnc.current.setClipboardText(text);
+          if (text !== "" && vnc.current) {
+            vnc.current.setClipboardText(text);
           }
         } catch (e) {
           console.log('e:', e);  // eslint-disable-line no-console
