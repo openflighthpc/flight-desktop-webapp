@@ -25,8 +25,7 @@ function buildWebsocketUrl(session, config) {
     // expected that the developer sets things up correctly.
     const rootUrl = config.devOnlyWebsocketRootUrl;
     const prefix = config.websocketPathPrefix;
-    const pathIP = config.websocketPathIp || session.ip;
-    return `${rootUrl}${prefix}/${pathIP}/${session.port}`;
+    return `${rootUrl}${prefix}/${session.ip}/${session.port}`;
 
   } else {
     const apiUrl = new URL(config.apiRootUrl, window.location.origin);
@@ -39,8 +38,7 @@ function buildWebsocketUrl(session, config) {
     }
 
     let prefix = config.websocketPathPrefix;
-    const pathIP = config.websocketPathIp || session.ip;
-    wsUrl.pathname = `${prefix}/${pathIP}/${session.port}`;
+    wsUrl.pathname = `${prefix}/${session.ip}/${session.port}`;
 
     return wsUrl.toString()
   }
