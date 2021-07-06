@@ -19,13 +19,25 @@ import styles from './NoVNC.module.css';
 import { useFetchSession } from './api';
 
 function buildWebsocketUrl(session, config) {
+  // Use 127.0.0.1 when connecting to a session on the host machine
+  // Otherwise use the provided IP when connecting to a remote session
+  //
+  // This gets around issues with AWS firewalls when trying to connect
+  // to a public IP
+  var ip;
+  if (session.state === 'Remote') {
+    ip = session.ip
+  } else {
+    ip = "127.0.0.1"
+  }
+
   if (config.devOnlyWebsocketRootUrl) {
     // This branch is intended for development and testing only.  The code
     // here is intentionally less robust in the URL it constructs.  It is
     // expected that the developer sets things up correctly.
     const rootUrl = config.devOnlyWebsocketRootUrl;
     const prefix = config.websocketPathPrefix;
-    return `${rootUrl}${prefix}/${session.ip}/${session.port}`;
+    return `${rootUrl}${prefix}/${ip}/${session.port}`;
 
   } else {
     const apiUrl = new URL(config.apiRootUrl, window.location.origin);
@@ -38,7 +50,7 @@ function buildWebsocketUrl(session, config) {
     }
 
     let prefix = config.websocketPathPrefix;
-    wsUrl.pathname = `${prefix}/${session.ip}/${session.port}`;
+    wsUrl.pathname = `${prefix}/${ip}/${session.port}`;
 
     return wsUrl.toString()
   }
