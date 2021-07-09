@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
+
+import { Button, Form, FormGroup, Col, Label, Input, FormText } from 'reactstrap';
 
 import {
   Overlay,
@@ -9,6 +12,7 @@ import {
   utils,
 } from 'flight-webapp-components';
 
+import styles from './SessionsPage.module.css';
 import { useFetchUserConfig } from './api';
 import { useInterval } from './utils';
 
@@ -32,6 +36,10 @@ function ConfigsPage() {
 }
 
 function Layout({ configs }) {
+  const [x, y] = configs.geometry.split("x");
+  const [xGeometry, setXGeometry] = useState(x);
+  const [yGeometry, setYGeometry] = useState(y);
+
   if (configs == null) {
     console.log("The 'configs' where null")
     return <DefaultErrorMessage />;
@@ -50,20 +58,30 @@ function Layout({ configs }) {
         </span>
       </h4>
       <div className="card-body">
-        <dl>
-          <dt
-            className="text-truncate"
-            title="Desktop"
-          >
-            Desktop
-          </dt>
-          <dd
-            className="text-truncate"
-            title={configs.desktop}
-          >
-            {configs.desktop}
-          </dd>
-        </dl>
+        <Form>
+          <FormGroup row>
+            <Label for="desktop" sm={2} size="lg">Desktop</Label>
+            <Col>
+              <Input  type="text" name="desktop" id="desktop"
+                      placeholder={configs.desktop} value={configs.desktop} required
+              />
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <Label sm={2} size="lg">Geometry</Label>
+            <Col>
+              <Input  type="number" name="geometry-x" id="geometry-x" required
+                      placeholder="X Geometry" value={xGeometry} onChange={e => setXGeometry(e.target.value)}
+              />
+            </Col>
+            <span sm="auto" size="lg" className="align-middle">X</span>
+            <Col>
+              <Input  type="number" name="geometry-y" id="geometry-y" required
+                      placeholder="Y Geometry" value={yGeometry} onChange={e => setYGeometry(e.target.value)}
+              />
+            </Col>
+          </FormGroup>
+        </Form>
       </div>
     </div>
   );
