@@ -41,6 +41,14 @@ function NavItems() {
         Launch new session
       </Link>
     </li>
+    <li className="nav-item">
+      <Link
+        className="nav-link nav-menu-button"
+        to="/configs"
+      >
+        My Configuration
+      </Link>
+    </li>
     </>
   );
 }
