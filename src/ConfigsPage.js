@@ -13,24 +13,25 @@ import {
 } from 'flight-webapp-components';
 
 import styles from './SessionsPage.module.css';
-import { useFetchUserConfig } from './api';
+import { useFetchUserConfig, useFetchDesktops } from './api';
 import { useInterval } from './utils';
 
 function ConfigsPage() {
-  const { data, error, loading, get } = useFetchUserConfig();
-  useInterval(get, 1 * 60 * 1000);
+  const config_req = useFetchUserConfig();
+  const desktop_req = useFetchDesktops();
 
-  if (error) {
-    if (utils.errorCode(data) === 'Unauthorized') {
+  if (config_req.error || desktop_req.error) {
+    req = (config_req.error ? config_req : desktop_req)
+    if (utils.errorCode(req.data) === 'Unauthorized') {
       return <UnauthorizedError />;
     } else {
       return <DefaultErrorMessage />;
     }
   } else {
-    if (loading) {
+    if (config_req.loading || desktop_req.loading) {
       return <Loading />;
     } else {
-      return <Layout configs={data} loading={loading} />
+      return <Layout configs={config_req.data} />
     }
   }
 }
