@@ -45,6 +45,13 @@ function Layout({ configs, desktops }) {
   const [desktop, setDesktop] = useState(d);
   const [xGeometry, setXGeometry] = useState(x);
   const [yGeometry, setYGeometry] = useState(y);
+  const [modified, setModified] = useState(false);
+
+  // Create the updated
+  const updater = function(setter, field) {
+    if (! modified) { setModified(true) }
+    setter(field.target.value);
+  }
 
   if (configs == null) {
     console.log("The 'configs' where null")
@@ -52,9 +59,7 @@ function Layout({ configs, desktops }) {
   }
 
   return (
-    <div
-      className="card"
-    >
+    <div className="card" >
       <h4
         className="card-header text-truncate justify-content-between d-flex align-items-end"
         title={"User Configuration"}
@@ -63,13 +68,13 @@ function Layout({ configs, desktops }) {
           User Configuration
         </span>
       </h4>
-      <div className="card-body">
+      <div className="card-body container">
         <Form>
           <FormGroup row>
             <Label for="desktop" sm={2} size="lg">Desktop</Label>
             <Col>
               <Input  type="select" name="desktop" id="desktop" required
-                      value={desktop} onChange={e => setDesktop(e.target.value)}>
+                      value={desktop} onChange={e => updater(setDesktop, e)}>
                 {desktops.map(desktop => {
                   if (desktop.verified) {
                     return (<option>{desktop.id}</option>);
@@ -82,15 +87,20 @@ function Layout({ configs, desktops }) {
             <Label sm={2} size="lg">Geometry</Label>
             <Col>
               <Input  type="number" name="geometry-x" id="geometry-x" required
-                      placeholder="X Geometry" value={xGeometry} onChange={e => setXGeometry(e.target.value)}
+                      placeholder="X Geometry" value={xGeometry} onChange={e => updater(setXGeometry, e)}
               />
             </Col>
             <span sm="auto" size="lg" className="align-middle">X</span>
             <Col>
               <Input  type="number" name="geometry-y" id="geometry-y" required
-                      placeholder="Y Geometry" value={yGeometry} onChange={e => setYGeometry(e.target.value)}
+                      placeholder="Y Geometry" value={yGeometry} onChange={e => updater(setYGeometry, e)}
               />
             </Col>
+          </FormGroup>
+          <FormGroup check>
+            <Button color="success" className="pull-right" disabled={!modified}>
+              Update Configuration
+            </Button>
           </FormGroup>
         </Form>
       </div>
