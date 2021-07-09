@@ -13,7 +13,7 @@ import {
 } from 'flight-webapp-components';
 
 import styles from './SessionsPage.module.css';
-import { useFetchUserConfig, useFetchDesktops } from './api';
+import { useFetchUserConfig, useFetchDesktops, useUpdateUserConfig } from './api';
 import { useInterval } from './utils';
 
 function ConfigsPage() {
@@ -47,10 +47,16 @@ function Layout({ configs, desktops }) {
   const [yGeometry, setYGeometry] = useState(y);
   const [modified, setModified] = useState(false);
 
-  // Create the updated
+  // Create the updater and onSubmitted
   const updater = function(setter, field) {
     if (! modified) { setModified(true) }
     setter(field.target.value);
+  }
+  const onSubmitted = function(data) {
+    setXGeometry(data.xGeometry);
+    setYGeometry(data.yGeometry);
+    setDesktop(data.desktop);
+    setModified(false);
   }
 
   if (configs == null) {
@@ -98,14 +104,36 @@ function Layout({ configs, desktops }) {
             </Col>
           </FormGroup>
           <FormGroup check>
-            <Button color="success" className="pull-right" disabled={!modified}>
-              Update Configuration
-            </Button>
+            <UpdateButton
+              desktop={desktop}
+              geometry={`${xGeometry}x${yGeometry}`}
+              modified={modified}
+              onSubmitted={onSubmitted}
+            />
           </FormGroup>
         </Form>
       </div>
     </div>
   );
+}
+
+function UpdateButton({desktop, geometry, modified, onSubmitted}) {
+  const { patch, response, error } = useUpdateUserConfig(desktop, geometry);
+  console.log("Rendering button");
+  console.log(desktop);
+  const submit = async() => {
+    // Create the submitter
+    const data = await patch();
+    if (response.ok) {
+      onSubmitted(data);
+    } else {
+      console.log("Failed to update");
+    }
+  }
+
+  return <Button color="success" className="pull-right" disabled={!modified} onClick={submit}>
+    Update Configuration
+  </Button>
 }
 
 function Loading() {
