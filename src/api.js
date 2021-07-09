@@ -83,6 +83,24 @@ export function useTerminateSession(id) {
   return request;
 }
 
+export function useUpdateUserConfig(desktop, geometry) {
+  const request = useFetch(
+    '/configs/user',
+    {
+      method: 'patch',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accepts': 'application/json',
+      },
+      body: {
+        desktop: desktop,
+        geometry: geometry
+      },
+      cachePolicy: 'no-cache',
+    });
+  return request;
+}
+
 export function useFetchScreenshot(id, { reloadInterval=1*60*1000 }={}) {
   const lastLoadedAt = useRef(null);
   const [ image, setImage ] = useState(null);
