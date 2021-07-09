@@ -21,7 +21,7 @@ function ConfigsPage() {
   const desktop_req = useFetchDesktops();
 
   if (config_req.error || desktop_req.error) {
-    req = (config_req.error ? config_req : desktop_req)
+    const req = (config_req.error ? config_req : desktop_req)
     if (utils.errorCode(req.data) === 'Unauthorized') {
       return <UnauthorizedError />;
     } else {
@@ -31,13 +31,18 @@ function ConfigsPage() {
     if (config_req.loading || desktop_req.loading) {
       return <Loading />;
     } else {
-      return <Layout configs={config_req.data} />
+      return <Layout configs={config_req.data} desktops={desktop_req.data.data} />
     }
   }
 }
 
-function Layout({ configs }) {
+function Layout({ configs, desktops }) {
+  // Determine the current settings
   const [x, y] = configs.geometry.split("x");
+  const d = desktops.map(d => { return d.id }).includes(configs.desktop) ? configs.desktop : null;
+
+  // Create the state references
+  const [desktop, setDesktop] = useState(d);
   const [xGeometry, setXGeometry] = useState(x);
   const [yGeometry, setYGeometry] = useState(y);
 
@@ -63,9 +68,14 @@ function Layout({ configs }) {
           <FormGroup row>
             <Label for="desktop" sm={2} size="lg">Desktop</Label>
             <Col>
-              <Input  type="text" name="desktop" id="desktop"
-                      placeholder={configs.desktop} value={configs.desktop} required
-              />
+              <Input  type="select" name="desktop" id="desktop" required
+                      value={desktop} onChange={e => setDesktop(e.target.value)}>
+                {desktops.map(desktop => {
+                  if (desktop.verified) {
+                    return (<option>{desktop.id}</option>);
+                  }
+                })}
+              </Input>
             </Col>
           </FormGroup>
           <FormGroup row>
