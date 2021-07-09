@@ -30,7 +30,7 @@ function SessionCard({ reload, session }) {
           {sessionName}
         </h5>
         <div className={
-          classNames("card-body", { 'text-muted': activeStates.includes(session.state) })
+          classNames("card-body", { 'text-muted': !activeStates.includes(session.state) })
         }>
           <div className="row mb-2">
             <div className="col">

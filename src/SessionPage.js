@@ -19,16 +19,19 @@ import styles from './NoVNC.module.css';
 import { useFetchSession } from './api';
 
 function buildWebsocketUrl(session, config) {
-  // Use 127.0.0.1 when connecting to a session on the host machine
-  // Otherwise use the provided IP when connecting to a remote session
+  // We expect restapi to be running on an externally accessible machine.
   //
-  // This gets around issues with AWS firewalls when trying to connect
-  // to a public IP
-  var ip;
+  // Remote sessions are not on the same machine as restapi, we need to use
+  // the session's primary IP address.
+  //
+  // Active sessions are on teh same machine as restapi and can be proxied to
+  // at 127.0.0.1.  We prefer 127.0.0.1 to the session's primary IP address as
+  // that may be behind a firewall.
+  let proxyIP;
   if (session.state === 'Remote') {
-    ip = session.ip
+    proxyIP = session.ip
   } else {
-    ip = "127.0.0.1"
+    proxyIP = "127.0.0.1"
   }
 
   if (config.devOnlyWebsocketRootUrl) {
@@ -37,7 +40,7 @@ function buildWebsocketUrl(session, config) {
     // expected that the developer sets things up correctly.
     const rootUrl = config.devOnlyWebsocketRootUrl;
     const prefix = config.websocketPathPrefix;
-    return `${rootUrl}${prefix}/${ip}/${session.port}`;
+    return `${rootUrl}${prefix}/${proxyIP}/${session.port}`;
 
   } else {
     const apiUrl = new URL(config.apiRootUrl, window.location.origin);
@@ -50,7 +53,7 @@ function buildWebsocketUrl(session, config) {
     }
 
     let prefix = config.websocketPathPrefix;
-    wsUrl.pathname = `${prefix}/${ip}/${session.port}`;
+    wsUrl.pathname = `${prefix}/${proxyIP}/${session.port}`;
 
     return wsUrl.toString()
   }
