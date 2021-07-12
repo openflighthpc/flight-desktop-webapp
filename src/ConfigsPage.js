@@ -120,6 +120,7 @@ function UpdateButton({desktop, geometry, modified, setModified}) {
       if ( desktop === data.desktop && geometry === data.geometry) {
         // Update successful
         setModified(false);
+        addToast(updateSuccessfulToast());
       } else {
         // The API response does not match the expected values
         addToast(updateFailedToast({ errorCode: "did-not-update" }));
@@ -133,6 +134,20 @@ function UpdateButton({desktop, geometry, modified, setModified}) {
   return <Button color="success" className="pull-right" disabled={!modified} onClick={submit}>
     Update Configuration
   </Button>
+}
+
+function updateSuccessfulToast() {
+  let body = (
+    <div>
+      Your configurations have been updated!
+    </div>
+  );
+
+  return {
+    body,
+    icon: 'success',
+    header: 'Updated your configurations',
+  };
 }
 
 function updateFailedToast({ errorCode }) {
