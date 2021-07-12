@@ -23,7 +23,8 @@ function QuickLaunchButton({ className, color }) {
   };
 
   return <Button className={className} color={color} disabled={loading} onClick={submit}>
-    Quick launch session
+    { loading ? <i className="fa fa-spinner fa-spin mr-1"/> : null }
+    <span>{ loading ? "Quick lauching session..." : "Quick launch session" }</span>
   </Button>
 }
 
