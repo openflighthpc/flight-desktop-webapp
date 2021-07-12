@@ -161,6 +161,9 @@ function Layout({
   // `id` could be null when we are navigating away from the page.
   const { id } = useParams();
   const sessionName = id == null ? '' : id.split('-')[0];
+  const hostname = session == null ?
+    null :
+    <span>running on <code className="text-reset">{session.hostname}</code></span>;
 
   return (
     <div className="overflow-auto">
@@ -170,9 +173,9 @@ function Layout({
             <div className="card-header bg-primary text-light">
               <div className="row no-gutters">
                 <div className="col">
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex flex-wrap align-items-center">
                     <h5 className="flex-grow-1 mb-0">
-                      {sessionName}
+                      {sessionName} {hostname}
                     </h5>
                     <Toolbar
                       connectionState={connectionState}
