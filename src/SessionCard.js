@@ -49,13 +49,21 @@ function SessionCard({ reload, session }) {
             />
             <MetadataEntry
               name="State"
-              value={session.state}
+              value={
+                activeStates.includes(session.state) ? 'Active' : session.state
+              }
               valueTitle={
                 activeStates.includes(session.state) ?
                   'This session is active.  You can connect to it to gain access.' :
                   'This session is no longer available.  To remove it from ' +
                   'this list, click the "Clean" button below.'
               }
+            />
+            <MetadataEntry
+              name="Host"
+              value={session.hostname}
+              valueTitle="The machine this session is running on"
+              format={host => <code>{host}</code>}
             />
             <MetadataEntry
               name="Started"
