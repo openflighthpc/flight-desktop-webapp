@@ -2,6 +2,7 @@ import Dashboard from './Dashboard';
 import DesktopsPage from './DesktopsPage';
 import SessionPage from './SessionPage';
 import SessionsPage from './SessionsPage';
+import ConfigsPage from './ConfigsPage';
 import UnconfiguredDashboard from './UnconfiguredDashboard';
 
 // We need this to prevent the route for `/sessions/:id` from matching the
@@ -27,6 +28,13 @@ const routes = [
     path: '/sessions',
     name: 'Sessions',
     Component: SessionsPage,
+    authenticated: true,
+    sideNav: true,
+  },
+  {
+    path: '/configs',
+    name: 'Configs',
+    Component: ConfigsPage,
     authenticated: true,
     sideNav: true,
   },
