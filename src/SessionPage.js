@@ -19,14 +19,28 @@ import styles from './NoVNC.module.css';
 import { useFetchSession } from './api';
 
 function buildWebsocketUrl(session, config) {
+  // We expect restapi to be running on an externally accessible machine.
+  //
+  // Remote sessions are not on the same machine as restapi, we need to use
+  // the session's primary IP address.
+  //
+  // Active sessions are on teh same machine as restapi and can be proxied to
+  // at 127.0.0.1.  We prefer 127.0.0.1 to the session's primary IP address as
+  // that may be behind a firewall.
+  let proxyIP;
+  if (session.state === 'Remote') {
+    proxyIP = session.ip
+  } else {
+    proxyIP = "127.0.0.1"
+  }
+
   if (config.devOnlyWebsocketRootUrl) {
     // This branch is intended for development and testing only.  The code
     // here is intentionally less robust in the URL it constructs.  It is
     // expected that the developer sets things up correctly.
     const rootUrl = config.devOnlyWebsocketRootUrl;
     const prefix = config.websocketPathPrefix;
-    const pathIP = config.websocketPathIp || session.ip;
-    return `${rootUrl}${prefix}/${pathIP}/${session.port}`;
+    return `${rootUrl}${prefix}/${proxyIP}/${session.port}`;
 
   } else {
     const apiUrl = new URL(config.apiRootUrl, window.location.origin);
@@ -39,8 +53,7 @@ function buildWebsocketUrl(session, config) {
     }
 
     let prefix = config.websocketPathPrefix;
-    const pathIP = config.websocketPathIp || session.ip;
-    wsUrl.pathname = `${prefix}/${pathIP}/${session.port}`;
+    wsUrl.pathname = `${prefix}/${proxyIP}/${session.port}`;
 
     return wsUrl.toString()
   }
@@ -148,6 +161,9 @@ function Layout({
   // `id` could be null when we are navigating away from the page.
   const { id } = useParams();
   const sessionName = id == null ? '' : id.split('-')[0];
+  const hostname = session == null ?
+    null :
+    <span>running on <code className="text-reset">{session.hostname}</code></span>;
 
   return (
     <div className="overflow-auto">
@@ -157,9 +173,9 @@ function Layout({
             <div className="card-header bg-primary text-light">
               <div className="row no-gutters">
                 <div className="col">
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex flex-wrap align-items-center">
                     <h5 className="flex-grow-1 mb-0">
-                      {sessionName}
+                      {sessionName} {hostname}
                     </h5>
                     <Toolbar
                       connectionState={connectionState}

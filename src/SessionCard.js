@@ -10,6 +10,7 @@ import { CardFooter } from './CardParts';
 import { prettyDesktopName } from './utils';
 
 const timeFormat = d3.timeFormat("%a %e %b %Y %H:%M");
+const activeStates = ['Active', 'Remote'];
 
 function timestampFormat(timestamp) {
   return timeFormat(new Date(timestamp));
@@ -29,7 +30,7 @@ function SessionCard({ reload, session }) {
           {sessionName}
         </h5>
         <div className={
-          classNames("card-body", { 'text-muted': session.state !== 'Active' })
+          classNames("card-body", { 'text-muted': !activeStates.includes(session.state) })
         }>
           <div className="row mb-2">
             <div className="col">
@@ -48,13 +49,21 @@ function SessionCard({ reload, session }) {
             />
             <MetadataEntry
               name="State"
-              value={session.state}
+              value={
+                activeStates.includes(session.state) ? 'Active' : session.state
+              }
               valueTitle={
-                session.state === 'Active' ?
+                activeStates.includes(session.state) ?
                   'This session is active.  You can connect to it to gain access.' :
                   'This session is no longer available.  To remove it from ' +
                   'this list, click the "Clean" button below.'
               }
+            />
+            <MetadataEntry
+              name="Host"
+              value={session.hostname}
+              valueTitle="The machine this session is running on"
+              format={host => <code>{host}</code>}
             />
             <MetadataEntry
               name="Started"
@@ -103,7 +112,7 @@ function MetadataEntry({ name, value, format, valueTitle }) {
 }
 
 function Buttons({ onCleaned, onTerminated, session }) {
-  if (session.state === 'Active') {
+  if (activeStates.includes(session.state)) {
     return (
       <div className="btn-toolbar justify-content-center">
         <Link
@@ -135,7 +144,7 @@ function Buttons({ onCleaned, onTerminated, session }) {
 
 function Screenshot({ session }) {
   const screenshot = <WrappedScreenshot className="card-img" session={session} />;
-  if (session.state === 'Active') {
+  if (activeStates.includes(session.state)) {
     return <Link to={`/sessions/${session.id}`}>{screenshot}</Link>;
   } else {
     return screenshot;

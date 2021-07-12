@@ -58,14 +58,6 @@ the cluster that is being managed.
 **websocketPathPrefix**: Set this to the path prefix that is proxied to
 websocket connections.
 
-**websocketPathIp**: The IP that the websocket proxy uses to connect to the
-websockify process.  If unset, the IP address reported by the session will be
-used.
-
-If the websocket proxy and the websockify process are running on the same
-machine, you probably want to set this to "127.0.0.1".  If they are not,
-you probably want to not have this set.
-
 Additionally, when installing from source, you may also
 configure the path at which the built application is to be mounted.
 
