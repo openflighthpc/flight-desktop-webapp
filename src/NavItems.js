@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 import { CurrentUserContext, useEnvironment } from 'flight-webapp-components';
 
+import QuickLaunchButton from './QuickLaunchButton'
+
 function NavItems() {
   const { currentUser } = useContext(CurrentUserContext);
   const environment = useEnvironment();
@@ -49,6 +51,7 @@ function NavItems() {
         My Configuration
       </Link>
     </li>
+    <QuickLaunchButton/>
     </>
   );
 }

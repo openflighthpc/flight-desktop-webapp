@@ -34,6 +34,20 @@ export function useFetchSession(id) {
   return useFetch(`/sessions/${id}`, [ id, currentUser.authToken ]);
 }
 
+export function useLaunchDefaultSession() {
+  const request = useFetch(
+    "/sessions",
+    {
+      method: 'post',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      cachePolicy: 'no-cache',
+    });
+  return request;
+}
+
 export function useLaunchSession(desktop) {
   const request = useFetch(
     "/sessions",
