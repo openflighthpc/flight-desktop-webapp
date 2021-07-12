@@ -36,6 +36,9 @@ function NavItems() {
       </Link>
     </li>
     <li className="nav-item">
+      <QuickLaunchButton className="nav-link nav-menu-button" color="link"/>
+    </li>
+    <li className="nav-item">
       <Link
         className="nav-link nav-menu-button"
         to="/sessions/new"
@@ -51,7 +54,6 @@ function NavItems() {
         My Configuration
       </Link>
     </li>
-    <QuickLaunchButton/>
     </>
   );
 }
