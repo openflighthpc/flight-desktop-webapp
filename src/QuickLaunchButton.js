@@ -6,7 +6,7 @@ import { useLaunchDefaultSession } from './api';
 import { ConfigContext } from 'flight-webapp-components';
 import { Button } from 'reactstrap';
 
-function QuickLaunchButton() {
+function QuickLaunchButton({ className, color }) {
   const clusterName = useContext(ConfigContext).clusterName;
   const history = useHistory();
   const { addToast } = useToast();
@@ -22,8 +22,8 @@ function QuickLaunchButton() {
     });
   };
 
-  return <Button color="success" disabled={loading} onClick={submit}>
-    Launch Session
+  return <Button className={className} color={color} disabled={loading} onClick={submit}>
+    Quick launch session
   </Button>
 }
 
