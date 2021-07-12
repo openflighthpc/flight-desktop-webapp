@@ -72,13 +72,8 @@ function Layout({ configs, desktops }) {
             <Col>
               <Input  type="select" name="desktop" id="desktop" required
                       value={desktop} onChange={e => updater(setDesktop, e)}>
-                {desktops.map(desktop => {
-                  var element = null;
-                  if (desktop.verified) {
-                    element = <option key={desktop.id}>{desktop.id}</option>
-                  }
-                  return element;
-                })}
+                <DisabledDesktopOption desktops={desktops} desktop={configs.desktop}/>
+                <DesktopOptions desktops={desktops}/>
               </Input>
             </Col>
           </FormGroup>
@@ -108,6 +103,26 @@ function Layout({ configs, desktops }) {
       </div>
     </div>
   );
+}
+
+function DisabledDesktopOption({desktops, desktop}) {
+  // Checks if the desktop exists and is verified
+  if (desktops.includes(d => { return d.id === desktop && d.verified })) {
+    return;
+  }
+
+  // Returns the disabled element
+  return(<option key={desktop} disabled>{desktop}</option>);
+}
+
+function DesktopOptions({desktops}) {
+  return desktops.map(desktop => {
+    var element = null;
+    if (desktop.verified) {
+      element = <option key={desktop.id}>{desktop.id}</option>
+    }
+    return element;
+  });
 }
 
 function UpdateButton({desktop, geometry, modified, setModified}) {
