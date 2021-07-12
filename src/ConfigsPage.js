@@ -14,7 +14,7 @@ import {
 
 import styles from './SessionsPage.module.css';
 import { useFetchUserConfig, useFetchDesktops, useUpdateUserConfig } from './api';
-import { useInterval } from './utils';
+import { useToast } from './ToastContext';
 
 function ConfigsPage() {
   const config_req = useFetchUserConfig();
@@ -47,16 +47,10 @@ function Layout({ configs, desktops }) {
   const [yGeometry, setYGeometry] = useState(y);
   const [modified, setModified] = useState(false);
 
-  // Create the updater and onSubmitted
+  // Create the updater
   const updater = function(setter, field) {
     if (! modified) { setModified(true) }
     setter(field.target.value);
-  }
-  const onSubmitted = function(data) {
-    setXGeometry(data.xGeometry);
-    setYGeometry(data.yGeometry);
-    setDesktop(data.desktop);
-    setModified(false);
   }
 
   if (configs == null) {
@@ -108,7 +102,7 @@ function Layout({ configs, desktops }) {
               desktop={desktop}
               geometry={`${xGeometry}x${yGeometry}`}
               modified={modified}
-              onSubmitted={onSubmitted}
+              setModified={setModified}
             />
           </FormGroup>
         </Form>
@@ -117,23 +111,45 @@ function Layout({ configs, desktops }) {
   );
 }
 
-function UpdateButton({desktop, geometry, modified, onSubmitted}) {
+function UpdateButton({desktop, geometry, modified, setModified}) {
+  const { addToast } = useToast();
   const { request, patch } = useUpdateUserConfig();
-  console.log("Rendering button");
-  console.log(desktop);
   const submit = async() => {
     // Create the submitter
     const data = await patch(desktop, geometry);
     if (request.response.ok) {
-      onSubmitted(data);
+      if ( desktop == data.desktop && geometry == data.geometry) {
+        // Update successful
+        setModified(false);
+      } else {
+        // The API response does not match the expected values
+        addToast(updateFailedToast({ errorCode: "did-not-update" }));
+      }
     } else {
-      console.log("Failed to update");
+      console.log("Failed to update configuration");
+      addToast(updateFailedToast({ errorCode: utils.errorCode(data) }));
     }
   }
 
   return <Button color="success" className="pull-right" disabled={!modified} onClick={submit}>
     Update Configuration
   </Button>
+}
+
+function updateFailedToast({ errorCode }) {
+  let body = (
+    <div>
+      Unfortunately there has been a problem updating your configurations.
+      Please try again and, if problems persist, help us to more quickly
+      rectify the problem by contacting us and letting us know.
+    </div>
+  );
+
+  return {
+    body,
+    icon: 'danger',
+    header: 'Failed to update configurations',
+  };
 }
 
 function Loading() {
