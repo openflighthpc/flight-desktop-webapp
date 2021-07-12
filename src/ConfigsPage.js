@@ -118,13 +118,13 @@ function Layout({ configs, desktops }) {
 }
 
 function UpdateButton({desktop, geometry, modified, onSubmitted}) {
-  const { patch, response, error } = useUpdateUserConfig(desktop, geometry);
+  const { request, patch } = useUpdateUserConfig();
   console.log("Rendering button");
   console.log(desktop);
   const submit = async() => {
     // Create the submitter
-    const data = await patch();
-    if (response.ok) {
+    const data = await patch(desktop, geometry);
+    if (request.response.ok) {
       onSubmitted(data);
     } else {
       console.log("Failed to update");
