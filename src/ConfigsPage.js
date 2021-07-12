@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
-import classNames from 'classnames';
 
-import { Button, Form, FormGroup, Col, Label, Input, FormText } from 'reactstrap';
+import { Button, Form, FormGroup, Col, Label, Input } from 'reactstrap';
 
 import {
   Overlay,
-  OverlayContainer,
   Spinner,
   UnauthorizedError,
   DefaultErrorMessage,
   utils,
 } from 'flight-webapp-components';
 
-import styles from './SessionsPage.module.css';
 import { useFetchUserConfig, useFetchDesktops, useUpdateUserConfig } from './api';
 import { useToast } from './ToastContext';
 
@@ -76,9 +73,11 @@ function Layout({ configs, desktops }) {
               <Input  type="select" name="desktop" id="desktop" required
                       value={desktop} onChange={e => updater(setDesktop, e)}>
                 {desktops.map(desktop => {
+                  var element = null;
                   if (desktop.verified) {
-                    return (<option>{desktop.id}</option>);
+                    element = <option key={desktop.id}>{desktop.id}</option>
                   }
+                  return element;
                 })}
               </Input>
             </Col>
@@ -118,7 +117,7 @@ function UpdateButton({desktop, geometry, modified, setModified}) {
     // Create the submitter
     const data = await patch(desktop, geometry);
     if (request.response.ok) {
-      if ( desktop == data.desktop && geometry == data.geometry) {
+      if ( desktop === data.desktop && geometry === data.geometry) {
         // Update successful
         setModified(false);
       } else {
