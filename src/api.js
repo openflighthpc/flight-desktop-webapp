@@ -83,7 +83,7 @@ export function useTerminateSession(id) {
   return request;
 }
 
-export function useUpdateUserConfig(desktop, geometry) {
+export function useUpdateUserConfig() {
   const request = useFetch(
     '/configs/user',
     {
@@ -92,13 +92,12 @@ export function useUpdateUserConfig(desktop, geometry) {
         'Content-Type': 'application/json',
         'Accepts': 'application/json',
       },
-      body: {
-        desktop: desktop,
-        geometry: geometry
-      },
       cachePolicy: 'no-cache',
     });
-  return request;
+  const patch = function(desktop, geometry) {
+    return request.patch({ desktop: desktop, geometry: geometry });
+  }
+  return { request, patch: patch };
 }
 
 export function useFetchScreenshot(id, { reloadInterval=1*60*1000 }={}) {
