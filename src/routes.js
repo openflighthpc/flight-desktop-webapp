@@ -3,6 +3,7 @@ import DesktopsPage from './DesktopsPage';
 import SessionPage from './SessionPage';
 import SessionsPage from './SessionsPage';
 import UnconfiguredDashboard from './UnconfiguredDashboard';
+import NotFoundDashboard from './NotFoundDashboard';
 
 // We need this to prevent the route for `/sessions/:id` from matching the
 // string `/sessions/new`.
@@ -36,6 +37,11 @@ const routes = [
     Component: Dashboard,
     sideNav: true,
   },
+  {
+    name: 'Not found',
+    Component: NotFoundDashboard,
+    sideNav: true
+  },
 ]
 
 const unconfiguredRoutes = [
@@ -44,6 +50,11 @@ const unconfiguredRoutes = [
     name: 'Home',
     Component: UnconfiguredDashboard,
     sideNav: true,
+  },
+  {
+    name: 'Not found',
+    Component: NotFoundDashboard,
+    sideNav: true
   },
 ];
 
