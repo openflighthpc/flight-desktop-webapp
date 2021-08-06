@@ -1,9 +1,10 @@
+import { NotFound } from 'flight-webapp-components';
+
 import Dashboard from './Dashboard';
 import DesktopsPage from './DesktopsPage';
 import SessionPage from './SessionPage';
 import SessionsPage from './SessionsPage';
 import UnconfiguredDashboard from './UnconfiguredDashboard';
-import NotFoundDashboard from './NotFoundDashboard';
 
 // We need this to prevent the route for `/sessions/:id` from matching the
 // string `/sessions/new`.
@@ -39,7 +40,7 @@ const routes = [
   },
   {
     name: 'Not found',
-    Component: NotFoundDashboard,
+    Component: NotFound,
     sideNav: true
   },
 ]
@@ -53,7 +54,7 @@ const unconfiguredRoutes = [
   },
   {
     name: 'Not found',
-    Component: NotFoundDashboard,
+    Component: NotFound,
     sideNav: true
   },
 ];
