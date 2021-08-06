@@ -7,6 +7,7 @@ import {
   DefaultErrorMessage,
   ErrorBoundary,
   FullscreenButton,
+  NotFound,
   Overlay,
   Spinner,
 } from 'flight-webapp-components';
@@ -70,7 +71,11 @@ function SessionPage() {
   if (sessionLoading) {
     return <Loading id={id} />;
   } else if (sessionLoadingError) {
-    return <DefaultErrorMessage />;
+    if (sessionLoadingError.name === "404") {
+      return <NotFound />;
+    } else {
+      return <DefaultErrorMessage />;
+    }
   } else {
     return (
       <Connected
