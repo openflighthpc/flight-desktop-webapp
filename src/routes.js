@@ -1,3 +1,5 @@
+import { NotFound } from 'flight-webapp-components';
+
 import Dashboard from './Dashboard';
 import DesktopsPage from './DesktopsPage';
 import SessionPage from './SessionPage';
@@ -36,6 +38,11 @@ const routes = [
     Component: Dashboard,
     sideNav: true,
   },
+  {
+    name: 'Not found',
+    Component: NotFound,
+    sideNav: true
+  },
 ]
 
 const unconfiguredRoutes = [
@@ -44,6 +51,11 @@ const unconfiguredRoutes = [
     name: 'Home',
     Component: UnconfiguredDashboard,
     sideNav: true,
+  },
+  {
+    name: 'Not found',
+    Component: NotFound,
+    sideNav: true
   },
 ];
 
