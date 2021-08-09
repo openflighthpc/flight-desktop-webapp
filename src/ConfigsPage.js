@@ -36,7 +36,7 @@ function ConfigsPage() {
 function Layout({ configs, desktops }) {
   // Determine the current settings
   const [x, y] = configs.geometry.split("x");
-  const d = desktops.map(d => { return d.id }).includes(configs.desktop) ? configs.desktop : null;
+  const d = desktops.map(d => d.id).includes(configs.desktop) ? configs.desktop : null;
 
   // Create the state references
   const [desktop, setDesktop] = useState(d);

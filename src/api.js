@@ -111,7 +111,7 @@ export function useUpdateUserConfig() {
   const patch = function(desktop, geometry) {
     return request.patch({ desktop: desktop, geometry: geometry });
   }
-  return { request, patch: patch };
+  return { request, patch };
 }
 
 export function useFetchScreenshot(id, { reloadInterval=1*60*1000 }={}) {
