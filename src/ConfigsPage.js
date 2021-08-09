@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Button, Form, FormGroup, Col, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 import {
   Overlay,
@@ -69,28 +69,22 @@ function Layout({ configs, desktops }) {
       </h4>
       <div className="card-body container">
         <Form>
-          <FormGroup row>
-            <Label for="desktop" sm={2} size="lg">Desktop</Label>
-            <Col>
-              <Input  type="select" name="desktop" id="desktop" required
-                      value={desktop} onChange={e => updater(setDesktop, e)}>
-                <DesktopOptions desktops={desktops} default={desktop} />
-              </Input>
-            </Col>
+          <FormGroup>
+            <Label for="desktop">Desktop</Label>
+            <Input  type="select" name="desktop" id="desktop" required
+                    value={desktop} onChange={e => updater(setDesktop, e)}>
+              <DesktopOptions desktops={desktops} default={desktop} />
+            </Input>
           </FormGroup>
-          <FormGroup row>
-            <Label sm={2} size="lg">Geometry</Label>
-            <Col>
-              <Input  type="number" name="geometry-x" id="geometry-x" required
-                      placeholder="X Geometry" value={xGeometry} onChange={e => updater(setXGeometry, e)}
-              />
-            </Col>
+          <FormGroup>
+            <Label>Geometry</Label>
+            <Input  type="number" name="geometry-x" id="geometry-x" required
+                    placeholder="X Geometry" value={xGeometry} onChange={e => updater(setXGeometry, e)}
+            />
             <span sm="auto" size="lg" className="align-middle">X</span>
-            <Col>
-              <Input  type="number" name="geometry-y" id="geometry-y" required
-                      placeholder="Y Geometry" value={yGeometry} onChange={e => updater(setYGeometry, e)}
-              />
-            </Col>
+            <Input  type="number" name="geometry-y" id="geometry-y" required
+                    placeholder="Y Geometry" value={yGeometry} onChange={e => updater(setYGeometry, e)}
+            />
           </FormGroup>
           <FormGroup check>
             <UpdateButton
