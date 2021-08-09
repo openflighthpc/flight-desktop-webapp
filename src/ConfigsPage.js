@@ -154,21 +154,21 @@ function UpdateButton({desktop, geometry, modified, setModified}) {
 function updateSuccessfulToast() {
   let body = (
     <div>
-      Your configurations have been updated!
+      Your configuration has been updatede.
     </div>
   );
 
   return {
     body,
     icon: 'success',
-    header: 'Updated your configurations',
+    header: 'Updated your configuration',
   };
 }
 
 function updateFailedToast({ errorCode }) {
   let body = (
     <div>
-      Unfortunately there has been a problem updating your configurations.
+      Unfortunately there has been a problem updating your configuration.
       Please try again and, if problems persist, help us to more quickly
       rectify the problem by contacting us and letting us know.
     </div>
@@ -177,7 +177,7 @@ function updateFailedToast({ errorCode }) {
   return {
     body,
     icon: 'danger',
-    header: 'Failed to update configurations',
+    header: 'Failed to update configuration',
   };
 }
 
