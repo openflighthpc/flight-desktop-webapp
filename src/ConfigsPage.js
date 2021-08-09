@@ -10,6 +10,8 @@ import {
   utils,
 } from 'flight-webapp-components';
 
+import { prettyDesktopName } from './utils';
+
 import { useFetchUserConfig, useFetchDesktops, useUpdateUserConfig } from './api';
 import { useToast } from './ToastContext';
 
@@ -108,7 +110,7 @@ function DesktopOptions({desktops, selected}) {
   return desktops.map(desktop => {
     var element = null;
     if (desktop.verified) {
-      element = <option key={desktop.id} selected={selected === desktop.id}>{desktop.id}</option>
+      element = <option value={desktop.id} label={prettyDesktopName[desktop.id]} selected={selected === desktop.id}/>
     }
     return element;
   });
