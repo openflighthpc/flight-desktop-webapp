@@ -37,13 +37,11 @@ function ConfigsPage() {
 
 function Layout({ configs, desktops }) {
   // Determine the current settings
-  const [x, y] = configs.geometry.split("x");
   const d = desktops.map(d => d.id).includes(configs.desktop) ? configs.desktop : desktops[0].id;
 
   // Create the state references
   const [desktop, setDesktop] = useState(d);
-  const [xGeometry, setXGeometry] = useState(x);
-  const [yGeometry, setYGeometry] = useState(y);
+  const [geometry, setGeometry] = useState(configs.geometry);
   const [modified, setModified] = useState(false);
 
   // Create the updater
@@ -73,23 +71,20 @@ function Layout({ configs, desktops }) {
             <Label for="desktop">Desktop</Label>
             <Input  type="select" name="desktop" id="desktop" required
                     value={desktop} onChange={e => updater(setDesktop, e)}>
-              <DesktopOptions desktops={desktops} default={desktop} />
+              <DesktopOptions desktops={desktops} selected={desktop} />
             </Input>
           </FormGroup>
           <FormGroup>
             <Label>Geometry</Label>
-            <Input  type="number" name="geometry-x" id="geometry-x" required
-                    placeholder="X Geometry" value={xGeometry} onChange={e => updater(setXGeometry, e)}
-            />
-            <span sm="auto" size="lg" className="align-middle">X</span>
-            <Input  type="number" name="geometry-y" id="geometry-y" required
-                    placeholder="Y Geometry" value={yGeometry} onChange={e => updater(setYGeometry, e)}
-            />
+            <Input  type="select" name="geometry" id="geometry" required
+                    value={geometry} onChange={e => updater(setGeometry, e)}>
+              <GeometryOptions geometries={configs.geometries} selected={geometry} />
+            </Input>
           </FormGroup>
           <FormGroup check>
             <UpdateButton
               desktop={desktop}
-              geometry={`${xGeometry}x${yGeometry}`}
+              geometry={geometry}
               modified={modified}
               setModified={setModified}
             />
@@ -107,6 +102,12 @@ function DesktopOptions({desktops, selected}) {
       element = <option value={desktop.id} label={prettyDesktopName[desktop.id]} selected={selected === desktop.id}/>
     }
     return element;
+  });
+}
+
+function GeometryOptions({geometries, selected}) {
+  return geometries.map(geometry => {
+    return <option value={geometry} label={geometry} selected={selected === geometry}/>
   });
 }
 
