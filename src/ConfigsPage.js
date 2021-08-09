@@ -37,18 +37,14 @@ function ConfigsPage() {
 
 function Layout({ configs, desktops }) {
   // Determine the current settings
-  const d = desktops.map(d => d.id).includes(configs.desktop) ? configs.desktop : desktops[0].id;
+  const [originalStruct, setOriginalStruct] = useState({
+    desktop: desktops.map(d => d.id).includes(configs.desktop) ? configs.desktop : desktops[0].id,
+    geometry: configs.geometry
+  })
 
   // Create the state references
-  const [desktop, setDesktop] = useState(d);
-  const [geometry, setGeometry] = useState(configs.geometry);
-  const [modified, setModified] = useState(false);
-
-  // Create the updater
-  const updater = function(setter, field) {
-    if (! modified) { setModified(true) }
-    setter(field.target.value);
-  }
+  const [desktop, setDesktop] = useState(originalStruct.desktop);
+  const [geometry, setGeometry] = useState(originalStruct.geometry);
 
   if (configs == null) {
     console.log("The 'configs' where null")
@@ -70,23 +66,23 @@ function Layout({ configs, desktops }) {
           <FormGroup>
             <Label for="desktop">Desktop</Label>
             <Input  type="select" name="desktop" id="desktop" required
-                    value={desktop} onChange={e => updater(setDesktop, e)}>
-              <DesktopOptions desktops={desktops} selected={desktop} />
+                    value={desktop} onChange={e => setDesktop(e.target.value)}>
+              <DesktopOptions desktops={desktops} selected={desktop} original={originalStruct.desktop}/>
             </Input>
           </FormGroup>
           <FormGroup>
             <Label>Geometry</Label>
             <Input  type="select" name="geometry" id="geometry" required
-                    value={geometry} onChange={e => updater(setGeometry, e)}>
-              <GeometryOptions geometries={configs.geometries} selected={geometry} />
+                    value={geometry} onChange={e => { setGeometry(e.target.value) }}>
+              <GeometryOptions geometries={configs.geometries} selected={geometry} original={originalStruct.geometry}/>
             </Input>
           </FormGroup>
           <FormGroup check>
             <UpdateButton
               desktop={desktop}
               geometry={geometry}
-              modified={modified}
-              setModified={setModified}
+              originalStruct={originalStruct}
+              setOriginalStruct={setOriginalStruct}
             />
           </FormGroup>
         </Form>
@@ -95,23 +91,28 @@ function Layout({ configs, desktops }) {
   );
 }
 
-function DesktopOptions({desktops, selected}) {
+function DesktopOptions({desktops, selected, original}) {
   return desktops.map(desktop => {
     var element = null;
+    const is_selected = (selected === desktop.id);
+    const pretty  = prettyDesktopName[desktop.id];
+    const label = original === desktop.id ? `${pretty} (default)` : pretty
     if (desktop.verified) {
-      element = <option value={desktop.id} label={prettyDesktopName[desktop.id]} selected={selected === desktop.id}/>
+      element = <option value={desktop.id} label={label} selected={is_selected}/>
     }
     return element;
   });
 }
 
-function GeometryOptions({geometries, selected}) {
+function GeometryOptions({geometries, selected, original}) {
   return geometries.map(geometry => {
-    return <option value={geometry} label={geometry} selected={selected === geometry}/>
+    const is_selected = (selected === geometry);
+    const label = original === geometry ? `${original} (default)` : geometry
+    return <option value={geometry} label={label} selected={is_selected}/>
   });
 }
 
-function UpdateButton({desktop, geometry, modified, setModified}) {
+function UpdateButton({desktop, geometry, originalStruct, setOriginalStruct}) {
   const { addToast } = useToast();
   const { request, patch } = useUpdateUserConfig();
   const submit = async() => {
@@ -120,7 +121,10 @@ function UpdateButton({desktop, geometry, modified, setModified}) {
     if (request.response.ok) {
       if ( desktop === data.desktop && geometry === data.geometry) {
         // Update successful
-        setModified(false);
+        setOriginalStruct({
+          desktop: data.desktop,
+          geometry: data.geometry
+        });
         addToast(updateSuccessfulToast());
       } else {
         // The API response does not match the expected values
@@ -131,8 +135,9 @@ function UpdateButton({desktop, geometry, modified, setModified}) {
       addToast(updateFailedToast({ errorCode: utils.errorCode(data) }));
     }
   }
+  const is_original = (desktop === originalStruct.desktop) && (geometry === originalStruct.geometry);
 
-  return <Button color="success" className="pull-right" disabled={request.loading || !modified} onClick={submit}>
+  return <Button color="success" className="pull-right" disabled={request.loading || is_original} onClick={submit}>
     { request.loading ? <i className="fa fa-spinner fa-spin mr-1"/> : null }
     <span>{request.loading ? "Updating Configuration..." : "Update Configuration"}</span>
   </Button>
