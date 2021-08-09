@@ -36,7 +36,7 @@ function ConfigsPage() {
 function Layout({ configs, desktops }) {
   // Determine the current settings
   const [x, y] = configs.geometry.split("x");
-  const d = desktops.map(d => d.id).includes(configs.desktop) ? configs.desktop : null;
+  const d = desktops.map(d => d.id).includes(configs.desktop) ? configs.desktop : desktops[0].id;
 
   // Create the state references
   const [desktop, setDesktop] = useState(d);
@@ -72,8 +72,7 @@ function Layout({ configs, desktops }) {
             <Col>
               <Input  type="select" name="desktop" id="desktop" required
                       value={desktop} onChange={e => updater(setDesktop, e)}>
-                <DisabledDesktopOption desktops={desktops} desktop={configs.desktop}/>
-                <DesktopOptions desktops={desktops}/>
+                <DesktopOptions desktops={desktops} default={desktop} />
               </Input>
             </Col>
           </FormGroup>
@@ -105,21 +104,11 @@ function Layout({ configs, desktops }) {
   );
 }
 
-function DisabledDesktopOption({desktops, desktop}) {
-  // Checks if the desktop exists and is verified
-  if (desktops.includes(d => { return d.id === desktop && d.verified })) {
-    return;
-  }
-
-  // Returns the disabled element
-  return(<option key={desktop} disabled>{desktop}</option>);
-}
-
-function DesktopOptions({desktops}) {
+function DesktopOptions({desktops, selected}) {
   return desktops.map(desktop => {
     var element = null;
     if (desktop.verified) {
-      element = <option key={desktop.id}>{desktop.id}</option>
+      element = <option key={desktop.id} selected={selected === desktop.id}>{desktop.id}</option>
     }
     return element;
   });
@@ -154,7 +143,7 @@ function UpdateButton({desktop, geometry, modified, setModified}) {
 function updateSuccessfulToast() {
   let body = (
     <div>
-      Your configuration has been updatede.
+      Your configuration has been updated.
     </div>
   );
 
