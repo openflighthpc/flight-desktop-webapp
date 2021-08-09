@@ -137,8 +137,9 @@ function UpdateButton({desktop, geometry, modified, setModified}) {
     }
   }
 
-  return <Button color="success" className="pull-right" disabled={!modified} onClick={submit}>
-    Update Configuration
+  return <Button color="success" className="pull-right" disabled={request.loading || !modified} onClick={submit}>
+    { request.loading ? <i className="fa fa-spinner fa-spin mr-1"/> : null }
+    <span>{request.loading ? "Updating Configuration..." : "Update Configuration"}</span>
   </Button>
 }
 
