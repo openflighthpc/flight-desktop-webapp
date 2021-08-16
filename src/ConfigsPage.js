@@ -98,7 +98,7 @@ function DesktopOptions({desktops, selected, original}) {
     const pretty  = prettyDesktopName[desktop.id];
     const label = original === desktop.id ? `${pretty} (default)` : pretty
     if (desktop.verified) {
-      element = <option value={desktop.id} label={label} selected={is_selected}/>
+      element = <option key={desktop.id} value={desktop.id} label={label} selected={is_selected}/>
     }
     return element;
   });
@@ -108,7 +108,7 @@ function GeometryOptions({geometries, selected, original}) {
   return geometries.map(geometry => {
     const is_selected = (selected === geometry);
     const label = original === geometry ? `${original} (default)` : geometry
-    return <option value={geometry} label={label} selected={is_selected}/>
+    return <option key={geometry} value={geometry} label={label} selected={is_selected}/>
   });
 }
 
