@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from "reactstrap";
 
 import {
   ConfirmedActionButton,
@@ -9,7 +10,15 @@ import { prettyDesktopName } from './utils';
 import { useTerminateSession } from './api';
 import { useToast } from './ToastContext';
 
-function TerminateButton({
+function TerminateButton({ session, className, ...rest }) {
+  if (session.state === 'Active') {
+    return <ActiveTerminateButton session={session} className={className} {...rest}/>
+  } else {
+    return <DisabledTerminateButton session={session} className={className}/>
+  }
+}
+
+function ActiveTerminateButton({
   className,
   onTerminate=()=>{},
   onTerminated=()=>{},
@@ -83,6 +92,24 @@ function terminateFailedToast({ session, errorCode }) {
     icon: 'danger',
     header: 'Failed to terminate session',
   };
+}
+
+function DisabledTerminateButton({ session, className}) {
+  return (
+    <Button
+      className={`btn btn-danger disabled ${className}`}
+      disabled={true}
+      id={`terminate-session-${session.id}`}
+      size="sm"
+    >
+      <i className="fa fa-trash mr-1"/>
+      <span
+        title="Support for terminating remote sessions is not yet available"
+      >
+        Terminate
+      </span>
+    </Button>
+  );
 }
 
 export default TerminateButton;
