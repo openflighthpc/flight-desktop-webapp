@@ -117,11 +117,11 @@ function GeometryOptions({geometries, selected, original}) {
 
 function UpdateButton({desktop, geometry, originalStruct, setOriginalStruct}) {
   const { addToast } = useToast();
-  const { request, patch, response } = useUpdateUserConfig();
+  const { request, patch } = useUpdateUserConfig();
   const submit = async() => {
     // Create the submitter
     const data = await patch(desktop, geometry);
-    if (response.ok) {
+    if (request.response.ok) {
       if ( desktop === data.desktop && geometry === data.geometry) {
         // Update successful
         setOriginalStruct({
