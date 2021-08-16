@@ -18,6 +18,12 @@ function timestampFormat(timestamp) {
 
 function SessionCard({ reload, session }) {
   const sessionName = session.name || session.id.split('-')[0];
+  let sessionState;
+  if (session.state === 'Remote') {
+    sessionState = 'Active (remote)';
+  } else {
+    sessionState = session.state;
+  }
 
   return (
       <div
@@ -49,9 +55,7 @@ function SessionCard({ reload, session }) {
             />
             <MetadataEntry
               name="State"
-              value={
-                activeStates.includes(session.state) ? 'Active' : session.state
-              }
+              value={sessionState}
               valueTitle={
                 activeStates.includes(session.state) ?
                   'This session is active.  You can connect to it to gain access.' :

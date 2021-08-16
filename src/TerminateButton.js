@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from "reactstrap";
 
 import {
   ConfirmedActionButton,
@@ -8,8 +9,6 @@ import {
 import { prettyDesktopName } from './utils';
 import { useTerminateSession } from './api';
 import { useToast } from './ToastContext';
-
-import { Button } from "reactstrap";
 
 function TerminateButton({ session, className, ...rest }) {
   if (session.state === 'Active') {
@@ -99,14 +98,16 @@ function DisabledTerminateButton({ session, className}) {
   return (
     <Button
       className={`btn btn-danger disabled ${className}`}
-      id={`terminate-session-${session.id}`}
       disabled={true}
+      id={`terminate-session-${session.id}`}
       size="sm"
     >
       <i className="fa fa-trash mr-1"/>
       <span
-        title="Remote sessions cannot be terminated"
-      >Terminate (Unsupported)</span>
+        title="Support for terminating remote sessions is not yet available"
+      >
+        Terminate
+      </span>
     </Button>
   );
 }
