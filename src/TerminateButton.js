@@ -104,7 +104,9 @@ function DisabledTerminateButton({ session, className}) {
       size="sm"
     >
       <i className="fa fa-trash mr-1"/>
-      <span>Terminate (Unsupported)</span>
+      <span
+        title="Remote sessions cannot be terminated"
+      >Terminate (Unsupported)</span>
     </Button>
   );
 }
