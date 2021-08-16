@@ -93,13 +93,18 @@ function Layout({ configs, desktops }) {
 
 function DesktopOptions({desktops, selected, original}) {
   return desktops.map(desktop => {
-    var element = null;
-    const pretty  = prettyDesktopName[desktop.id];
-    const label = original === desktop.id ? `${pretty} (default)` : pretty
-    if (desktop.verified) {
-      element = <option key={desktop.id} value={desktop.id} label={label} selected={selected}/>
+    var label = prettyDesktopName[desktop.id];
+    if (original === desktop.id) {
+      label = `${label} (default)`
     }
-    return element;
+    if (!desktop.verified) {
+      label = `${label} - (Disabled: Unverified)`
+    }
+    return <option  key={desktop.id}
+                    value={desktop.id}
+                    label={label}
+                    selected={selected}
+                    disabled={!desktop.verified}/>
   });
 }
 
