@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 import {
+  DefaultErrorMessage,
   Overlay,
   Spinner,
   UnauthorizedError,
-  DefaultErrorMessage,
   utils,
 } from 'flight-webapp-components';
 
 import { prettyDesktopName } from './utils';
-
 import { useFetchUserConfig, useFetchDesktops, useUpdateUserConfig } from './api';
 import { useToast } from './ToastContext';
 
@@ -47,7 +45,6 @@ function Layout({ configs, desktops }) {
   const [geometry, setGeometry] = useState(originalStruct.geometry);
 
   if (configs == null) {
-    console.log("The 'configs' where null")
     return <DefaultErrorMessage />;
   }
 
@@ -65,16 +62,28 @@ function Layout({ configs, desktops }) {
         <Form>
           <FormGroup>
             <Label for="desktop">Desktop</Label>
-            <Input  type="select" name="desktop" id="desktop" required
-                    value={desktop} onChange={e => setDesktop(e.target.value)}>
-              <DesktopOptions desktops={desktops} selected={desktop} original={originalStruct.desktop}/>
+            <Input
+              id="desktop"
+              name="desktop"
+              onChange={e => setDesktop(e.target.value)}
+              required
+              type="select"
+              value={desktop}
+            >
+              <DesktopOptions desktops={desktops} original={originalStruct.desktop} />
             </Input>
           </FormGroup>
           <FormGroup>
             <Label>Geometry</Label>
-            <Input  type="select" name="geometry" id="geometry" required
-                    value={geometry} onChange={e => { setGeometry(e.target.value) }}>
-              <GeometryOptions geometries={configs.geometries} selected={geometry} original={originalStruct.geometry}/>
+            <Input
+              id="geometry"
+              name="geometry"
+              onChange={e => { setGeometry(e.target.value) }}
+              required
+              type="select"
+              value={geometry}
+            >
+              <GeometryOptions geometries={configs.geometries} original={originalStruct.geometry} />
             </Input>
           </FormGroup>
           <FormGroup check>
@@ -91,27 +100,36 @@ function Layout({ configs, desktops }) {
   );
 }
 
-function DesktopOptions({desktops, selected, original}) {
+function DesktopOptions({desktops, original}) {
   return desktops.map(desktop => {
-    var label = prettyDesktopName[desktop.id];
+    let label = prettyDesktopName[desktop.id];
     if (original === desktop.id) {
       label = `${label} (default)`
     }
     if (!desktop.verified) {
-      label = `${label} - (Disabled: Unverified)`
+      label = `${label} - (Unverified)`
     }
-    return <option  key={desktop.id}
-                    value={desktop.id}
-                    label={label}
-                    selected={selected}
-                    disabled={!desktop.verified}/>
+    return (
+      <option
+        disabled={!desktop.verified}
+        key={desktop.id}
+        label={label}
+        value={desktop.id}
+      />
+    );
   });
 }
 
-function GeometryOptions({geometries, selected, original}) {
+function GeometryOptions({geometries, original}) {
   return geometries.map(geometry => {
     const label = original === geometry ? `${original} (default)` : geometry
-    return <option key={geometry} value={geometry} label={label} selected={selected}/>
+    return (
+      <option
+        key={geometry}
+        label={label}
+        value={geometry}
+      />
+    );
   });
 }
 
