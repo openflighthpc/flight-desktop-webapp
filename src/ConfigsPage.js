@@ -112,11 +112,11 @@ function GeometryOptions({geometries, selected, original}) {
 
 function UpdateButton({desktop, geometry, originalStruct, setOriginalStruct}) {
   const { addToast } = useToast();
-  const { request, patch } = useUpdateUserConfig();
+  const { request, patch, response } = useUpdateUserConfig();
   const submit = async() => {
     // Create the submitter
     const data = await patch(desktop, geometry);
-    if (request.response.ok) {
+    if (response.ok) {
       if ( desktop === data.desktop && geometry === data.geometry) {
         // Update successful
         setOriginalStruct({
@@ -129,15 +129,15 @@ function UpdateButton({desktop, geometry, originalStruct, setOriginalStruct}) {
         addToast(updateFailedToast({ errorCode: "did-not-update" }));
       }
     } else {
-      console.log("Failed to update configuration");
+      console.log("Failed to update your configuration");
       addToast(updateFailedToast({ errorCode: utils.errorCode(data) }));
     }
   }
-  const is_original = (desktop === originalStruct.desktop) && (geometry === originalStruct.geometry);
+  const isOriginal = (desktop === originalStruct.desktop) && (geometry === originalStruct.geometry);
 
-  return <Button color="success" className="pull-right" disabled={request.loading || is_original} onClick={submit}>
+  return <Button color="success" className="pull-right" disabled={request.loading || isOriginal} onClick={submit}>
     { request.loading ? <i className="fa fa-spinner fa-spin mr-1"/> : null }
-    <span>{request.loading ? "Updating Configuration..." : "Update Configuration"}</span>
+    <span>{request.loading ? "Updating..." : "Update Your Configuration"}</span>
   </Button>
 }
 
@@ -167,7 +167,7 @@ function updateFailedToast({ errorCode }) {
   return {
     body,
     icon: 'danger',
-    header: 'Failed to update configuration',
+    header: 'Failed to update your configuration',
   };
 }
 
