@@ -94,11 +94,10 @@ function Layout({ configs, desktops }) {
 function DesktopOptions({desktops, selected, original}) {
   return desktops.map(desktop => {
     var element = null;
-    const is_selected = (selected === desktop.id);
     const pretty  = prettyDesktopName[desktop.id];
     const label = original === desktop.id ? `${pretty} (default)` : pretty
     if (desktop.verified) {
-      element = <option key={desktop.id} value={desktop.id} label={label} selected={is_selected}/>
+      element = <option key={desktop.id} value={desktop.id} label={label} selected={selected}/>
     }
     return element;
   });
@@ -106,9 +105,8 @@ function DesktopOptions({desktops, selected, original}) {
 
 function GeometryOptions({geometries, selected, original}) {
   return geometries.map(geometry => {
-    const is_selected = (selected === geometry);
     const label = original === geometry ? `${original} (default)` : geometry
-    return <option key={geometry} value={geometry} label={label} selected={is_selected}/>
+    return <option key={geometry} value={geometry} label={label} selected={selected}/>
   });
 }
 
