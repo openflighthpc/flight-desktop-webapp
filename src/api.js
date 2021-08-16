@@ -21,9 +21,31 @@ export function useFetchSessions() {
     [ currentUser.authToken ]);
 }
 
+export function useFetchUserConfig() {
+  const { currentUser } = useContext(CurrentUserContext);
+  return useFetch(
+    "/configs/user",
+    { headers: { Accept: 'application/json' } },
+    [ currentUser.authToken ]);
+}
+
 export function useFetchSession(id) {
   const { currentUser } = useContext(CurrentUserContext);
   return useFetch(`/sessions/${id}`, [ id, currentUser.authToken ]);
+}
+
+export function useLaunchDefaultSession() {
+  const request = useFetch(
+    "/sessions",
+    {
+      method: 'post',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      cachePolicy: 'no-cache',
+    });
+  return request;
 }
 
 export function useLaunchSession(desktop) {
@@ -73,6 +95,23 @@ export function useTerminateSession(id) {
       cachePolicy: 'no-cache',
     });
   return request;
+}
+
+export function useUpdateUserConfig() {
+  const request = useFetch(
+    '/configs/user',
+    {
+      method: 'patch',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accepts': 'application/json',
+      },
+      cachePolicy: 'no-cache',
+    });
+  const patch = function(desktop, geometry) {
+    return request.patch({ desktop: desktop, geometry: geometry });
+  }
+  return { request, patch };
 }
 
 export function useFetchScreenshot(id, { reloadInterval=1*60*1000 }={}) {
