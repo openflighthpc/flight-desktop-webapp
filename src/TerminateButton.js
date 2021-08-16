@@ -9,7 +9,17 @@ import { prettyDesktopName } from './utils';
 import { useTerminateSession } from './api';
 import { useToast } from './ToastContext';
 
-function TerminateButton({
+import { Button } from "reactstrap";
+
+function TerminateButton({ session, className, ...rest }) {
+  if (session.state === 'Active') {
+    return <ActiveTerminateButton session={session} className={className} {...rest}/>
+  } else {
+    return <DisabledTerminateButton session={session} className={className}/>
+  }
+}
+
+function ActiveTerminateButton({
   className,
   onTerminate=()=>{},
   onTerminated=()=>{},
@@ -83,6 +93,20 @@ function terminateFailedToast({ session, errorCode }) {
     icon: 'danger',
     header: 'Failed to terminate session',
   };
+}
+
+function DisabledTerminateButton({ session, className}) {
+  return (
+    <Button
+      className={`btn btn-danger disabled ${className}`}
+      id={`terminate-session-${session.id}`}
+      disabled={true}
+      size="sm"
+    >
+      <i className="fa fa-trash mr-1"/>
+      <span>Terminate (Unsupported)</span>
+    </Button>
+  );
 }
 
 export default TerminateButton;
