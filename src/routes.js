@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { NotFound } from 'flight-webapp-components';
 
 import Dashboard from './Dashboard';
@@ -10,6 +11,24 @@ import UnconfiguredDashboard from './UnconfiguredDashboard';
 // We need this to prevent the route for `/sessions/:id` from matching the
 // string `/sessions/new`.
 const uuidRegExp = '\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b'
+
+const notFoundRoute = {
+  name: 'Not found',
+  Component: () => (
+    <NotFound
+      homeLink={
+        <Link
+          className="btn btn-link"
+          to="/"
+        >
+          <span>Move Along...</span>
+        </Link>
+      }
+    />
+  ),
+  sideNav: true,
+  key: 'notfound',
+};
 
 const routes = [
   {
@@ -46,11 +65,7 @@ const routes = [
     Component: Dashboard,
     sideNav: true,
   },
-  {
-    name: 'Not found',
-    Component: NotFound,
-    sideNav: true
-  },
+  notFoundRoute,
 ]
 
 const unconfiguredRoutes = [
@@ -60,11 +75,7 @@ const unconfiguredRoutes = [
     Component: UnconfiguredDashboard,
     sideNav: true,
   },
-  {
-    name: 'Not found',
-    Component: NotFound,
-    sideNav: true
-  },
+  notFoundRoute,
 ];
 
 export {
