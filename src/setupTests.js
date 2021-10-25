@@ -46,6 +46,9 @@ beforeEach(() => {
 
     } else if (url.toString() === process.env.REACT_APP_ENVIRONMENT_FILE) {
       return Promise.resolve(JSON.stringify({}));
+
+    } else if (url.toString() === process.env.REACT_APP_DATA_FILE) {
+      return Promise.resolve(JSON.stringify({}));
     }
   });
 });

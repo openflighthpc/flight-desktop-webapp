@@ -39,9 +39,8 @@ TODO: complete this
 When proxying via Flight WWW
 
 * Edit [.env.development](.env.development).
-* Comment and uncomment the appropriate `REACT_APP_*_BASE_URL` variables.
-* The `REACT_APP_CONFIG_FILE` variable must match the `REACT_APP_API_BASE_URL`
-  setting.  Either both development or both production.
+* Comment and uncomment the appropriate `REACT_APP_LOGIN_API_BASE_URL` and
+  `REACT_APP_CONFIG_FILE` variables.
 
 When accessing directly
 
