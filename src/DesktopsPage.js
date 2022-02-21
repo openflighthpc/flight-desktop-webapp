@@ -44,11 +44,12 @@ function DesktopsPage() {
 }
 
 function DesktopsList({ desktops }) {
+  const filteredDesktops = desktops.filter(desktop => desktop.verified);
   const { groupedItems: groupedDesktops } = useMediaGrouping(
     ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
     [3, 2, 2, 1],
     1,
-    desktops,
+    filteredDesktops,
   );
   const decks = groupedDesktops.map(
     (group, index) => (

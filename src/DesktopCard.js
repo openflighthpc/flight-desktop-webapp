@@ -7,7 +7,6 @@ import {
   utils,
 } from 'flight-webapp-components';
 
-import styles from './DesktopCard.module.css';
 import { CardFooter } from './CardParts';
 import { prettyDesktopName } from './utils';
 import { useLaunchSession } from './api';
@@ -36,7 +35,7 @@ function DesktopCard({ desktop }) {
   return (
     <div
       className={
-        classNames('card border-primary mb-2', { [styles.DesktopUnverified]: !desktop.verified })
+        classNames('card border-primary mb-2')
       }
     >
       <h5
@@ -68,8 +67,6 @@ function DesktopCard({ desktop }) {
               classNames("btn btn-sm btn-primary mr-2", { 'disabled': loading })
             }
             onClick={launchSession}
-            disabled={!desktop.verified || loading}
-            title={desktop.verified ? null : unverifiedMessage(clusterName)}
           >
             {
               loading ?
@@ -81,14 +78,6 @@ function DesktopCard({ desktop }) {
         </div>
       </CardFooter>
     </div>
-  );
-}
-
-function unverifiedMessage(clusterName) {
-  return (
-    "This desktop has not yet been fully configured. If you would like to use" +
-    ` this desktop please contact the system administrator for ${clusterName}` +
-    " and ask them to prepare this desktop."
   );
 }
 
