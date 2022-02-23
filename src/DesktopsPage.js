@@ -45,18 +45,31 @@ function DesktopsPage() {
 
 function DesktopsList({ desktops }) {
   const filteredDesktops = desktops.filter(desktop => desktop.verified);
-  const { groupedItems: groupedDesktops } = useMediaGrouping(
+  const { groupedItems: groupedDesktops, perGroup } = useMediaGrouping(
     ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
     [3, 2, 2, 1],
     1,
     filteredDesktops,
   );
   const decks = groupedDesktops.map(
-    (group, index) => (
-      <div key={index} className="card-deck">
-        {group.map((desktop) => <DesktopCard key={desktop.id} desktop={desktop} />)}
-      </div>
-    )
+    (group, index) => {
+      let blanks = null;
+      if ( group.length < perGroup) {
+        const a = new Array(perGroup - group.length);
+        a.fill(0);
+        blanks = a.map((i, index) => <div key={index} className="card invisible"></div>)
+      }
+      return (
+        <div key={index} className="card-deck">
+          {
+            group.map((desktop) => (
+              <DesktopCard key={desktop.id} desktop={desktop} />
+            ))
+          }
+          {blanks}
+        </div>
+      );
+    }
   );
 
   return (
