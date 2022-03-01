@@ -7,7 +7,7 @@ import { CurrentUserContext } from 'flight-webapp-components';
 
 import QuickLaunchButton from './QuickLaunchButton'
 
-function NavItems() {
+function NavItems({ includeHome=true }) {
   const { currentUser } = useContext(CurrentUserContext);
 
   if (currentUser == null) {
@@ -16,7 +16,7 @@ function NavItems() {
 
   return (
     <>
-    <NavLink path="/">Home</NavLink>
+    { includeHome ? <NavLink path="/">Home</NavLink> : null }
     <NavLink path="/sessions">My sessions</NavLink>
     <li className="nav-item">
       <QuickLaunchButton className="nav-link nav-menu-button" color="link"/>
