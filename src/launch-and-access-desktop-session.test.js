@@ -95,8 +95,10 @@ afterEach(() => {
 });
 
 
-async function signIn({ getByLabelText, getByRole, getByText, queryByText }) {
-  const loginButton = getByText(/Log in/);
+async function signIn({ getByLabelText, getByRole, getAllByText, queryByText }) {
+  const getFirstByText = (...args) => getAllByText(...args)[0];
+
+  const loginButton = getFirstByText(/Log in/);
   expect(loginButton).toBeInTheDocument();
   fireEvent.click(loginButton)
 
@@ -114,8 +116,10 @@ async function signIn({ getByLabelText, getByRole, getByText, queryByText }) {
   )
 }
 
-async function navigateToLaunchPage({ getByText, queryByText }) {
-  fireEvent.click(getByText('Launch new session'));
+async function navigateToLaunchPage({ getAllByText, getByText, queryByText }) {
+  const getFirstByText = (...args) => getAllByText(...args)[0];
+
+  fireEvent.click(getFirstByText('Launch new session'));
   await waitFor(() => expect(getByText('Loading desktops...')).toBeInTheDocument());
   await waitFor(() => expect(queryByText('Loading desktops...')).toBeNull());
 }
