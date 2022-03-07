@@ -8,6 +8,7 @@ PACKAGE_NAME=$(cat "${REPO_ROOT}/package.json" | jq -r .name )
 
 main() {
     parse_arguments "$@"
+    validate_arguments
     header "Checking repo is clean"
     abort_if_uncommitted_changes_present
     abort_if_not_uptodate_with_remotes
@@ -167,6 +168,14 @@ parse_arguments() {
                 ;;
         esac
     done
+}
+
+validate_arguments() {
+    if [ "${BUMP_VERSION}" == "false" -a "${NEW_VERSION}" != "" ]; then
+        echo "$(basename $0): cannot give both --version and --skip-version-bump"
+        usage
+        exit 1
+    fi
 }
 
 main "$@"
