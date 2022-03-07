@@ -25,7 +25,7 @@ function buildWebsocketUrl(session, config) {
   // Remote sessions are not on the same machine as restapi, we need to use
   // the session's primary IP address.
   //
-  // Active sessions are on teh same machine as restapi and can be proxied to
+  // Active sessions are on the same machine as restapi and can be proxied to
   // at 127.0.0.1.  We prefer 127.0.0.1 to the session's primary IP address as
   // that may be behind a firewall.
   let proxyIP;

@@ -20,7 +20,7 @@ function SessionCard({ reload, session }) {
   const sessionName = session.name || session.id.split('-')[0];
   let sessionState;
   if (session.state === 'Remote') {
-    sessionState = 'Active (remote)';
+    sessionState = 'Active';
   } else {
     sessionState = session.state;
   }
