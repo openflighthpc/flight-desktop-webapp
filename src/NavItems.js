@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 
 import { CurrentUserContext } from 'flight-webapp-components';
 
-import QuickLaunchButton from './QuickLaunchButton'
+import LaunchDropdown from './LaunchDropdown'
 
 function NavItems({ includeHome=true }) {
   const { currentUser } = useContext(CurrentUserContext);
@@ -19,9 +19,8 @@ function NavItems({ includeHome=true }) {
     { includeHome ? <NavLink path="/">Home</NavLink> : null }
     <NavLink path="/sessions">My sessions</NavLink>
     <li className="nav-item">
-      <QuickLaunchButton className="nav-link nav-menu-button" color="link"/>
+      <LaunchDropdown className="nav-link nav-menu-button" color="link"/>
     </li>
-    <NavLink path="/sessions/new">Launch new session</NavLink>
     <NavLink path="/configs">My configuration</NavLink>
     </>
   );

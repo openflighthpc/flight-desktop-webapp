@@ -4,7 +4,7 @@ import { useToast } from './ToastContext';
 import { useLaunchDefaultSession } from './api';
 
 import { ConfigContext } from 'flight-webapp-components';
-import { Button } from 'reactstrap';
+import { DropdownItem } from 'reactstrap';
 
 function QuickLaunchButton({ className, color }) {
   const clusterName = useContext(ConfigContext).clusterName;
@@ -22,10 +22,10 @@ function QuickLaunchButton({ className, color }) {
     });
   };
 
-  return <Button className={className} color={color} disabled={loading} onClick={submit}>
+  return <DropdownItem color={color} disabled={loading} onClick={submit} href="#">
     { loading ? <i className="fa fa-spinner fa-spin mr-1"/> : null }
-    <span>{ loading ? "Quick lauching session..." : "Quick launch session" }</span>
-  </Button>
+    <span>{ loading ? "Quick launching session..." : "Quick launch" }</span>
+  </DropdownItem>
 }
 
 function failedToast(clusterName) {
