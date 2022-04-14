@@ -17,11 +17,11 @@ function NavItems({ includeHome=true }) {
   return (
     <>
     { includeHome ? <NavLink path="/">Home</NavLink> : null }
-    <NavLink path="/sessions">My sessions</NavLink>
-    <li className="nav-item">
+    <NavLink path="/sessions">Sessions</NavLink>
+    <li className="nav-item dropdown">
       <LaunchDropdown className="nav-link nav-menu-button" color="link"/>
     </li>
-    <NavLink path="/configs">My configuration</NavLink>
+    <NavLink path="/configs">Configuration</NavLink>
     </>
   );
 }
