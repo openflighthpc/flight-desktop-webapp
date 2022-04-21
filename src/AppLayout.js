@@ -15,12 +15,22 @@ import { routes, unconfiguredRoutes } from './routes';
 
 function AppLayout() {
   const { unconfigured } = useContext(ConfigContext);
+  const accountMenuItems = {
+    signedIn: [
+      {
+        "href": "/configs",
+        "text": "Configuration"
+      }
+    ]
+  }
+
 
   return (
     <>
     <BrandBar
       className="brandbar"
       navItems={<NavItems includeHome={false} />}
+      accountMenuItems={accountMenuItems}
     />
     <div
       className="container-fluid"
