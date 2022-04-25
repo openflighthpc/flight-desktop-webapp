@@ -119,7 +119,7 @@ async function signIn({ getByLabelText, getByRole, getAllByText, queryByText }) 
 async function navigateToLaunchPage({ getAllByText, getByText, queryByText }) {
   const getFirstByText = (...args) => getAllByText(...args)[0];
 
-  fireEvent.click(getFirstByText('Launch new session'));
+  fireEvent.click(getFirstByText('Launch session'));
   await waitFor(() => expect(getByText('Loading desktops...')).toBeInTheDocument());
   await waitFor(() => expect(queryByText('Loading desktops...')).toBeNull());
 }
