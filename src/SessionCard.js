@@ -17,7 +17,8 @@ function timestampFormat(timestamp) {
 }
 
 function SessionCard({ reload, session }) {
-  const sessionName = session.name || session.id.split('-')[0];
+  const sessionId = session.id.split('-')[0];
+  const sessionName = session.name == null ? '' : `(${session.name})`;
   let sessionState;
   if (session.state === 'Remote') {
     sessionState = 'Active';
@@ -33,7 +34,7 @@ function SessionCard({ reload, session }) {
         data-testid="session-card"
       >
         <h5 className="card-header bg-primary text-light">
-          {sessionName}
+          {sessionId} {sessionName}
         </h5>
         <div className={
           classNames("card-body", { 'text-muted': !activeStates.includes(session.state) })
@@ -52,6 +53,10 @@ function SessionCard({ reload, session }) {
               valueTitle={
                 prettyDesktopName[session.desktop] || session.desktop || 'Unknown'
               }
+            />
+            <MetadataEntry
+              name="Name"
+              value={session.name || 'N/A'}
             />
             <MetadataEntry
               name="State"
