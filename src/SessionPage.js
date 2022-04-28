@@ -165,7 +165,10 @@ function Layout({
 }) {
   // `id` could be null when we are navigating away from the page.
   const { id } = useParams();
-  const sessionName = id == null ? '' : id.split('-')[0];
+  const sessionId = id == null ? '' : id.split('-')[0];
+  const sessionName = (session == null || session.name === '') ?
+    null :
+    `(${session.name})`;
   const hostname = session == null ?
     null :
     <span>running on <code className="text-reset">{session.hostname}</code></span>;
@@ -180,7 +183,7 @@ function Layout({
                 <div className="col">
                   <div className="d-flex flex-wrap align-items-center">
                     <h5 className="flex-grow-1 mb-0">
-                      {sessionName} {hostname}
+                      {sessionId} {sessionName} {hostname}
                     </h5>
                     <Toolbar
                       connectionState={connectionState}
