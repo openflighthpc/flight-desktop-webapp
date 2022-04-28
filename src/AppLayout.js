@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Redirect, Route, Switch, useLocation } from "react-router-dom";
+import { Link, Redirect, Route, Switch, useLocation } from "react-router-dom";
 
 import {
   AnimatedRouter,
@@ -17,10 +17,9 @@ function AppLayout() {
   const { unconfigured } = useContext(ConfigContext);
   const accountMenuItems = {
     signedIn: [
-      {
-        "href": "/configs",
-        "text": "Configuration"
-      }
+      <Link to="/configs" className="nav nav-link dropdown-item">
+        Configuration
+      </Link>
     ]
   }
 
