@@ -18,7 +18,9 @@ function timestampFormat(timestamp) {
 
 function SessionCard({ reload, session }) {
   const sessionId = session.id.split('-')[0];
-  const sessionName = session.name == null ? '' : `(${session.name})`;
+  const title = session.name == null ?
+    sessionId :
+    `${session.name} (${sessionId})`;
   let sessionState;
   if (session.state === 'Remote') {
     sessionState = 'Active';
@@ -34,7 +36,7 @@ function SessionCard({ reload, session }) {
         data-testid="session-card"
       >
         <h5 className="card-header bg-primary text-light">
-          {sessionId} {sessionName}
+          {title}
         </h5>
         <div className={
           classNames("card-body", { 'text-muted': !activeStates.includes(session.state) })

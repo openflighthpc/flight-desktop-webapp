@@ -163,15 +163,14 @@ function Layout({
   session,
   vnc,
 }) {
-  // `id` could be null when we are navigating away from the page.
   const { id } = useParams();
-  const sessionId = id == null ? '' : id.split('-')[0];
-  const sessionName = (session == null || session.name === '') ?
-    null :
-    `(${session.name})`;
+  const sessionId = id.split('-')[0];
   const hostname = session == null ?
     null :
     <span>running on <code className="text-reset">{session.hostname}</code></span>;
+  const title = (session == null || session.name == null || session.name === "") ?
+    <span>{sessionId} {hostname}</span> :
+    <span>{session.name} ({sessionId}) {hostname}</span>;
 
   return (
     <div className="overflow-auto">
@@ -183,7 +182,7 @@ function Layout({
                 <div className="col">
                   <div className="d-flex flex-wrap align-items-center">
                     <h5 className="flex-grow-1 mb-0">
-                      {sessionId} {sessionName} {hostname}
+                      {title}
                     </h5>
                     <Toolbar
                       connectionState={connectionState}
