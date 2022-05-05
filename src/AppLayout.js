@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Redirect, Route, Switch, useLocation } from "react-router-dom";
+import { Link, Redirect, Route, Switch, useLocation } from "react-router-dom";
 
 import {
   AnimatedRouter,
@@ -15,12 +15,21 @@ import { routes, unconfiguredRoutes } from './routes';
 
 function AppLayout() {
   const { unconfigured } = useContext(ConfigContext);
+  const accountMenuItems = {
+    signedIn: [
+      <Link to="/configs" className="nav nav-link dropdown-item">
+        Configuration
+      </Link>
+    ]
+  }
+
 
   return (
     <>
     <BrandBar
       className="brandbar"
       navItems={<NavItems includeHome={false} />}
+      accountMenuItems={accountMenuItems}
     />
     <div
       className="container-fluid"

@@ -21,7 +21,6 @@ function NavItems({ includeHome=true }) {
     <li className="nav-item dropdown">
       <LaunchDropdown className="nav-link nav-menu-button" color="link"/>
     </li>
-    <NavLink path="/configs">Configuration</NavLink>
     </>
   );
 }
