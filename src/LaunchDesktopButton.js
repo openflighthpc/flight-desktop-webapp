@@ -10,7 +10,15 @@ import ModalContainer from "./ModalContainer";
 import { useLaunchSession } from './api';
 import { prettyDesktopName } from './utils';
 
-function LaunchDesktopButton({ className, desktop, errorToast, launch, children }) {
+function LaunchDesktopButton({
+  className,
+  desktop,
+  errorToast,
+  launch,
+  children,
+  color,
+  size
+}) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
 
@@ -38,6 +46,8 @@ function LaunchDesktopButton({ className, desktop, errorToast, launch, children 
   return (
     <div>
       <Button
+        color={color}
+        size={size}
         className={className}
         onClick={toggle}
       >

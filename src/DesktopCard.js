@@ -64,9 +64,9 @@ function DesktopCard({ desktop }) {
       <CardFooter>
         <div className="btn-toolbar justify-content-center">
           <LaunchDesktopButton
-            className={
-              classNames("btn btn-sm btn-primary mr-2", { 'disabled': loading })
-            }
+            color="primary"
+            size="sm"
+            className={ classNames("mr-2", { 'disabled': loading })  }
             desktop={desktop}
             errorToast={launchErrorToast}
             launch={launchSession}
