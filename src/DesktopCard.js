@@ -68,6 +68,8 @@ function DesktopCard({ desktop }) {
               classNames("btn btn-sm btn-primary mr-2", { 'disabled': loading })
             }
             desktop={desktop}
+            errorToast={launchErrorToast}
+            launch={launchSession}
           >
             {
               loading ?
