@@ -8,6 +8,7 @@ import {
 } from 'flight-webapp-components';
 
 import { CardFooter } from './CardParts';
+import LaunchDesktopButton from './LaunchDesktopButton';
 import { prettyDesktopName } from './utils';
 import { useLaunchSession } from './api';
 import { useToast } from './ToastContext';
@@ -62,11 +63,11 @@ function DesktopCard({ desktop }) {
       </div>
       <CardFooter>
         <div className="btn-toolbar justify-content-center">
-          <button
+          <LaunchDesktopButton
             className={
               classNames("btn btn-sm btn-primary mr-2", { 'disabled': loading })
             }
-            onClick={launchSession}
+            desktop={desktop}
           >
             {
               loading ?
@@ -74,7 +75,7 @@ function DesktopCard({ desktop }) {
                 <i className="fa fa-bolt mr-1"></i>
             }
             <span>{ loading ? 'Launching...' : 'Launch' }</span>
-          </button>
+          </LaunchDesktopButton>
         </div>
       </CardFooter>
     </div>
