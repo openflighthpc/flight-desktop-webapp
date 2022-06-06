@@ -1,9 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { Button } from 'reactstrap';
 import { useToast } from './ToastContext';
+import { useHistory } from 'react-router-dom';
+import classNames from 'classnames';
 
 import {
-  ConfigContext
+  ConfigContext,
+  utils
 } from 'flight-webapp-components';
 
 import ModalContainer from "./ModalContainer";
@@ -14,16 +17,34 @@ function LaunchDesktopButton({
   className,
   desktop,
   errorToast,
-  launch,
   children,
   color,
   size
 }) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
-
+  const clusterName = useContext(ConfigContext).clusterName;
   const desktopName = prettyDesktopName[desktop.id];
   const modalTitle = <span>Prepare launch of '{desktopName}' desktop</span>;
+  const nameRef = useRef(null);
+  const { loading, post, response } = useLaunchSession(desktop, nameRef.current?.value);
+  const { addToast } = useToast();
+  const history = useHistory();
+
+  const launchSession = () => {
+    post().then((responseBody) => {
+      if (response.ok) {
+        history.push(`/sessions/${responseBody.id}`);
+      } else {
+        addToast(errorToast({
+          clusterName: clusterName,
+          desktop: desktop,
+          launchError: utils.errorCode(responseBody),
+        }));
+      }
+    });
+  };
+
   const leftButton = (
     <Button
       color="secondary"
@@ -36,22 +57,26 @@ function LaunchDesktopButton({
   const rightButton = (
     <Button
       classname="ml-2"
-      onClick={() => { launch(); toggle(); }}
+      onClick={() => { launchSession(); toggle(); }}
     >
       Launch
     </Button>
   );
-
 
   return (
     <div>
       <Button
         color={color}
         size={size}
-        className={className}
+        className={classNames(className, { 'disabled': loading})}
         onClick={toggle}
       >
-        {children}
+        {
+          loading ?
+            <i className="fa fa-spinner fa-spin mr-1"></i> :
+            <i className="fa fa-bolt mr-1"></i>
+        }
+        <span>{ loading ? 'Launching...' : 'Launch' }</span>
       </Button>
       <ModalContainer
         isOpen={modal}
@@ -60,7 +85,16 @@ function LaunchDesktopButton({
         toggle={toggle}
         leftButton={leftButton}
         rightButton={rightButton}
-      />
+      >
+        Please input a sensible name for the desktop session (you may leave this blank).
+        <input
+          className="w-100"
+          name="session-name"
+          placeholder="Session name"
+          type="text"
+          ref={nameRef}
+        />
+      </ModalContainer>
     </div>
   );
 }

@@ -1,36 +1,15 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { useHistory } from 'react-router-dom';
 
 import {
   ConfigContext,
-  utils,
 } from 'flight-webapp-components';
 
 import { CardFooter } from './CardParts';
 import LaunchDesktopButton from './LaunchDesktopButton';
 import { prettyDesktopName } from './utils';
-import { useLaunchSession } from './api';
-import { useToast } from './ToastContext';
 
 function DesktopCard({ desktop }) {
-  const { loading, post, response } = useLaunchSession(desktop);
-  const history = useHistory();
-  const { addToast } = useToast();
-  const clusterName = useContext(ConfigContext).clusterName;
-  const launchSession = () => {
-    post().then((responseBody) => {
-      if (response.ok) {
-        history.push(`/sessions/${responseBody.id}`);
-      } else {
-        addToast(launchErrorToast({
-          clusterName: clusterName,
-          desktop: desktop,
-          launchError: utils.errorCode(responseBody),
-        }));
-      }
-    });
-  };
   const desktopName = prettyDesktopName[desktop.id];
 
   return (
@@ -66,18 +45,10 @@ function DesktopCard({ desktop }) {
           <LaunchDesktopButton
             color="primary"
             size="sm"
-            className={ classNames("mr-2", { 'disabled': loading })  }
+            className="mr-2"
             desktop={desktop}
             errorToast={launchErrorToast}
-            launch={launchSession}
-          >
-            {
-              loading ?
-                <i className="fa fa-spinner fa-spin mr-1"></i> :
-                <i className="fa fa-bolt mr-1"></i>
-            }
-            <span>{ loading ? 'Launching...' : 'Launch' }</span>
-          </LaunchDesktopButton>
+          />
         </div>
       </CardFooter>
     </div>

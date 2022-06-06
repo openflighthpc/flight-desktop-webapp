@@ -16,7 +16,8 @@ function ModalContainer({
   modalTitle,
   toggle,
   leftButton,
-  rightButton
+  rightButton,
+  children
 }) {
   return (
     <Modal
@@ -29,7 +30,9 @@ function ModalContainer({
         leftButton={leftButton}
         rightButton={rightButton}
         toggle={toggle}
-        modalTitle={modalTitle}>
+        modalTitle={modalTitle}
+      >
+        {children}
       </ModalContent>
     </Modal>
   );
