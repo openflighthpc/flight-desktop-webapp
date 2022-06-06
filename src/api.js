@@ -48,7 +48,7 @@ export function useLaunchDefaultSession() {
   return request;
 }
 
-export function useLaunchSession(desktop) {
+export function useLaunchSession(desktop, name=null) {
   const request = useFetch(
     "/sessions",
     {
@@ -59,6 +59,7 @@ export function useLaunchSession(desktop) {
       },
       body: {
         desktop: desktop.id,
+        name: name
       },
       cachePolicy: 'no-cache',
     });
