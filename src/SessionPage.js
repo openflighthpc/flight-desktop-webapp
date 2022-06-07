@@ -14,6 +14,7 @@ import {
 
 import NoVNC from './NoVNC';
 import PreparePasteButton from './PreparePasteButton';
+import RenameButton from './RenameButton';
 import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
 import styles from './NoVNC.module.css';
@@ -220,6 +221,14 @@ function Toolbar({
 }) {
   const { addToast } = useToast();
 
+  const renameBtn = session != null ? (
+    <RenameButton
+      className="btn-sm mr-1"
+      session={session}
+    >
+    </RenameButton>
+  ) : null;
+
   const disconnectBtn = connectionState === 'connected' ? (
     <button
       className="btn btn-secondary btn-sm mr-1"
@@ -285,6 +294,7 @@ function Toolbar({
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
       {fullscreenBtn}
+      {renameBtn}
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}
