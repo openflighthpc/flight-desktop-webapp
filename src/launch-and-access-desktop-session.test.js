@@ -129,6 +129,9 @@ async function launchDesktop(desktopType, { getByText, getByRole, queryByText })
   const card = heading.closest('.card');
   const launchButton = within(card).getByRole('button', { name: 'Launch' });
   fireEvent.click(launchButton);
+  await waitFor(() => expect(queryByText('Start')).toBeInTheDocument());
+  const startButton = getByRole('button', { name: 'Start' });
+  fireEvent.click(startButton);
 }
 
 async function renderApp() {

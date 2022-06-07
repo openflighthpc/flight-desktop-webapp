@@ -59,7 +59,7 @@ function LaunchDesktopButton({
       className="ml-2"
       onClick={() => { launchSession(); toggle(); }}
     >
-      Launch
+      Start
     </Button>
   );
 
