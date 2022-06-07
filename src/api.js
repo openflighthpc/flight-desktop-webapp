@@ -48,7 +48,7 @@ export function useLaunchDefaultSession() {
   return request;
 }
 
-export function useLaunchSession(desktop, name=null) {
+export function useLaunchSession() {
   const request = useFetch(
     "/sessions",
     {
@@ -57,13 +57,13 @@ export function useLaunchSession(desktop, name=null) {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: {
-        desktop: desktop.id,
-        name: name
-      },
       cachePolicy: 'no-cache',
-    });
-  return request;
+    }
+  );
+  const post = function(desktop, name) {
+    return request.post({ desktop: desktop, name: name})
+  };
+  return { ...request, request, post };
 }
 
 export function useCleanSession(id) {

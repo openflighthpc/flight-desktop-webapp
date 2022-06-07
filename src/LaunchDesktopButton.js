@@ -27,13 +27,13 @@ function LaunchDesktopButton({
   const desktopName = prettyDesktopName[desktop.id];
   const modalTitle = <span>Prepare launch of '{desktopName}' desktop</span>;
   const nameRef = useRef(null);
-  const { loading, post, response } = useLaunchSession(desktop, nameRef.current?.value);
+  const { request, post } = useLaunchSession();
   const { addToast } = useToast();
   const history = useHistory();
 
   const launchSession = () => {
-    post().then((responseBody) => {
-      if (response.ok) {
+    post(desktop.id, nameRef.current?.value).then((responseBody) => {
+      if (request.response.ok) {
         history.push(`/sessions/${responseBody.id}`);
       } else {
         addToast(errorToast({
@@ -56,7 +56,7 @@ function LaunchDesktopButton({
   );
   const rightButton = (
     <Button
-      classname="ml-2"
+      className="ml-2"
       onClick={() => { launchSession(); toggle(); }}
     >
       Launch
@@ -68,15 +68,15 @@ function LaunchDesktopButton({
       <Button
         color={color}
         size={size}
-        className={classNames(className, { 'disabled': loading})}
+        className={classNames(className, { 'disabled': request.loading})}
         onClick={toggle}
       >
         {
-          loading ?
+          request.loading ?
             <i className="fa fa-spinner fa-spin mr-1"></i> :
             <i className="fa fa-bolt mr-1"></i>
         }
-        <span>{ loading ? 'Launching...' : 'Launch' }</span>
+        <span>{ request.loading ? 'Launching...' : 'Launch' }</span>
       </Button>
       <ModalContainer
         isOpen={modal}
