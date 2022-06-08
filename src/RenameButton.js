@@ -70,21 +70,32 @@ function RenameButton({
           Rename session
         </PopoverHeader>
         <PopoverBody>
-          rename ur session:
-          <input
-            className="w-100"
-            name="session-name"
-            placeholder="New name..."
-            type="text"
-            ref={nameRef}
-          />
+          <p>
+            Please enter a suitable name for your session (you may leave this blank).
+            <input
+              className="w-100"
+              name="session-name"
+              placeholder="Session name"
+              type="text"
+              ref={nameRef}
+            />
+          </p>
           <ButtonToolbar className="justify-content-center">
             <Button
-            className="mr-2"
-            onClick={() => {renameSession(); toggle(); }}
-            size="sm"
+              className="mr-2"
+              onClick={toggle}
+              size="sm"
             >
-              Submit
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              className="mr-2"
+              onClick={() => {renameSession(); toggle(); }}
+              size="sm"
+            >
+              <i className="fa fa-pencil-square mr-1"></i>
+              Rename
             </Button>
           </ButtonToolbar>
         </PopoverBody>
@@ -110,7 +121,7 @@ function renameFailedToast({session, errorCode}) {
   return {
     body,
     icon: 'danger',
-    header: 'Failed to terminate session',
+    header: 'Failed to rename session',
   };
 }
 
