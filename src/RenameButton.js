@@ -1,32 +1,109 @@
-import React from 'react';
-import { Button } from 'reactstrap';
+import React, { useState } from 'react';
+import {
+  Button,
+  Popover,
+  PopoverBody,
+  PopoverHeader
+} from 'reactstrap';
 
-import { 
+import {
+  ConfirmedActionButton,
   utils,
 } from 'flight-webapp-components';
 
 import { useRenameSession } from './api';
+import classNames from 'classnames';
 
 import { prettyDesktopName } from './utils';
 import { useToast } from './ToastContext';
 
-function RenameButton({ className, session }) {
-  const { request, post } = useRenameSession(session.id);
-  const renameSession = () => {
-    post(session.id, "new-name")
-  };
-
+function RenameButton({
+  className,
+  session,
+  onRename=()=>{},
+  onRenamed=()=>{},
+}) {
+  const nameRef = useRef(null);
+  const id = `rename-session-${session.id}`;
+  const { loading: renaming, request, post } = useRenameSession(session.id);
+  const renameSession = async () => {
+    onRename();
+    try {
+      const responseBody = await post(session.id, nameRef.current?.value);
+      if (response.ok) {
+        onRenamed();
+    } else {
+      addToast(renameFailedToast({
+        session: session,
+        errorCode: utils.errorCode(responseBody)
+      }));
+    }
+  } catch (e) {
+    addToast(renameFailedToast({
+      session: session,
+      errorCode: undefined,
+    }));
+  }
+  const [ showConfirmation, setShowConfirmation] = useState(false);
+  const toggle= () => setShowConfirmation(!showConfirmation);
+  const renaming = useState(false);
 
   return (
-    <Button
-      className={className}
-      session={session}
-      onClick={renameSession}
-    >
-      <i className="fa fa-pencil-square-o mr-1"></i>
-      <span>Rename</span>
-    </Button>
-  )
+    <React.Fragment>
+      <Button
+      className={`${className} ${renaming ? 'disabled ' : null}` }
+      disabled={renaming}
+      id={id}
+      >
+        {
+          renaming ?
+            <i className="fa fa-spinner fa-spin mr-1"></i> :
+            <i className="fa fa-pencil-square mr-1"></i>
+        }
+        <span>{ renaming ? 'Renaming...' : 'Rename' }</span>
+      </Button>
+      <Popover
+        isOpen={showConfirmation}
+        target={id}
+        toggle={toggle}
+      >
+        <PopoverHeader>
+          Rename session
+        </PopoverHeader>
+        <PopoverBody>
+          rename ur session:
+          <input
+            className="w-100"
+            name="session-name"
+            placeholder="New name..."
+            type="text"
+            ref={nameRef}
+          />
+        </PopoverBody>
+      </Popover>
+    </React.Fragment>
+  );
+}
+
+function renameFailedToast({session, errorCode}) {
+  const desktopName = prettyDesktopName[session.desktop];
+  const sessionName = session.name || session.id.split('-')[0];
+
+  let body = (
+    <div>
+      Unfortunately there has been a problem renaming your
+      {' '}<strong>{desktopName}</strong> desktop session
+      {' '}<strong>{sessionName}</strong>.  Please try again and, if problems
+      persist, help us to more quickly rectify the problem by contacting us
+      and letting us know.
+    </div>
+  );
+
+  return {
+    body,
+    icon: 'danger',
+    header: 'Failed to terminate session',
+  };
 }
 
 export default RenameButton;

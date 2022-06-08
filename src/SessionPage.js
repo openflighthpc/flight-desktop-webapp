@@ -223,7 +223,7 @@ function Toolbar({
 
   const renameBtn = session != null ? (
     <RenameButton
-      className="btn-sm mr-1"
+      className="btn-sm btn-secondary mr-1"
       session={session}
     >
     </RenameButton>
