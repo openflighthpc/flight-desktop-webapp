@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Button,
+  ButtonToolbar,
   Popover,
   PopoverBody,
   PopoverHeader
 } from 'reactstrap';
 
 import {
-  ConfirmedActionButton,
   utils,
 } from 'flight-webapp-components';
 
 import { useRenameSession } from './api';
-import classNames from 'classnames';
 
 import { prettyDesktopName } from './utils';
 import { useToast } from './ToastContext';
@@ -20,33 +19,33 @@ import { useToast } from './ToastContext';
 function RenameButton({
   className,
   session,
-  onRename=()=>{},
   onRenamed=()=>{},
 }) {
   const nameRef = useRef(null);
   const id = `rename-session-${session.id}`;
+  const { addToast } = useToast();
   const { loading: renaming, request, post } = useRenameSession(session.id);
   const renameSession = async () => {
-    onRename();
     try {
-      const responseBody = await post(session.id, nameRef.current?.value);
-      if (response.ok) {
-        onRenamed();
-    } else {
+      post(session.id, nameRef.current?.value).then((responseBody) => {
+        if (request.response.ok) {
+          onRenamed();
+        } else {
+          addToast(renameFailedToast({
+            session: session,
+            errorCode: utils.errorCode(responseBody)
+          }));
+        }
+      });
+    } catch (e) {
       addToast(renameFailedToast({
         session: session,
-        errorCode: utils.errorCode(responseBody)
+        errorCode: undefined,
       }));
     }
-  } catch (e) {
-    addToast(renameFailedToast({
-      session: session,
-      errorCode: undefined,
-    }));
   }
   const [ showConfirmation, setShowConfirmation] = useState(false);
   const toggle= () => setShowConfirmation(!showConfirmation);
-  const renaming = useState(false);
 
   return (
     <React.Fragment>
@@ -79,6 +78,15 @@ function RenameButton({
             type="text"
             ref={nameRef}
           />
+          <ButtonToolbar className="justify-content-center">
+            <Button
+            className="mr-2"
+            onClick={() => {renameSession(); toggle(); }}
+            size="sm"
+            >
+              Submit
+            </Button>
+          </ButtonToolbar>
         </PopoverBody>
       </Popover>
     </React.Fragment>

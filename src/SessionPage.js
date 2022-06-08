@@ -124,6 +124,7 @@ function Connected({ id, session }) {
       onTerminate={() => setConnectionState('terminating')}
       onTerminated={() => history.push('/sessions')}
       onZenChange={() => vnc.current && vnc.current.resize()}
+      onRenamed={() => history.push(`/sessions/${session.id}`)}
       session={session}
       vnc={vnc}
     >
@@ -160,6 +161,7 @@ function Layout({
   onReconnect,
   onTerminate,
   onTerminated,
+  onRenamed,
   onZenChange,
   session,
   vnc,
@@ -189,6 +191,7 @@ function Layout({
                       connectionState={connectionState}
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
+                      onRenamed={onRenamed}
                       onTerminate={onTerminate}
                       onTerminated={onTerminated}
                       onZenChange={onZenChange}
@@ -211,6 +214,7 @@ function Layout({
 
 function Toolbar({
   connectionState,
+  onRenamed,
   onDisconnect,
   onReconnect,
   onTerminate,
@@ -225,6 +229,7 @@ function Toolbar({
     <RenameButton
       className="btn-sm btn-secondary mr-1"
       session={session}
+      onRenamed={onRenamed}
     >
     </RenameButton>
   ) : null;
