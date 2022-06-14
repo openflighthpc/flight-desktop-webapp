@@ -230,8 +230,7 @@ function Toolbar({
       className="btn-sm btn-secondary mr-1"
       session={session}
       onRenamed={onRenamed}
-    >
-    </RenameButton>
+    />
   ) : null;
 
   const disconnectBtn = connectionState === 'connected' ? (
