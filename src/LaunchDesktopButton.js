@@ -26,7 +26,7 @@ function LaunchDesktopButton({
   const clusterName = useContext(ConfigContext).clusterName;
   const desktopName = prettyDesktopName[desktop.id];
   const modalTitle = <span>
-    Prepare launch of <i>'{desktopName}'</i> {desktopName.toLowerCase().endsWith('desktop') ? "" : "desktop"}
+    Prepare launch of <i>{desktopName}</i> {desktopName.toLowerCase().endsWith('desktop') ? "" : "desktop"}
   </span>;
   const nameRef = useRef(null);
   const { request, post } = useLaunchSession();
@@ -49,19 +49,20 @@ function LaunchDesktopButton({
 
   const leftButton = (
     <Button
+      className="btn-sm"
       color="secondary"
       onClick={toggle}
     >
-      <i className="fa fa-chevron-left mr-1" />
-      Back
+      Cancel
     </Button>
   );
   const rightButton = (
     <Button
-      className="ml-2"
+      className="btn-sm ml-2"
       onClick={() => { launchSession(); toggle(); }}
-    >
-      Start
+  >
+      <i className="fa fa-bolt mr-1"></i>
+      Launch
     </Button>
   );
 
@@ -87,8 +88,8 @@ function LaunchDesktopButton({
         toggle={toggle}
         leftButton={leftButton}
         rightButton={rightButton}
-      >
-        Please input a sensible name for the desktop session (you may leave this blank).
+    >
+        Give your session a name to more easily identify it (optional)."
         <input
           className="w-100"
           name="session-name"
