@@ -1,12 +1,5 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import {
-  DefaultErrorMessage,
-  NotFound,
-  Overlay,
-  Spinner,
-  utils,
-} from 'flight-webapp-components';
 
 function ModalContainer({
   className,

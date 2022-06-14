@@ -24,7 +24,6 @@ function LaunchDesktopButton({
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const clusterName = useContext(ConfigContext).clusterName;
-  const desktopName = prettyDesktopName[desktop.id];
   const modalTitle = <span>Configure this session</span>
   const nameRef = useRef(null);
   const { request, post } = useLaunchSession();
