@@ -123,13 +123,9 @@ function MetadataEntry({ name, value, format, valueTitle }) {
 }
 
 function Buttons({ onCleaned, onTerminated, session }) {
-  const toolbarStyle = {
-    flexWrap: 'nowrap'
-  };
-
   if (activeStates.includes(session.state)) {
     return (
-      <div className="btn-toolbar justify-content-center" style={toolbarStyle}>
+      <div className="btn-toolbar justify-content-center">
         <Link
           className="btn btn-sm btn-primary mr-2 text-nowrap"
           to={`/sessions/${session.id}`}
