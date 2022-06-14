@@ -71,13 +71,14 @@ function RenameButton({
         </PopoverHeader>
         <PopoverBody>
           <p>
-            Please enter a suitable name for your session (you may leave this blank).
+            Enter new name (leave blank to remove the name).
             <input
               className="w-100"
               name="session-name"
               placeholder="Session name"
               type="text"
               ref={nameRef}
+              value={session.name}
             />
           </p>
           <ButtonToolbar className="justify-content-center">
