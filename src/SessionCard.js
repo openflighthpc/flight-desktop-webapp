@@ -125,23 +125,27 @@ function MetadataEntry({ name, value, format, valueTitle }) {
 }
 
 function Buttons({ onCleaned, onTerminated, onRenamed, session }) {
+  const toolbarStyle = {
+    flexWrap: 'nowrap'
+  };
+
   if (activeStates.includes(session.state)) {
     return (
-      <div className="btn-toolbar justify-content-center">
+      <div className="btn-toolbar justify-content-center" style={toolbarStyle}>
         <Link
-          className="btn btn-sm btn-primary mr-2"
+          className="btn btn-sm btn-primary mr-2 text-nowrap"
           to={`/sessions/${session.id}`}
         >
           <i className="fa fa-bolt mr-1"></i>
           <span>Connect</span>
         </Link>
         <RenameButton
-          className="btn-sm btn-secondary mr-2"
+          className="btn-sm btn-secondary mr-2 text-nowrap"
           onRenamed={onRenamed}
           session={session}
         />
         <TerminateButton
-          className="btn-sm"
+          className="btn-sm text-nowrap"
           onTerminated={onTerminated}
           session={session}
         />
