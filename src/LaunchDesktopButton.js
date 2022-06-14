@@ -89,9 +89,12 @@ function LaunchDesktopButton({
         leftButton={leftButton}
         rightButton={rightButton}
     >
-        Give your session a name to more easily identify it (optional)."
+        <label for="session-name">
+          Give your session a name to more easily identify it (optional).
+        </label>
         <input
-          className="w-100"
+          id="session-name"
+          className="w-100 mt-1"
           name="session-name"
           placeholder="Session name"
           type="text"
