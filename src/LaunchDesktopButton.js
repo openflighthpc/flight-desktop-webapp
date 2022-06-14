@@ -25,7 +25,9 @@ function LaunchDesktopButton({
   const toggle = () => setModal(!modal);
   const clusterName = useContext(ConfigContext).clusterName;
   const desktopName = prettyDesktopName[desktop.id];
-  const modalTitle = <span>Prepare launch of '{desktopName}' desktop</span>;
+  const modalTitle = <span>
+    Prepare launch of '{desktopName}' {desktopName.toLowerCase().endsWith('desktop') ? "" : "desktop"}
+  </span>;
   const nameRef = useRef(null);
   const { request, post } = useLaunchSession();
   const { addToast } = useToast();
