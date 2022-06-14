@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import CleanButton from './CleanSessionButton';
 import WrappedScreenshot from './Screenshot';
 import TerminateButton from './TerminateButton';
-import RenameButton from './RenameButton';
 import { CardFooter } from './CardParts';
 import { prettyDesktopName } from './utils';
 
@@ -93,7 +92,6 @@ function SessionCard({ reload, session }) {
           <Buttons
             onCleaned={reload}
             onTerminated={reload}
-            onRenamed={reload}
             session={session} 
           />
         </CardFooter>
@@ -124,7 +122,7 @@ function MetadataEntry({ name, value, format, valueTitle }) {
   );
 }
 
-function Buttons({ onCleaned, onTerminated, onRenamed, session }) {
+function Buttons({ onCleaned, onTerminated, session }) {
   const toolbarStyle = {
     flexWrap: 'nowrap'
   };
@@ -139,11 +137,6 @@ function Buttons({ onCleaned, onTerminated, onRenamed, session }) {
           <i className="fa fa-bolt mr-1"></i>
           <span>Connect</span>
         </Link>
-        <RenameButton
-          className="btn-sm btn-secondary mr-2 text-nowrap"
-          onRenamed={onRenamed}
-          session={session}
-        />
         <TerminateButton
           className="btn-sm text-nowrap"
           onTerminated={onTerminated}

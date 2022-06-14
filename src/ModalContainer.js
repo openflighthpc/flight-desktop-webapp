@@ -18,6 +18,7 @@ function ModalContainer({
       toggle={toggle}
       className={className}
       size={size}
+      autoFocus={false}
     >
       <ModalContent
         leftButton={leftButton}

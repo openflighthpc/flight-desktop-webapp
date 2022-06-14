@@ -11,7 +11,6 @@ import {
 
 import ModalContainer from "./ModalContainer";
 import { useLaunchSession } from './api';
-import { prettyDesktopName } from './utils';
 
 function LaunchDesktopButton({
   className,
@@ -98,6 +97,7 @@ function LaunchDesktopButton({
           placeholder="Session name"
           type="text"
           ref={nameRef}
+          autoFocus={true}
         />
       </ModalContainer>
     </div>
