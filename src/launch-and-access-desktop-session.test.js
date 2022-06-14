@@ -124,13 +124,13 @@ async function navigateToLaunchPage({ getAllByText, getByText, queryByText }) {
   await waitFor(() => expect(queryByText('Loading desktops...')).toBeNull());
 }
 
-async function launchDesktop(desktopType, { getByText, getByRole, queryByText }) {
+async function launchDesktop(desktopType, { getByText, getByRole, queryByText, getByTestId }) {
   const heading = getByRole('heading', { name: desktopType });
   const card = heading.closest('.card');
-  const launchButton = within(card).getByRole('button', { name: 'Launch' });
+  const launchButton = within(card).getByTestId('launch-modal-button');
   fireEvent.click(launchButton);
-  await waitFor(() => expect(queryByText('Start')).toBeInTheDocument());
-  const startButton = getByRole('button', { name: 'Start' });
+  await waitFor(() => expect(getByTestId('session-launch-button')).toBeInTheDocument());
+  const startButton = getByTestId('session-launch-button')
   fireEvent.click(startButton);
 }
 

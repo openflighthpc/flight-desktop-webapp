@@ -58,6 +58,7 @@ function LaunchDesktopButton({
   );
   const rightButton = (
     <Button
+      data-testid="session-launch-button"
       className="btn-sm ml-2"
       onClick={() => { launchSession(); toggle(); }}
   >
@@ -69,6 +70,7 @@ function LaunchDesktopButton({
   return (
     <div>
       <Button
+        data-testid="launch-modal-button"
         color={color}
         size={size}
         className={classNames(className, { 'disabled': request.loading})}
