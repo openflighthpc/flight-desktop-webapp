@@ -21,6 +21,7 @@ function ResizeButton({
   session,
   onResized=()=>{},
 }) {
+  const [size, setSize] =  useState();
   const geometryRef = useRef(null);
   const id = `resize-session-${session.id}`;
   const { addToast } = useToast();
@@ -83,7 +84,7 @@ function ResizeButton({
         <PopoverBody>
           <p>
             <label for="session-size">
-              Enter new size (leave blank to use the system default).
+              Enter new size:
             </label>
             <input
               id="session-size"
@@ -92,6 +93,7 @@ function ResizeButton({
               placeholder="WIDTHxHEIGHT"
               type="text"
               ref={geometryRef}
+              onChange={(e) => setSize(e.target.value)}
               onKeyDown={handleKeyDown}
               autoFocus={true}
             />
@@ -108,6 +110,7 @@ function ResizeButton({
               color="primary"
               className="mr-2"
               onClick={handleSubmit}
+              disabled={!size}
               size="sm"
             >
               <i className="fa fa-crop mr-1"></i>
