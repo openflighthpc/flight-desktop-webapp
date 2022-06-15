@@ -15,6 +15,7 @@ import {
 import NoVNC from './NoVNC';
 import PreparePasteButton from './PreparePasteButton';
 import RenameButton from './RenameButton';
+import ResizeButton from './ResizeButton';
 import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
 import styles from './NoVNC.module.css';
@@ -125,6 +126,7 @@ function Connected({ id, session }) {
       onTerminated={() => history.push('/sessions')}
       onZenChange={() => vnc.current && vnc.current.resize()}
       onRenamed={() => history.push(`/sessions/${session.id}`)}
+      onResized={() => history.push(`/sessions/${session.id}`)}
       session={session}
       vnc={vnc}
     >
@@ -162,6 +164,7 @@ function Layout({
   onTerminate,
   onTerminated,
   onRenamed,
+  onResized,
   onZenChange,
   session,
   vnc,
@@ -192,6 +195,7 @@ function Layout({
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
                       onRenamed={onRenamed}
+                      onResized={onResized}
                       onTerminate={onTerminate}
                       onTerminated={onTerminated}
                       onZenChange={onZenChange}
@@ -215,6 +219,7 @@ function Layout({
 function Toolbar({
   connectionState,
   onRenamed,
+  onResized,
   onDisconnect,
   onReconnect,
   onTerminate,
@@ -230,6 +235,14 @@ function Toolbar({
       className="btn-sm btn-secondary mr-1"
       session={session}
       onRenamed={onRenamed}
+    />
+  ) : null;
+
+  const resizeBtn = session != null ? (
+    <ResizeButton
+      className="btn-sm btn-secondary mr-1"
+      session={session}
+      onResized={onResized}
     />
   ) : null;
 
@@ -299,6 +312,7 @@ function Toolbar({
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
       {fullscreenBtn}
       {renameBtn}
+      {resizeBtn}
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}

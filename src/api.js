@@ -100,6 +100,24 @@ export function useRenameSession(id) {
   return { ...request, request, post };
 }
 
+export function useResizeSession(id) {
+  const request = useFetch(
+    `/sessions/${id}/resize`,
+    {
+      method: 'post',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      cachePolicy: 'no-cache',
+    }
+  );
+  const post = function(session, geometry) {
+    return request.post({ session: session, geometry: geometry})
+  };
+  return { ...request, request, post };
+}
+
 export function useTerminateSession(id) {
   const request = useFetch(
     `/sessions/${id}`,
