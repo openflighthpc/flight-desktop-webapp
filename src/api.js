@@ -60,8 +60,8 @@ export function useLaunchSession() {
       cachePolicy: 'no-cache',
     }
   );
-  const post = function(desktop, name) {
-    return request.post({ desktop: desktop, name: name})
+  const post = function(desktop, name, geometry) {
+    return request.post({ desktop: desktop, name: name, geometry: geometry})
   };
   return { ...request, request, post };
 }
