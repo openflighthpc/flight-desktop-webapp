@@ -127,14 +127,14 @@ function Buttons({ onCleaned, onTerminated, session }) {
     return (
       <div className="btn-toolbar justify-content-center">
         <Link
-          className="btn btn-sm btn-primary mr-2"
+          className="btn btn-sm btn-primary mr-2 text-nowrap"
           to={`/sessions/${session.id}`}
         >
           <i className="fa fa-bolt mr-1"></i>
           <span>Connect</span>
         </Link>
         <TerminateButton
-          className="btn-sm"
+          className="btn-sm text-nowrap"
           onTerminated={onTerminated}
           session={session}
         />

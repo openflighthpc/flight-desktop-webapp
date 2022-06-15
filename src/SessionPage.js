@@ -14,6 +14,7 @@ import {
 
 import NoVNC from './NoVNC';
 import PreparePasteButton from './PreparePasteButton';
+import RenameButton from './RenameButton';
 import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
 import styles from './NoVNC.module.css';
@@ -123,6 +124,7 @@ function Connected({ id, session }) {
       onTerminate={() => setConnectionState('terminating')}
       onTerminated={() => history.push('/sessions')}
       onZenChange={() => vnc.current && vnc.current.resize()}
+      onRenamed={() => history.push(`/sessions/${session.id}`)}
       session={session}
       vnc={vnc}
     >
@@ -159,6 +161,7 @@ function Layout({
   onReconnect,
   onTerminate,
   onTerminated,
+  onRenamed,
   onZenChange,
   session,
   vnc,
@@ -188,6 +191,7 @@ function Layout({
                       connectionState={connectionState}
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
+                      onRenamed={onRenamed}
                       onTerminate={onTerminate}
                       onTerminated={onTerminated}
                       onZenChange={onZenChange}
@@ -210,6 +214,7 @@ function Layout({
 
 function Toolbar({
   connectionState,
+  onRenamed,
   onDisconnect,
   onReconnect,
   onTerminate,
@@ -219,6 +224,14 @@ function Toolbar({
   vnc,
 }) {
   const { addToast } = useToast();
+
+  const renameBtn = session != null ? (
+    <RenameButton
+      className="btn-sm btn-secondary mr-1"
+      session={session}
+      onRenamed={onRenamed}
+    />
+  ) : null;
 
   const disconnectBtn = connectionState === 'connected' ? (
     <button
@@ -285,6 +298,7 @@ function Toolbar({
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
       {fullscreenBtn}
+      {renameBtn}
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}

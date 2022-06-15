@@ -48,7 +48,7 @@ export function useLaunchDefaultSession() {
   return request;
 }
 
-export function useLaunchSession(desktop) {
+export function useLaunchSession() {
   const request = useFetch(
     "/sessions",
     {
@@ -57,12 +57,13 @@ export function useLaunchSession(desktop) {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: {
-        desktop: desktop.id,
-      },
       cachePolicy: 'no-cache',
-    });
-  return request;
+    }
+  );
+  const post = function(desktop, name) {
+    return request.post({ desktop: desktop, name: name})
+  };
+  return { ...request, request, post };
 }
 
 export function useCleanSession(id) {
@@ -79,6 +80,24 @@ export function useCleanSession(id) {
       cachePolicy: 'no-cache',
     });
   return request;
+}
+
+export function useRenameSession(id) {
+  const request = useFetch(
+    `/sessions/${id}/rename`,
+    {
+      method: 'post',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      cachePolicy: 'no-cache',
+    }
+  );
+  const post = function(session, name) {
+    return request.post({ session: session, name: name})
+  };
+  return { ...request, request, post };
 }
 
 export function useTerminateSession(id) {
