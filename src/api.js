@@ -95,7 +95,7 @@ export function useRenameSession(id) {
     }
   );
   const post = function(session, name) {
-    return request.post({ session: session, name: name})
+    return request.post({name: name})
   };
   return { ...request, request, post };
 }
@@ -113,7 +113,7 @@ export function useResizeSession(id) {
     }
   );
   const post = function(session, geometry) {
-    return request.post({ session: session, geometry: geometry})
+    return request.post({geometry: geometry})
   };
   return { ...request, request, post };
 }

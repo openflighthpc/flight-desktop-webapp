@@ -51,6 +51,7 @@ function ResizeButton({
   const handleSubmit = e => {
     resizeSession();
     toggle();
+    setSize(null);
   };
 
   const handleKeyDown = (event) => {
@@ -71,7 +72,7 @@ function ResizeButton({
             <i className="fa fa-spinner fa-spin mr-1"></i> :
             <i className="fa fa-crop mr-1"></i>
         }
-        <span>{ resizing ? 'Renaming...' : 'Resize' }</span>
+        <span>{ resizing ? 'Resizing...' : 'Resize' }</span>
       </Button>
       <Popover
         isOpen={showConfirmation}
@@ -90,7 +91,7 @@ function ResizeButton({
               id="session-size"
               className="w-100"
               size="session-size"
-              placeholder="WIDTHxHEIGHT"
+              placeholder="widthxheight"
               type="text"
               ref={geometryRef}
               onChange={(e) => setSize(e.target.value)}

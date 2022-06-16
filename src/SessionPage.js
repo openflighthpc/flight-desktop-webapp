@@ -126,7 +126,6 @@ function Connected({ id, session }) {
       onTerminated={() => history.push('/sessions')}
       onZenChange={() => vnc.current && vnc.current.resize()}
       onRenamed={() => history.push(`/sessions/${session.id}`)}
-      onResized={() => history.push(`/sessions/${session.id}`)}
       session={session}
       vnc={vnc}
     >

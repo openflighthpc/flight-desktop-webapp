@@ -120,7 +120,7 @@ function LaunchDesktopButton({
           id="session-geometry"
           className="w-100"
           name="session-geometry"
-          placeholder="WIDTHxHEIGHT"
+          placeholder="widthxheight"
           type="text"
           ref={geometryRef}
         />
