@@ -123,7 +123,7 @@ function LaunchDesktopButton({
           placeholder="widthxheight"
           type="text"
           ref={geometryRef}
-	  onKeyDown={handleKeyDown}
+          onKeyDown={handleKeyDown}
         />
       </ModalContainer>
     </div>
