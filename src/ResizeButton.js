@@ -127,7 +127,7 @@ function ResizeButton({
 
 function resizeFailedToast({session, errorCode}) {
   const desktopName = prettyDesktopName[session.desktop];
-  const sessionName = session.size || session.id.split('-')[0];
+  const sessionName = session.name || session.id.split('-')[0];
 
   let body = (
     <div>
