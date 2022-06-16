@@ -20,6 +20,7 @@ import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
 import styles from './NoVNC.module.css';
 import { useFetchSession } from './api';
+import { useForceRender } from './utils';
 
 function buildWebsocketUrl(session, config) {
   // We expect restapi to be running on an externally accessible machine.
@@ -104,6 +105,7 @@ function Connected({ id, session }) {
   const config = useContext(ConfigContext);
   const history = useHistory();
   const vnc = useRef(null);
+  const forceRender = useForceRender();
   const websocketUrl = buildWebsocketUrl(session, config);
   function onReconnect() {
     if (vnc.current) {
@@ -125,7 +127,11 @@ function Connected({ id, session }) {
       onTerminate={() => setConnectionState('terminating')}
       onTerminated={() => history.push('/sessions')}
       onZenChange={() => vnc.current && vnc.current.resize()}
-      onRenamed={() => history.push(`/sessions/${session.id}`)}
+      onRenamed={(newName) => {
+        session.name = newName;
+        forceRender();
+      }}
+      onResized={() => {}}
       session={session}
       vnc={vnc}
     >

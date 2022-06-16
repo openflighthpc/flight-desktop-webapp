@@ -28,7 +28,8 @@ function ResizeButton({
   const { loading: resizing, request, post } = useResizeSession(session.id);
   const resizeSession = async () => {
     try {
-      post(session.id, geometryRef.current?.value).then((responseBody) => {
+      const newGeometry = geometryRef.current?.value;
+      post(newGeometry).then((responseBody) => {
         if (request.response.ok) {
           onResized();
         } else {

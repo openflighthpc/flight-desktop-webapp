@@ -94,7 +94,7 @@ export function useRenameSession(id) {
       cachePolicy: 'no-cache',
     }
   );
-  const post = function(session, name) {
+  const post = function(name) {
     return request.post({name: name})
   };
   return { ...request, request, post };
@@ -112,7 +112,7 @@ export function useResizeSession(id) {
       cachePolicy: 'no-cache',
     }
   );
-  const post = function(session, geometry) {
+  const post = function(geometry) {
     return request.post({geometry: geometry})
   };
   return { ...request, request, post };

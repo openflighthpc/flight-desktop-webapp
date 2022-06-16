@@ -27,9 +27,10 @@ function RenameButton({
   const { loading: renaming, request, post } = useRenameSession(session.id);
   const renameSession = async () => {
     try {
-      post(session.id, nameRef.current?.value).then((responseBody) => {
+      const newName = nameRef.current?.value;
+      post(newName).then((responseBody) => {
         if (request.response.ok) {
-          onRenamed();
+          onRenamed(newName);
         } else {
           addToast(renameFailedToast({
             session: session,
