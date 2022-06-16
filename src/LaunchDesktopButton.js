@@ -25,12 +25,13 @@ function LaunchDesktopButton({
   const clusterName = useContext(ConfigContext).clusterName;
   const modalTitle = <span>Configure this session</span>;
   const nameRef = useRef(null);
+  const geometryRef = useRef(null);
   const { request, post } = useLaunchSession();
   const { addToast } = useToast();
   const history = useHistory();
 
   const launchSession = () => {
-    post(desktop.id, nameRef.current?.value).then((responseBody) => {
+    post(desktop.id, nameRef.current?.value, geometryRef.current?.value).then((responseBody) => {
       if (request.response.ok) {
         history.push(`/sessions/${responseBody.id}`);
       } else {
@@ -103,13 +104,26 @@ function LaunchDesktopButton({
         </label>
         <input
           id="session-name"
-          className="w-100 mt-1"
+          className="w-100 mb-2"
           name="session-name"
           placeholder="Session name"
           type="text"
           ref={nameRef}
 	  onKeyDown={handleKeyDown}
           autoFocus={true}
+        />
+
+        <label for="session-geometry">
+          Specify the geometry for the desktop session (optional).
+        </label>
+        <input
+          id="session-geometry"
+          className="w-100"
+          name="session-geometry"
+          placeholder="widthxheight"
+          type="text"
+          ref={geometryRef}
+          onKeyDown={handleKeyDown}
         />
       </ModalContainer>
     </div>

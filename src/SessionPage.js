@@ -15,10 +15,12 @@ import {
 import NoVNC from './NoVNC';
 import PreparePasteButton from './PreparePasteButton';
 import RenameButton from './RenameButton';
+import ResizeButton from './ResizeButton';
 import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
 import styles from './NoVNC.module.css';
 import { useFetchSession } from './api';
+import { useForceRender } from './utils';
 
 function buildWebsocketUrl(session, config) {
   // We expect restapi to be running on an externally accessible machine.
@@ -103,6 +105,7 @@ function Connected({ id, session }) {
   const config = useContext(ConfigContext);
   const history = useHistory();
   const vnc = useRef(null);
+  const forceRender = useForceRender();
   const websocketUrl = buildWebsocketUrl(session, config);
   function onReconnect() {
     if (vnc.current) {
@@ -124,7 +127,11 @@ function Connected({ id, session }) {
       onTerminate={() => setConnectionState('terminating')}
       onTerminated={() => history.push('/sessions')}
       onZenChange={() => vnc.current && vnc.current.resize()}
-      onRenamed={() => history.push(`/sessions/${session.id}`)}
+      onRenamed={(newName) => {
+        session.name = newName;
+        forceRender();
+      }}
+      onResized={() => {}}
       session={session}
       vnc={vnc}
     >
@@ -162,6 +169,7 @@ function Layout({
   onTerminate,
   onTerminated,
   onRenamed,
+  onResized,
   onZenChange,
   session,
   vnc,
@@ -192,6 +200,7 @@ function Layout({
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
                       onRenamed={onRenamed}
+                      onResized={onResized}
                       onTerminate={onTerminate}
                       onTerminated={onTerminated}
                       onZenChange={onZenChange}
@@ -215,6 +224,7 @@ function Layout({
 function Toolbar({
   connectionState,
   onRenamed,
+  onResized,
   onDisconnect,
   onReconnect,
   onTerminate,
@@ -230,6 +240,14 @@ function Toolbar({
       className="btn-sm btn-secondary mr-1"
       session={session}
       onRenamed={onRenamed}
+    />
+  ) : null;
+
+  const resizeBtn = session != null ? (
+    <ResizeButton
+      className="btn-sm btn-secondary mr-1"
+      session={session}
+      onResized={onResized}
     />
   ) : null;
 
@@ -299,6 +317,7 @@ function Toolbar({
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
       {fullscreenBtn}
       {renameBtn}
+      {resizeBtn}
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}

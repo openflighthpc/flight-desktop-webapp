@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function useInterval(fn, interval, { immediate=false }={}) {
   const savedFn = useRef();
@@ -28,3 +28,12 @@ export const prettyDesktopName = {
   xfce: "Xfce desktop",
   xterm: "xterm",
 };
+
+export function useForceRender() {
+  // eslint-disable-next-line no-unused-vars
+  const [_, set] = useState(0);
+
+  return function forceRender() {
+    set(i => i + 1);
+  };
+}

@@ -11,35 +11,36 @@ import {
   utils,
 } from 'flight-webapp-components';
 
-import { useRenameSession } from './api';
+import { useResizeSession } from './api';
 
 import { prettyDesktopName } from './utils';
 import { useToast } from './ToastContext';
 
-function RenameButton({
+function ResizeButton({
   className,
   session,
-  onRenamed=()=>{},
+  onResized=()=>{},
 }) {
-  const nameRef = useRef(null);
-  const id = `rename-session-${session.id}`;
+  const [size, setSize] =  useState();
+  const geometryRef = useRef(null);
+  const id = `resize-session-${session.id}`;
   const { addToast } = useToast();
-  const { loading: renaming, request, post } = useRenameSession(session.id);
-  const renameSession = async () => {
+  const { loading: resizing, request, post } = useResizeSession(session.id);
+  const resizeSession = async () => {
     try {
-      const newName = nameRef.current?.value;
-      post(newName).then((responseBody) => {
+      const newGeometry = geometryRef.current?.value;
+      post(newGeometry).then((responseBody) => {
         if (request.response.ok) {
-          onRenamed(newName);
+          onResized();
         } else {
-          addToast(renameFailedToast({
+          addToast(resizeFailedToast({
             session: session,
             errorCode: utils.errorCode(responseBody)
           }));
         }
       });
     } catch (e) {
-      addToast(renameFailedToast({
+      addToast(resizeFailedToast({
         session: session,
         errorCode: undefined,
       }));
@@ -49,8 +50,9 @@ function RenameButton({
   const toggle= () => setShowConfirmation(!showConfirmation);
 
   const handleSubmit = e => {
-    renameSession();
+    resizeSession();
     toggle();
+    setSize(null);
   };
 
   const handleKeyDown = (event) => {
@@ -62,16 +64,16 @@ function RenameButton({
   return (
     <React.Fragment>
       <Button
-      className={`${className} ${renaming ? 'disabled ' : null}` }
-      disabled={renaming}
+      className={`${className} ${resizing ? 'disabled ' : null}` }
+      disabled={resizing}
       id={id}
       >
         {
-          renaming ?
+          resizing ?
             <i className="fa fa-spinner fa-spin mr-1"></i> :
-            <i className="fa fa-pencil-square mr-1"></i>
+            <i className="fa fa-crop mr-1"></i>
         }
-        <span>{ renaming ? 'Renaming...' : 'Rename' }</span>
+        <span>{ resizing ? 'Resizing...' : 'Resize' }</span>
       </Button>
       <Popover
         isOpen={showConfirmation}
@@ -79,21 +81,21 @@ function RenameButton({
         toggle={toggle}
       >
         <PopoverHeader>
-          Rename session
+          Resize session
         </PopoverHeader>
         <PopoverBody>
           <p>
-            <label for="session-name">
-              Enter new name (leave blank to remove the name).
+            <label for="session-size">
+              Enter new size:
             </label>
             <input
-              id="session-name"
+              id="session-size"
               className="w-100"
-              name="session-name"
-              placeholder="Session name"
+              size="session-size"
+              placeholder="widthxheight"
               type="text"
-              ref={nameRef}
-              defaultValue={session.name}
+              ref={geometryRef}
+              onChange={(e) => setSize(e.target.value)}
               onKeyDown={handleKeyDown}
               autoFocus={true}
             />
@@ -110,10 +112,11 @@ function RenameButton({
               color="primary"
               className="mr-2"
               onClick={handleSubmit}
+              disabled={!size}
               size="sm"
             >
-              <i className="fa fa-pencil-square mr-1"></i>
-              Rename
+              <i className="fa fa-crop mr-1"></i>
+              Resize
             </Button>
           </ButtonToolbar>
         </PopoverBody>
@@ -122,13 +125,13 @@ function RenameButton({
   );
 }
 
-function renameFailedToast({session, errorCode}) {
+function resizeFailedToast({session, errorCode}) {
   const desktopName = prettyDesktopName[session.desktop];
   const sessionName = session.name || session.id.split('-')[0];
 
   let body = (
     <div>
-      Unfortunately there has been a problem renaming your
+      Unfortunately there has been a problem resizing your
       {' '}<strong>{desktopName}</strong> desktop session
       {' '}<strong>{sessionName}</strong>.  Please try again and, if problems
       persist, help us to more quickly rectify the problem by contacting us
@@ -139,8 +142,8 @@ function renameFailedToast({session, errorCode}) {
   return {
     body,
     icon: 'danger',
-    header: 'Failed to rename session',
+    header: 'Failed to resize session',
   };
 }
 
-export default RenameButton;
+export default ResizeButton;
