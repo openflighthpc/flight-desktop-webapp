@@ -27,6 +27,15 @@ function SessionCard({ reload, session }) {
   } else {
     sessionState = session.state;
   }
+  const jobUrl = `${process.env.REACT_APP_JOBS_CLIENT_BASE_URL}/jobs/${session.job_id}`;
+  const jobIdEntry = session.job_id ?
+    <MetadataEntry
+      name="Job ID"
+      value={session.job_id}
+      valueTitle="Visit Flight Job overview for this session"
+      format={id => <a href={jobUrl} target="_blank" rel="noreferrer noopener">{id}</a> }
+    /> :
+    null;
 
   return (
       <div
@@ -86,6 +95,7 @@ function SessionCard({ reload, session }) {
               value={session.last_accessed_at}
               format={timestampFormat}
             />
+            { jobIdEntry }
           </dl>
         </div>
         <CardFooter>
