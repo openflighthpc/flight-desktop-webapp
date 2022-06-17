@@ -33,7 +33,7 @@ function SessionCard({ reload, session }) {
       name="Job ID"
       value={session.job_id}
       valueTitle="Visit Flight Job overview for this session"
-      format={id => <a href={jobUrl} target="_blank" rel="noreferrer noopener">{id}</a> }
+      format={id => <a href={jobUrl}>{id}</a> }
     /> :
     null;
 

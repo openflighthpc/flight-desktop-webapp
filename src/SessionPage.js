@@ -161,8 +161,6 @@ function JobLink({session, children}) {
       class="text-light"
       href={jobUrl}
       title="Visit Flight Job overview for this session"
-      target="_blank"
-      rel="noreferrer noopener"
     >
       {children}
       <i class="fa fa-external-link mx-1"/>
