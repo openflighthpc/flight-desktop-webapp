@@ -12,6 +12,7 @@ import {
   Spinner,
 } from 'flight-webapp-components';
 
+import HeaderText from './HeaderText';
 import NoVNC from './NoVNC';
 import PreparePasteButton from './PreparePasteButton';
 import RenameButton from './RenameButton';
@@ -154,21 +155,6 @@ function Connected({ id, session }) {
   );
 }
 
-function JobLink({session, children}) {
-  const jobUrl = `${process.env.REACT_APP_JOBS_CLIENT_BASE_URL}/jobs/${session?.job_id}`;
-  return (
-    <a
-      class="text-light"
-      href={jobUrl}
-      title="Visit Flight Job overview for this session"
-    >
-      {children}
-      <i class="fa fa-external-link mx-1"/>
-    </a>
-  )
-}
-
-
 function Layout({
   children,
   connectionState,
@@ -181,19 +167,6 @@ function Layout({
   session,
   vnc,
 }) {
-  const { id } = useParams();
-  const sessionId = id.split('-')[0];
-  const idText = (session == null || session.name) ?
-    sessionId :
-    <JobLink session={session}>{sessionId}</JobLink>;
-  const sessionName = <JobLink session={session}>{session?.name}</JobLink>;
-    
-  const hostname = session == null ?
-    null :
-    <span>running on <code className="text-reset">{session.hostname}</code></span>;
-  const title = (session == null || session.name == null || session.name === "") ?
-    <span>{idText} {hostname}</span> :
-    <span>{sessionName} ({idText}) {hostname}</span>;
 
   return (
     <div className="overflow-auto">
@@ -205,7 +178,7 @@ function Layout({
                 <div className="col">
                   <div className="d-flex flex-wrap align-items-center">
                     <h5 className="flex-grow-1 mb-0">
-                      {title}
+                      <HeaderText session={session}/>
                     </h5>
                     <Toolbar
                       connectionState={connectionState}
