@@ -154,6 +154,23 @@ function Connected({ id, session }) {
   );
 }
 
+function JobLink({session, children}) {
+  const jobUrl = `${process.env.REACT_APP_JOBS_CLIENT_BASE_URL}/jobs/${session?.job_id}`;
+  return (
+    <a
+      class="text-light"
+      href={jobUrl}
+      title="Visit Flight Job overview for this session"
+      target="_blank"
+      rel="noreferrer noopener"
+    >
+      {children}
+      <i class="fa fa-external-link mx-1"/>
+    </a>
+  )
+}
+
+
 function Layout({
   children,
   connectionState,
@@ -168,12 +185,17 @@ function Layout({
 }) {
   const { id } = useParams();
   const sessionId = id.split('-')[0];
+  const idText = (session == null || session.name) ?
+    sessionId :
+    <JobLink session={session}>{sessionId}</JobLink>;
+  const sessionName = <JobLink session={session}>{session?.name}</JobLink>;
+    
   const hostname = session == null ?
     null :
     <span>running on <code className="text-reset">{session.hostname}</code></span>;
   const title = (session == null || session.name == null || session.name === "") ?
-    <span>{sessionId} {hostname}</span> :
-    <span>{session.name} ({sessionId}) {hostname}</span>;
+    <span>{idText} {hostname}</span> :
+    <span>{sessionName} ({idText}) {hostname}</span>;
 
   return (
     <div className="overflow-auto">
