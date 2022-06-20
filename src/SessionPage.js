@@ -12,7 +12,7 @@ import {
   Spinner,
 } from 'flight-webapp-components';
 
-import HeaderText from './HeaderText';
+import SessionHeaderText from './SessionHeaderText';
 import NoVNC from './NoVNC';
 import PreparePasteButton from './PreparePasteButton';
 import RenameButton from './RenameButton';
@@ -178,7 +178,7 @@ function Layout({
                 <div className="col">
                   <div className="d-flex flex-wrap align-items-center">
                     <h5 className="flex-grow-1 mb-0">
-                      <HeaderText session={session}/>
+                      <SessionHeaderText session={session}/>
                     </h5>
                     <Toolbar
                       connectionState={connectionState}

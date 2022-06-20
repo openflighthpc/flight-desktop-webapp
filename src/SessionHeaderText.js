@@ -7,15 +7,15 @@ function JobLink({session, children}) {
     <a
       class="text-light"
       href={jobUrl}
-      title="Visit Flight Job overview for this session"
+      title="This session was started by Flight Job.  Click to view the related job."
     >
+      <i class="fa fa-file-code-o mr-1"/>
       {children}
-      <i class="fa fa-external-link mx-1"/>
     </a>
   )
 }
 
-function HeaderText({session}) {
+function SessionHeaderText({session}) {
   const { id } = useParams();
   const sessionId = id.split('-')[0];
 
@@ -24,7 +24,7 @@ function HeaderText({session}) {
     return (<span>{sessionId}</span>);
   }
 
-  const linkedSessionName = <JobLink session={session}>{session?.name}</JobLink>;
+  const linkedSessionName = <JobLink session={session}>{session.name}</JobLink>;
   const linkedId = <JobLink session={session}>{sessionId}</JobLink>;
 
   const hostname = session == null ?
@@ -49,4 +49,4 @@ function HeaderText({session}) {
   }
 }
 
-export default HeaderText;
+export default SessionHeaderText;
