@@ -27,6 +27,16 @@ function SessionCard({ reload, session }) {
   } else {
     sessionState = session.state;
   }
+  const jobUrl = `${process.env.REACT_APP_JOBS_CLIENT_BASE_URL}/jobs/${session.job_id}`;
+  const jobIdEntry = session.job_id ?
+    <MetadataEntry
+      name={<span><i class="fa fa-file-code-o mr-1" />Job</span>}
+      title="This session was started by Flight Job.  Click to view the related job."
+      value={session.job_id}
+      valueTitle="This session was started by Flight Job.  Click to view the related job."
+      format={id => <a href={jobUrl}>{id}</a> }
+    /> :
+    null;
 
   return (
       <div
@@ -86,6 +96,7 @@ function SessionCard({ reload, session }) {
               value={session.last_accessed_at}
               format={timestampFormat}
             />
+            { jobIdEntry }
           </dl>
         </div>
         <CardFooter>
@@ -99,7 +110,7 @@ function SessionCard({ reload, session }) {
   );
 }
 
-function MetadataEntry({ name, value, format, valueTitle }) {
+function MetadataEntry({ name, title, value, format, valueTitle }) {
   if (value == null) {
     return null;
   }
@@ -108,7 +119,7 @@ function MetadataEntry({ name, value, format, valueTitle }) {
     <React.Fragment>
       <dt
         className="col-sm-4 text-truncate"
-        title={name}
+        title={title || name}
       >
         {name}
       </dt>
