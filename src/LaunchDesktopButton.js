@@ -6,11 +6,13 @@ import classNames from 'classnames';
 
 import {
   ConfigContext,
-  utils
+  utils,
+  DefaultErrorMessage,
+  UnauthorizedError
 } from 'flight-webapp-components';
 
 import ModalContainer from "./ModalContainer";
-import { useLaunchSession } from './api';
+import { useLaunchSession, useFetchUserConfig } from './api';
 import { prettyDesktopName } from './utils';
 
 function LaunchDesktopButton({
