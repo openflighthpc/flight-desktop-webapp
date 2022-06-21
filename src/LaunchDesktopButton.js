@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 import { useToast } from './ToastContext';
 import { useHistory } from 'react-router-dom';
 import classNames from 'classnames';
@@ -11,8 +11,10 @@ import {
   UnauthorizedError
 } from 'flight-webapp-components';
 
+import { Context as UserConfigContext } from './UserConfigContext';
+
 import ModalContainer from "./ModalContainer";
-import { useLaunchSession, useFetchUserConfig } from './api';
+import { useLaunchSession } from './api';
 import { prettyDesktopName } from './utils';
 
 function LaunchDesktopButton({
@@ -27,13 +29,15 @@ function LaunchDesktopButton({
   const clusterName = useContext(ConfigContext).clusterName;
   const modalTitle = <span>Configure this session</span>;
   const nameRef = useRef(null);
-  const geometryRef = useRef(null);
+  const [geometry, setGeometry] = useState();
   const { request, post } = useLaunchSession();
   const { addToast } = useToast();
   const history = useHistory();
 
+  const { geometries } = useContext(UserConfigContext);
+
   const launchSession = () => {
-    post(desktop.id, nameRef.current?.value, geometryRef.current?.value).then((responseBody) => {
+    post(desktop.id, nameRef.current?.value, geometry).then((responseBody) => {
       if (request.response.ok) {
         history.push(`/sessions/${responseBody.id}`);
       } else {
@@ -71,7 +75,7 @@ function LaunchDesktopButton({
       data-testid="session-launch-button"
       className="btn-sm ml-2"
       onClick={handleSubmit}
-  >
+    >
       <i className="fa fa-bolt mr-1"></i>
       Launch
     </Button>
@@ -100,7 +104,7 @@ function LaunchDesktopButton({
         toggle={toggle}
         leftButton={leftButton}
         rightButton={rightButton}
-    >
+      >
         <label for="session-name">
           Give your session a name to more easily identify it (optional).
         </label>
@@ -118,18 +122,32 @@ function LaunchDesktopButton({
         <label for="session-geometry">
           Specify the geometry for the desktop session (optional).
         </label>
-        <input
+        <Input
           id="session-geometry"
-          className="w-100"
           name="session-geometry"
-          placeholder="widthxheight"
-          type="text"
-          ref={geometryRef}
-          onKeyDown={handleKeyDown}
-        />
+          onChange={(e) => setGeometry(e.target.value)}
+          type="select"
+          className="w-100"
+          value={geometry}
+        >
+          <GeometryOptions geometries={geometries} />
+        </Input>
+
       </ModalContainer>
     </div>
   );
+}
+
+function GeometryOptions({geometries}) {
+  return geometries.map(geometry => {
+    return (
+      <option
+        key={geometry.key}
+        label={geometry}
+        value={geometry}
+      />
+    );
+  });
 }
 
 function launchErrorToast({ clusterName, desktop, launchError }) {
