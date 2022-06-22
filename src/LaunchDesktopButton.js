@@ -8,7 +8,8 @@ import {
   ConfigContext,
   utils,
   DefaultErrorMessage,
-  UnauthorizedError
+  UnauthorizedError,
+  Spinner
 } from 'flight-webapp-components';
 
 import { Context as UserConfigContext } from './UserConfigContext';
@@ -24,17 +25,16 @@ function LaunchDesktopButton({
   color,
   size
 }) {
+  const { geometry: default_geometry, ...userConfig} = useContext(UserConfigContext);
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const clusterName = useContext(ConfigContext).clusterName;
   const modalTitle = <span>Configure this session</span>;
   const nameRef = useRef(null);
-  const [geometry, setGeometry] = useState();
+  const [geometry, setGeometry] = useState(default_geometry);
   const { request, post } = useLaunchSession();
   const { addToast } = useToast();
   const history = useHistory();
-
-  const { geometries } = useContext(UserConfigContext);
 
   const launchSession = () => {
     post(desktop.id, nameRef.current?.value, geometry).then((responseBody) => {
@@ -81,6 +81,39 @@ function LaunchDesktopButton({
     </Button>
   );
 
+  const modalContent =
+    userConfig.loading ? 
+    <Spinner text="Loading config..." /> :
+    <React.Fragment>
+      <label for="session-name">
+        Give your session a name to more easily identify it (optional).
+      </label>
+      <input
+        id="session-name"
+        className="w-100 mb-2"
+        name="session-name"
+        placeholder="Session name"
+        type="text"
+        ref={nameRef}
+        onKeyDown={handleKeyDown}
+        autoFocus={true}
+      />
+
+      <label for="session-geometry">
+        Specify the geometry for the desktop session (optional).
+      </label>
+      <Input
+        id="session-geometry"
+        name="session-geometry"
+        onChange={(e) => setGeometry(e.target.value)}
+        type="select"
+        className="w-100"
+        value={geometry}
+      >
+        <GeometryOptions geometries={userConfig.geometries} default_geometry={default_geometry} />
+      </Input>
+    </React.Fragment>;
+
   return (
     <div>
       <Button
@@ -105,49 +138,25 @@ function LaunchDesktopButton({
         leftButton={leftButton}
         rightButton={rightButton}
       >
-        <label for="session-name">
-          Give your session a name to more easily identify it (optional).
-        </label>
-        <input
-          id="session-name"
-          className="w-100 mb-2"
-          name="session-name"
-          placeholder="Session name"
-          type="text"
-          ref={nameRef}
-	  onKeyDown={handleKeyDown}
-          autoFocus={true}
-        />
-
-        <label for="session-geometry">
-          Specify the geometry for the desktop session (optional).
-        </label>
-        <Input
-          id="session-geometry"
-          name="session-geometry"
-          onChange={(e) => setGeometry(e.target.value)}
-          type="select"
-          className="w-100"
-          value={geometry}
-        >
-          <GeometryOptions geometries={geometries} />
-        </Input>
-
+        {modalContent}
       </ModalContainer>
     </div>
   );
 }
 
-function GeometryOptions({geometries}) {
+function GeometryOptions({geometries, default_geometry}) {
+  geometries.splice(geometries.indexOf(default_geometry), 1);
+  geometries.unshift(default_geometry);
   return geometries.map(geometry => {
     return (
       <option
         key={geometry.key}
-        label={geometry}
+        label={`${geometry}${default_geometry === geometry ? ' (default)'  : ''}`}
         value={geometry}
       />
     );
   });
+
 }
 
 function launchErrorToast({ clusterName, desktop, launchError }) {
