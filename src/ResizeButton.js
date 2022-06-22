@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   ButtonToolbar,
   Popover,
   PopoverBody,
-  PopoverHeader
+  PopoverHeader,
+  Input
 } from 'reactstrap';
 
 import {
@@ -21,17 +22,19 @@ function ResizeButton({
   session,
   onResized=()=>{},
 }) {
-  const [size, setSize] =  useState();
-  const geometryRef = useRef(null);
+  const [geometry, setGeometry] = useState(session.geometry);
   const id = `resize-session-${session.id}`;
   const { addToast } = useToast();
+
+  const geometries = session.available_geometries;
+
   const { loading: resizing, request, post } = useResizeSession(session.id);
   const resizeSession = async () => {
     try {
-      const newGeometry = geometryRef.current?.value;
+      const newGeometry = geometry;
       post(newGeometry).then((responseBody) => {
         if (request.response.ok) {
-          onResized();
+          onResized(newGeometry);
         } else {
           addToast(resizeFailedToast({
             session: session,
@@ -52,7 +55,6 @@ function ResizeButton({
   const handleSubmit = e => {
     resizeSession();
     toggle();
-    setSize(null);
   };
 
   const handleKeyDown = (event) => {
@@ -88,17 +90,16 @@ function ResizeButton({
             <label for="session-size">
               Enter new size:
             </label>
-            <input
-              id="session-size"
+            <Input
+              id="session-geometry"
+              name="session-geometry"
               className="w-100"
-              size="session-size"
-              placeholder="widthxheight"
-              type="text"
-              ref={geometryRef}
-              onChange={(e) => setSize(e.target.value)}
-              onKeyDown={handleKeyDown}
-              autoFocus={true}
-            />
+              type="select"
+              onChange={(e) => setGeometry(e.target.value)}
+              value={geometry}
+            >
+              <GeometryOptions geometries={geometries} current={session.geometry} />
+            </Input>
           </p>
           <ButtonToolbar className="justify-content-center">
             <Button
@@ -112,8 +113,8 @@ function ResizeButton({
               color="primary"
               className="mr-2"
               onClick={handleSubmit}
-              disabled={!size}
               size="sm"
+              disabled={geometry === session.geometry}
             >
               <i className="fa fa-crop mr-1"></i>
               Resize
@@ -123,6 +124,18 @@ function ResizeButton({
       </Popover>
     </React.Fragment>
   );
+}
+
+function GeometryOptions({geometries, current}) {
+  return geometries.map(geometry => {
+    return (
+      <option
+        key={geometry.key}
+        label={`${geometry}${current === geometry ? ' (current)' : ''}`}
+        value={geometry}
+      />
+    );
+  });
 }
 
 function resizeFailedToast({session, errorCode}) {
