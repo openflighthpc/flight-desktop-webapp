@@ -2,12 +2,10 @@ import React from 'react';
 
 import { useFetchUserConfig } from './api';
 import {
-  DefaultErrorMessage,
   utils
 } from 'flight-webapp-components';
 
-const initialState = null;
-const Context = React.createContext(initialState);
+const Context = React.createContext({geometry: '', geometries: []});
 
 function Provider({ children }) {
   const { get, data, loading, error } = useFetchUserConfig();

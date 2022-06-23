@@ -10,8 +10,12 @@ import {
 } from 'flight-webapp-components';
 
 import * as Toast from './ToastContext';
-import * as UserConfig from './UserConfigContext';
 import AppLayout from './AppLayout';
+
+import {
+  Context as UserConfigContext,
+  Provider as UserConfigProvider
+} from './UserConfigContext';
 
 function App() {
   return (
@@ -25,9 +29,9 @@ function App() {
                   <Toast.Provider>
                     <Toast.Container />
                     <FetchProvider>
-                      <UserConfig.Provider>
+                      <UserConfigProvider>
                         <AppLayout />
-                      </UserConfig.Provider>
+                      </UserConfigProvider>
                     </FetchProvider>
                   </Toast.Provider>
                 </CurrentUserProvider>

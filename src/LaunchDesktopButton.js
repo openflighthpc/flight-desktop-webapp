@@ -7,8 +7,6 @@ import classNames from 'classnames';
 import {
   ConfigContext,
   utils,
-  DefaultErrorMessage,
-  UnauthorizedError,
   Spinner
 } from 'flight-webapp-components';
 
@@ -25,17 +23,24 @@ function LaunchDesktopButton({
   color,
   size
 }) {
-  const { geometry: default_geometry, ...userConfig} = useContext(UserConfigContext);
+  const history = useHistory();
+  const { addToast } = useToast();
+
+  // Context consumers
+  const userConfig = useContext(UserConfigContext);
+  const defaultGeometry = userConfig.geometry;
+  const clusterName = useContext(ConfigContext).clusterName;
+
+  // Modal controls
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
-  const clusterName = useContext(ConfigContext).clusterName;
-  const modalTitle = <span>Configure this session</span>;
-  const nameRef = useRef(null);
-  const [geometry, setGeometry] = useState(default_geometry);
-  const { request, post } = useLaunchSession();
-  const { addToast } = useToast();
-  const history = useHistory();
 
+  // Input refs/states
+  const nameRef = useRef(null);
+  const [geometry, setGeometry] = useState(defaultGeometry);
+
+  // Launch session API call
+  const { request, post } = useLaunchSession();
   const launchSession = () => {
     post(desktop.id, nameRef.current?.value, geometry).then((responseBody) => {
       if (request.response.ok) {
@@ -50,17 +55,64 @@ function LaunchDesktopButton({
     });
   };
 
+  return (
+    <div>
+      <Button
+        data-testid="launch-modal-button"
+        color={color}
+        size={size}
+        className={classNames(className, { 'disabled': request.loading})}
+        onClick={toggle}
+      >
+        {
+          request.loading ?
+            <i className="fa fa-spinner fa-spin mr-1"></i> :
+            <i className="fa fa-bolt mr-1"></i>
+        }
+        <span>{ request.loading ? 'Launching...' : 'Launch' }</span>
+      </Button>
+      <LaunchDesktopModal
+        defaultGeometry={defaultGeometry}
+        desktop={desktop}
+        geometry={geometry}
+        launch={launchSession}
+        modal={modal}
+        nameRef={nameRef}
+        setGeometry={setGeometry}
+        toggle={toggle}
+        userConfig={userConfig}
+      />
+    </div>
+  )
+}
+
+function LaunchDesktopModal({
+  defaultGeometry,
+  desktop,
+  geometry,
+  launch,
+  modal,
+  nameRef,
+  setGeometry,
+  toggle,
+  userConfig,
+}) {
+  const modalTitle = <span>Configure this session</span>;
+
+  // Run launch method and close modal
   const handleSubmit = e => {
-    launchSession();
+    launch();
     toggle();
   };
 
+  // Submit modal on return
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       handleSubmit();
     }
   };
 
+  // Modal bottom bar buttons
   const leftButton = (
     <Button
       className="btn-sm"
@@ -81,6 +133,7 @@ function LaunchDesktopButton({
     </Button>
   );
 
+  // Config may not have fully loaded yet
   const modalContent =
     userConfig.loading ? 
     <Spinner text="Loading config..." /> :
@@ -110,53 +163,37 @@ function LaunchDesktopButton({
         className="w-100"
         value={geometry}
       >
-        <GeometryOptions geometries={userConfig.geometries} default_geometry={default_geometry} />
+        <GeometryOptions geometries={userConfig.geometries} defaultGeometry={defaultGeometry} />
       </Input>
     </React.Fragment>;
 
   return (
-    <div>
-      <Button
-        data-testid="launch-modal-button"
-        color={color}
-        size={size}
-        className={classNames(className, { 'disabled': request.loading})}
-        onClick={toggle}
-      >
-        {
-          request.loading ?
-            <i className="fa fa-spinner fa-spin mr-1"></i> :
-            <i className="fa fa-bolt mr-1"></i>
-        }
-        <span>{ request.loading ? 'Launching...' : 'Launch' }</span>
-      </Button>
-      <ModalContainer
-        isOpen={modal}
-        modalTitle={modalTitle}
-        desktop={desktop}
-        toggle={toggle}
-        leftButton={leftButton}
-        rightButton={rightButton}
-      >
-        {modalContent}
-      </ModalContainer>
-    </div>
+    <ModalContainer
+      isOpen={modal}
+      modalTitle={modalTitle}
+      desktop={desktop}
+      toggle={toggle}
+      leftButton={leftButton}
+      rightButton={rightButton}
+    >
+      {modalContent}
+    </ModalContainer>
   );
 }
 
-function GeometryOptions({geometries, default_geometry}) {
-  geometries.splice(geometries.indexOf(default_geometry), 1);
-  geometries.unshift(default_geometry);
+function GeometryOptions({geometries, defaultGeometry}) {
+  if (!geometries) { return null }
   return geometries.map(geometry => {
+    const isDefault = defaultGeometry === geometry;
     return (
       <option
         key={geometry.key}
-        label={`${geometry}${default_geometry === geometry ? ' (default)'  : ''}`}
+        label={`${geometry}${isDefault ? ' (default)'  : ''}`}
         value={geometry}
+        selected={isDefault}
       />
     );
   });
-
 }
 
 function launchErrorToast({ clusterName, desktop, launchError }) {
