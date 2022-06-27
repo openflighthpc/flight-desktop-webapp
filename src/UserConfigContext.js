@@ -8,7 +8,7 @@ import {
 const Context = React.createContext({geometry: '', geometries: []});
 
 function Provider({ children }) {
-  const { get, data, loading, error } = useFetchUserConfig();
+  const { data, loading, error } = useFetchUserConfig();
 
   if (error) {
     if (utils.errorCode(data) === 'Unauthorized') {

@@ -11,11 +11,7 @@ import {
 
 import * as Toast from './ToastContext';
 import AppLayout from './AppLayout';
-
-import {
-  Context as UserConfigContext,
-  Provider as UserConfigProvider
-} from './UserConfigContext';
+import { Provider as UserConfigProvider } from './UserConfigContext';
 
 function App() {
   return (

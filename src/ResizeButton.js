@@ -57,12 +57,6 @@ function ResizeButton({
     toggle();
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      handleSubmit();
-    }
-  };
-
   return (
     <React.Fragment>
       <Button
