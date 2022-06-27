@@ -11,6 +11,7 @@ import {
 
 import * as Toast from './ToastContext';
 import AppLayout from './AppLayout';
+import { Provider as UserConfigProvider } from './UserConfigContext';
 
 function App() {
   return (
@@ -24,7 +25,9 @@ function App() {
                   <Toast.Provider>
                     <Toast.Container />
                     <FetchProvider>
-                      <AppLayout />
+                      <UserConfigProvider>
+                        <AppLayout />
+                      </UserConfigProvider>
                     </FetchProvider>
                   </Toast.Provider>
                 </CurrentUserProvider>

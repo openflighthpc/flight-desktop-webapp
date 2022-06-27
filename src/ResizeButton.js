@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   ButtonToolbar,
   Popover,
   PopoverBody,
-  PopoverHeader
+  PopoverHeader,
+  Input
 } from 'reactstrap';
 
 import {
@@ -21,17 +22,19 @@ function ResizeButton({
   session,
   onResized=()=>{},
 }) {
-  const [size, setSize] =  useState();
-  const geometryRef = useRef(null);
+  const [geometry, setGeometry] = useState(session.geometry);
   const id = `resize-session-${session.id}`;
   const { addToast } = useToast();
+
+  const geometries = session.available_geometries;
+
   const { loading: resizing, request, post } = useResizeSession(session.id);
   const resizeSession = async () => {
     try {
-      const newGeometry = geometryRef.current?.value;
+      const newGeometry = geometry;
       post(newGeometry).then((responseBody) => {
         if (request.response.ok) {
-          onResized();
+          onResized(newGeometry);
         } else {
           addToast(resizeFailedToast({
             session: session,
@@ -50,23 +53,17 @@ function ResizeButton({
   const toggle= () => setShowConfirmation(!showConfirmation);
 
   const handleSubmit = e => {
+    e.preventDefault();
     resizeSession();
     toggle();
-    setSize(null);
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      handleSubmit();
-    }
   };
 
   return (
     <React.Fragment>
       <Button
-      className={`${className} ${resizing ? 'disabled ' : null}` }
-      disabled={resizing}
-      id={id}
+        className={`${className} ${resizing ? 'disabled ' : null}` }
+        disabled={resizing}
+        id={id}
       >
         {
           resizing ?
@@ -84,45 +81,59 @@ function ResizeButton({
           Resize session
         </PopoverHeader>
         <PopoverBody>
-          <p>
-            <label for="session-size">
-              Enter new size:
-            </label>
-            <input
-              id="session-size"
-              className="w-100"
-              size="session-size"
-              placeholder="widthxheight"
-              type="text"
-              ref={geometryRef}
-              onChange={(e) => setSize(e.target.value)}
-              onKeyDown={handleKeyDown}
-              autoFocus={true}
-            />
-          </p>
-          <ButtonToolbar className="justify-content-center">
-            <Button
-              className="mr-2"
-              onClick={toggle}
-              size="sm"
-            >
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              className="mr-2"
-              onClick={handleSubmit}
-              disabled={!size}
-              size="sm"
-            >
-              <i className="fa fa-crop mr-1"></i>
-              Resize
-            </Button>
-          </ButtonToolbar>
+          <form onSubmit={handleSubmit}>
+            <p>
+              <label for="session-size">
+                Enter new size:
+              </label>
+              <Input
+                autoFocus
+                className="w-100"
+                id="session-geometry"
+                name="session-geometry"
+                onChange={(e) => setGeometry(e.target.value)}
+                type="select"
+                value={geometry}
+              >
+                <GeometryOptions geometries={geometries} current={session.geometry} />
+              </Input>
+            </p>
+            <ButtonToolbar className="justify-content-center">
+              <Button
+                className="mr-2"
+                onClick={toggle}
+                size="sm"
+              >
+                Cancel
+              </Button>
+              <Button
+                color="primary"
+                className="mr-2"
+                size="sm"
+                type="submit"
+                disabled={geometry === session.geometry}
+              >
+                <i className="fa fa-crop mr-1"></i>
+                Resize
+              </Button>
+            </ButtonToolbar>
+          </form>
         </PopoverBody>
       </Popover>
     </React.Fragment>
   );
+}
+
+function GeometryOptions({geometries, current}) {
+  return geometries.map(geometry => {
+    return (
+      <option
+        key={geometry.key}
+        label={`${geometry}${current === geometry ? ' (current)' : ''}`}
+        value={geometry}
+      />
+    );
+  });
 }
 
 function resizeFailedToast({session, errorCode}) {

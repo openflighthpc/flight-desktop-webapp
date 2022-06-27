@@ -132,7 +132,10 @@ function Connected({ id, session }) {
         session.name = newName;
         forceRender();
       }}
-      onResized={() => {}}
+      onResized={(newGeometry) => {
+        session.geometry = newGeometry;
+        forceRender();
+      }}
       session={session}
       vnc={vnc}
     >

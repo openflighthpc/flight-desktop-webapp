@@ -1,13 +1,16 @@
 import React, { useState, useContext, useRef } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 import { useToast } from './ToastContext';
 import { useHistory } from 'react-router-dom';
 import classNames from 'classnames';
 
 import {
   ConfigContext,
-  utils
+  utils,
+  Spinner
 } from 'flight-webapp-components';
+
+import { Context as UserConfigContext } from './UserConfigContext';
 
 import ModalContainer from "./ModalContainer";
 import { useLaunchSession } from './api';
@@ -20,18 +23,26 @@ function LaunchDesktopButton({
   color,
   size
 }) {
+  const history = useHistory();
+  const { addToast } = useToast();
+
+  // Context consumers
+  const userConfig = useContext(UserConfigContext);
+  const defaultGeometry = userConfig.geometry;
+  const clusterName = useContext(ConfigContext).clusterName;
+
+  // Modal controls
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
-  const clusterName = useContext(ConfigContext).clusterName;
-  const modalTitle = <span>Configure this session</span>;
-  const nameRef = useRef(null);
-  const geometryRef = useRef(null);
-  const { request, post } = useLaunchSession();
-  const { addToast } = useToast();
-  const history = useHistory();
 
+  // Input refs/states
+  const nameRef = useRef(null);
+  const [geometry, setGeometry] = useState(defaultGeometry);
+
+  // Launch session API call
+  const { request, post } = useLaunchSession();
   const launchSession = () => {
-    post(desktop.id, nameRef.current?.value, geometryRef.current?.value).then((responseBody) => {
+    post(desktop.id, nameRef.current?.value, geometry).then((responseBody) => {
       if (request.response.ok) {
         history.push(`/sessions/${responseBody.id}`);
       } else {
@@ -43,37 +54,6 @@ function LaunchDesktopButton({
       }
     });
   };
-
-  const handleSubmit = e => {
-    launchSession();
-    toggle();
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      handleSubmit();
-    }
-  };
-
-  const leftButton = (
-    <Button
-      className="btn-sm"
-      color="secondary"
-      onClick={toggle}
-    >
-      Cancel
-    </Button>
-  );
-  const rightButton = (
-    <Button
-      data-testid="session-launch-button"
-      className="btn-sm ml-2"
-      onClick={handleSubmit}
-  >
-      <i className="fa fa-bolt mr-1"></i>
-      Launch
-    </Button>
-  );
 
   return (
     <div>
@@ -91,43 +71,129 @@ function LaunchDesktopButton({
         }
         <span>{ request.loading ? 'Launching...' : 'Launch' }</span>
       </Button>
-      <ModalContainer
-        isOpen={modal}
-        modalTitle={modalTitle}
+      <LaunchDesktopModal
+        defaultGeometry={defaultGeometry}
         desktop={desktop}
+        geometry={geometry}
+        launch={launchSession}
+        modal={modal}
+        nameRef={nameRef}
+        setGeometry={setGeometry}
         toggle={toggle}
-        leftButton={leftButton}
-        rightButton={rightButton}
-    >
-        <label for="session-name">
-          Give your session a name to more easily identify it (optional).
-        </label>
-        <input
-          id="session-name"
-          className="w-100 mb-2"
-          name="session-name"
-          placeholder="Session name"
-          type="text"
-          ref={nameRef}
-	  onKeyDown={handleKeyDown}
-          autoFocus={true}
-        />
-
-        <label for="session-geometry">
-          Specify the geometry for the desktop session (optional).
-        </label>
-        <input
-          id="session-geometry"
-          className="w-100"
-          name="session-geometry"
-          placeholder="widthxheight"
-          type="text"
-          ref={geometryRef}
-          onKeyDown={handleKeyDown}
-        />
-      </ModalContainer>
+        userConfig={userConfig}
+      />
     </div>
+  )
+}
+
+function LaunchDesktopModal({
+  defaultGeometry,
+  desktop,
+  geometry,
+  launch,
+  modal,
+  nameRef,
+  setGeometry,
+  toggle,
+  userConfig,
+}) {
+  const modalTitle = <span>Configure this session</span>;
+
+  // Run launch method and close modal
+  const handleSubmit = e => {
+    launch();
+    toggle();
+  };
+
+  // Submit modal on return
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
+  // Modal bottom bar buttons
+  const leftButton = (
+    <Button
+      className="btn-sm"
+      color="secondary"
+      onClick={toggle}
+    >
+      Cancel
+    </Button>
   );
+  const rightButton = (
+    <Button
+      data-testid="session-launch-button"
+      className="btn-sm ml-2"
+      onClick={handleSubmit}
+    >
+      <i className="fa fa-bolt mr-1"></i>
+      Launch
+    </Button>
+  );
+
+  // Config may not have fully loaded yet
+  const modalContent =
+    userConfig.loading ? 
+    <Spinner text="Loading config..." /> :
+    <React.Fragment>
+      <label for="session-name">
+        Give your session a name to more easily identify it (optional).
+      </label>
+      <input
+        id="session-name"
+        className="w-100 mb-2"
+        name="session-name"
+        placeholder="Session name"
+        type="text"
+        ref={nameRef}
+        onKeyDown={handleKeyDown}
+        autoFocus={true}
+      />
+
+      <label for="session-geometry">
+        Specify the geometry for the desktop session (optional).
+      </label>
+      <Input
+        id="session-geometry"
+        name="session-geometry"
+        onChange={(e) => setGeometry(e.target.value)}
+        type="select"
+        className="w-100"
+        value={geometry}
+      >
+        <GeometryOptions geometries={userConfig.geometries} defaultGeometry={defaultGeometry} />
+      </Input>
+    </React.Fragment>;
+
+  return (
+    <ModalContainer
+      isOpen={modal}
+      modalTitle={modalTitle}
+      desktop={desktop}
+      toggle={toggle}
+      leftButton={leftButton}
+      rightButton={rightButton}
+    >
+      {modalContent}
+    </ModalContainer>
+  );
+}
+
+function GeometryOptions({geometries, defaultGeometry}) {
+  if (!geometries) { return null }
+  return geometries.map(geometry => {
+    const isDefault = defaultGeometry === geometry;
+    return (
+      <option
+        key={geometry.key}
+        label={`${geometry}${isDefault ? ' (default)'  : ''}`}
+        value={geometry}
+        selected={isDefault}
+      />
+    );
+  });
 }
 
 function launchErrorToast({ clusterName, desktop, launchError }) {

@@ -23,10 +23,12 @@ export function useFetchSessions() {
 
 export function useFetchUserConfig() {
   const { currentUser } = useContext(CurrentUserContext);
+  const auth = currentUser ? [ currentUser.authToken ] : null;
+
   return useFetch(
     "/configs/user",
     { headers: { Accept: 'application/json' } },
-    [ currentUser.authToken ]);
+    auth);
 }
 
 export function useFetchSession(id) {
