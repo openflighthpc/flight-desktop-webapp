@@ -49,14 +49,9 @@ function RenameButton({
   const toggle= () => setShowConfirmation(!showConfirmation);
 
   const handleSubmit = e => {
+    e.preventDefault();
     renameSession();
     toggle();
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      handleSubmit();
-    }
   };
 
   return (
@@ -82,40 +77,41 @@ function RenameButton({
           Rename session
         </PopoverHeader>
         <PopoverBody>
-          <p>
-            <label for="session-name">
-              Enter new name (leave blank to remove the name).
-            </label>
-            <input
-              id="session-name"
-              className="w-100"
-              name="session-name"
-              placeholder="Session name"
-              type="text"
-              ref={nameRef}
-              defaultValue={session.name}
-              onKeyDown={handleKeyDown}
-              autoFocus={true}
-            />
-          </p>
-          <ButtonToolbar className="justify-content-center">
-            <Button
-              className="mr-2"
-              onClick={toggle}
-              size="sm"
-            >
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              className="mr-2"
-              onClick={handleSubmit}
-              size="sm"
-            >
-              <i className="fa fa-pencil-square mr-1"></i>
-              Rename
-            </Button>
-          </ButtonToolbar>
+          <form onSubmit={handleSubmit}>
+            <p>
+              <label for="session-name">
+                Enter new name (leave blank to remove the name).
+              </label>
+              <input
+                id="session-name"
+                className="w-100"
+                name="session-name"
+                placeholder="Session name"
+                type="text"
+                ref={nameRef}
+                defaultValue={session.name}
+                autoFocus={true}
+              />
+            </p>
+            <ButtonToolbar className="justify-content-center">
+              <Button
+                className="mr-2"
+                onClick={toggle}
+                size="sm"
+              >
+                Cancel
+              </Button>
+              <Button
+                className="mr-2"
+                color="primary"
+                size="sm"
+                type="submit"
+              >
+                <i className="fa fa-pencil-square mr-1"></i>
+                Rename
+              </Button>
+            </ButtonToolbar>
+          </form>
         </PopoverBody>
       </Popover>
     </React.Fragment>

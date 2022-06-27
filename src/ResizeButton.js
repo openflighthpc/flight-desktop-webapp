@@ -53,6 +53,7 @@ function ResizeButton({
   const toggle= () => setShowConfirmation(!showConfirmation);
 
   const handleSubmit = e => {
+    e.preventDefault();
     resizeSession();
     toggle();
   };
@@ -60,9 +61,9 @@ function ResizeButton({
   return (
     <React.Fragment>
       <Button
-      className={`${className} ${resizing ? 'disabled ' : null}` }
-      disabled={resizing}
-      id={id}
+        className={`${className} ${resizing ? 'disabled ' : null}` }
+        disabled={resizing}
+        id={id}
       >
         {
           resizing ?
@@ -80,40 +81,43 @@ function ResizeButton({
           Resize session
         </PopoverHeader>
         <PopoverBody>
-          <p>
-            <label for="session-size">
-              Enter new size:
-            </label>
-            <Input
-              id="session-geometry"
-              name="session-geometry"
-              className="w-100"
-              type="select"
-              onChange={(e) => setGeometry(e.target.value)}
-              value={geometry}
-            >
-              <GeometryOptions geometries={geometries} current={session.geometry} />
-            </Input>
-          </p>
-          <ButtonToolbar className="justify-content-center">
-            <Button
-              className="mr-2"
-              onClick={toggle}
-              size="sm"
-            >
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              className="mr-2"
-              onClick={handleSubmit}
-              size="sm"
-              disabled={geometry === session.geometry}
-            >
-              <i className="fa fa-crop mr-1"></i>
-              Resize
-            </Button>
-          </ButtonToolbar>
+          <form onSubmit={handleSubmit}>
+            <p>
+              <label for="session-size">
+                Enter new size:
+              </label>
+              <Input
+                autoFocus
+                className="w-100"
+                id="session-geometry"
+                name="session-geometry"
+                onChange={(e) => setGeometry(e.target.value)}
+                type="select"
+                value={geometry}
+              >
+                <GeometryOptions geometries={geometries} current={session.geometry} />
+              </Input>
+            </p>
+            <ButtonToolbar className="justify-content-center">
+              <Button
+                className="mr-2"
+                onClick={toggle}
+                size="sm"
+              >
+                Cancel
+              </Button>
+              <Button
+                color="primary"
+                className="mr-2"
+                size="sm"
+                type="submit"
+                disabled={geometry === session.geometry}
+              >
+                <i className="fa fa-crop mr-1"></i>
+                Resize
+              </Button>
+            </ButtonToolbar>
+          </form>
         </PopoverBody>
       </Popover>
     </React.Fragment>
