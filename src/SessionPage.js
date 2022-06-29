@@ -15,6 +15,7 @@ import {
 import SessionHeaderText from './SessionHeaderText';
 import NoVNC from './NoVNC';
 import PreparePasteButton from './PreparePasteButton';
+import ConfigureButton from './configure/ConfigureButton.js';
 import RenameButton from './RenameButton';
 import ResizeButton from './ResizeButton';
 import TerminateButton from './TerminateButton';
@@ -247,6 +248,13 @@ function Toolbar({
     />
   ) : null;
 
+  const configureBtn = session != null ? (
+    <ConfigureButton
+      className="btn-sm btn-secondary mr-1"
+      session={session}
+    />
+  ) : null;
+
   const disconnectBtn = connectionState === 'connected' ? (
     <button
       className="btn btn-secondary btn-sm mr-1"
@@ -314,6 +322,7 @@ function Toolbar({
       {fullscreenBtn}
       {renameBtn}
       {resizeBtn}
+      {configureBtn}
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}
