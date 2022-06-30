@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   ButtonToolbar,
@@ -11,8 +11,8 @@ import {
   utils
 } from 'flight-webapp-components';
 
-import { RenameInput } from './RenameInput';
-import { ResizeInput } from './ResizeInput';
+import RenameInput from './RenameInput';
+import ResizeInput from './ResizeInput';
 
 function ConfigureButton({
   className,
@@ -21,6 +21,9 @@ function ConfigureButton({
   const id = `configure-session-${session.id}`;
   const [ showConfirmation, setShowConfirmation] = useState(false);
   const toggle = () => setShowConfirmation(!showConfirmation);
+
+  const [name, setName] = useState(session.name);
+  const [geometry, setGeometry] = useState(session.geometry);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -46,6 +49,18 @@ function ConfigureButton({
         </PopoverHeader>
         <PopoverBody>
           <form onSubmit={handleSubmit}>
+            <RenameInput
+              autoFocus={true}
+              current={name}
+              handleChange={setName}
+              session={session}
+            />
+            <ResizeInput
+              current={geometry}
+              handleChange={setGeometry}
+              session={session}
+            />
+
             <ButtonToolbar className="justify-content-center">
               <Button
                 className="mr-2"
