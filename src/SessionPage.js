@@ -117,6 +117,9 @@ function Connected({ id, session }) {
   return (
     <Layout
       connectionState={connectionState}
+      onConfigured={() => {
+        history.push(`/session/${session.id}`)
+      }}
       onDisconnect={() => {
         if (vnc.current) {
           setConnectionState('disconnecting');
@@ -159,6 +162,7 @@ function Connected({ id, session }) {
 function Layout({
   children,
   connectionState,
+  onConfigured,
   onDisconnect,
   onReconnect,
   onTerminate,
@@ -182,6 +186,7 @@ function Layout({
                     </h5>
                     <Toolbar
                       connectionState={connectionState}
+                      onConfigured={onConfigured}
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
                       onTerminate={onTerminate}
@@ -206,6 +211,7 @@ function Layout({
 
 function Toolbar({
   connectionState,
+  onConfigured,
   onDisconnect,
   onReconnect,
   onTerminate,
@@ -219,6 +225,7 @@ function Toolbar({
   const configureBtn = session != null ? (
     <ConfigureButton
       className="btn-sm btn-secondary mr-1"
+      onConfigured={onConfigured}
       session={session}
     />
   ) : null;

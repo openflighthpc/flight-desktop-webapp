@@ -84,6 +84,24 @@ export function useCleanSession(id) {
   return request;
 }
 
+export function useConfigureSession(id) {
+  const request = useFetch(
+    `/session/${id}/configure`,
+    {
+      method: 'post',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      cachePolicy: 'no-cache',
+    }
+  );
+  const post = function(params) {
+    return request.post(...params)
+  };
+  return { ...request, request, post };
+}
+
 export function useRenameSession(id) {
   const request = useFetch(
     `/sessions/${id}/rename`,
