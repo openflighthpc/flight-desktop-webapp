@@ -39,7 +39,7 @@ function ConfigureButton({
       const params = {name, geometry};
       post(params).then((responseBody) => {
         if (request.response.ok) {
-          onConfigured();
+          onConfigured(name, geometry);
         } else {
           addToast(configureFailedToast({
             session: session,
@@ -112,8 +112,8 @@ function ConfigureButton({
                 size="sm"
                 type="submit"
               >
-                <i className="fa fa-pencil-square mr-1"></i>
-                Submit
+                <i className="fa fa-cog mr-1"></i>
+                Configure
               </Button>
             </ButtonToolbar>
           </form>

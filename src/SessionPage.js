@@ -117,8 +117,10 @@ function Connected({ id, session }) {
   return (
     <Layout
       connectionState={connectionState}
-      onConfigured={() => {
-        history.push(`/session/${session.id}`)
+      onConfigured={(newName, newSize) => {
+        session.name = newName;
+        session.geometry = newSize;
+        forceRender();
       }}
       onDisconnect={() => {
         if (vnc.current) {

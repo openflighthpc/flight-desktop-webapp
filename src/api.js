@@ -86,7 +86,7 @@ export function useCleanSession(id) {
 
 export function useConfigureSession(id) {
   const request = useFetch(
-    `/session/${id}/configure`,
+    `/sessions/${id}/configure`,
     {
       method: 'post',
       headers: {
@@ -97,7 +97,7 @@ export function useConfigureSession(id) {
     }
   );
   const post = function(params) {
-    return request.post(...params)
+    return request.post(params)
   };
   return { ...request, request, post };
 }
