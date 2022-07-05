@@ -27,16 +27,18 @@ function ConfigureButton({
   const id = `configure-session-${session.id}`;
   const [ showConfirmation, setShowConfirmation] = useState(false);
   const toggle = () => setShowConfirmation(!showConfirmation);
-
   const { addToast } = useToast();
-
   const [name, setName] = useState(session.name);
   const [geometry, setGeometry] = useState(session.geometry);
+  const resizable = (session.capabilities || []).includes("resizable");
 
   const { loading: configuring, request, post } = useConfigureSession(session.id);
   const configureSession = async () => {
     try {
-      const params = {name, geometry};
+      const params = {name};
+      if (resizable) {
+        params["geometry"] = geometry;
+      }
       post(params).then((responseBody) => {
         if (request.response.ok) {
           onConfigured(name, geometry);
@@ -92,12 +94,15 @@ function ConfigureButton({
               handleChange={setName}
               session={session}
             />
-            <ResizeInput
-              current={geometry}
-              handleChange={setGeometry}
-              session={session}
-            />
-
+            {
+              !resizable ? null : (
+                <ResizeInput
+                  current={geometry}
+                  handleChange={setGeometry}
+                  session={session}
+                />
+              )
+            }
             <ButtonToolbar className="justify-content-center">
               <Button
                 className="mr-2"
