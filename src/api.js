@@ -84,9 +84,9 @@ export function useCleanSession(id) {
   return request;
 }
 
-export function useRenameSession(id) {
+export function useConfigureSession(id) {
   const request = useFetch(
-    `/sessions/${id}/rename`,
+    `/sessions/${id}/configure`,
     {
       method: 'post',
       headers: {
@@ -96,26 +96,8 @@ export function useRenameSession(id) {
       cachePolicy: 'no-cache',
     }
   );
-  const post = function(name) {
-    return request.post({name: name})
-  };
-  return { ...request, request, post };
-}
-
-export function useResizeSession(id) {
-  const request = useFetch(
-    `/sessions/${id}/resize`,
-    {
-      method: 'post',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      cachePolicy: 'no-cache',
-    }
-  );
-  const post = function(geometry) {
-    return request.post({geometry: geometry})
+  const post = function(params) {
+    return request.post(params)
   };
   return { ...request, request, post };
 }

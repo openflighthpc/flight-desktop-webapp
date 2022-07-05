@@ -15,8 +15,7 @@ import {
 import SessionHeaderText from './SessionHeaderText';
 import NoVNC from './NoVNC';
 import PreparePasteButton from './PreparePasteButton';
-import RenameButton from './RenameButton';
-import ResizeButton from './ResizeButton';
+import ConfigureButton from './configure/ConfigureButton.js';
 import TerminateButton from './TerminateButton';
 import WrappedScreenshot from './Screenshot';
 import styles from './NoVNC.module.css';
@@ -118,6 +117,11 @@ function Connected({ id, session }) {
   return (
     <Layout
       connectionState={connectionState}
+      onConfigured={(newName, newSize) => {
+        session.name = newName;
+        session.geometry = newSize;
+        forceRender();
+      }}
       onDisconnect={() => {
         if (vnc.current) {
           setConnectionState('disconnecting');
@@ -128,14 +132,6 @@ function Connected({ id, session }) {
       onTerminate={() => setConnectionState('terminating')}
       onTerminated={() => history.push('/sessions')}
       onZenChange={() => vnc.current && vnc.current.resize()}
-      onRenamed={(newName) => {
-        session.name = newName;
-        forceRender();
-      }}
-      onResized={(newGeometry) => {
-        session.geometry = newGeometry;
-        forceRender();
-      }}
       session={session}
       vnc={vnc}
     >
@@ -168,12 +164,11 @@ function Connected({ id, session }) {
 function Layout({
   children,
   connectionState,
+  onConfigured,
   onDisconnect,
   onReconnect,
   onTerminate,
   onTerminated,
-  onRenamed,
-  onResized,
   onZenChange,
   session,
   vnc,
@@ -193,10 +188,9 @@ function Layout({
                     </h5>
                     <Toolbar
                       connectionState={connectionState}
+                      onConfigured={onConfigured}
                       onDisconnect={onDisconnect}
                       onReconnect={onReconnect}
-                      onRenamed={onRenamed}
-                      onResized={onResized}
                       onTerminate={onTerminate}
                       onTerminated={onTerminated}
                       onZenChange={onZenChange}
@@ -219,8 +213,7 @@ function Layout({
 
 function Toolbar({
   connectionState,
-  onRenamed,
-  onResized,
+  onConfigured,
   onDisconnect,
   onReconnect,
   onTerminate,
@@ -231,19 +224,11 @@ function Toolbar({
 }) {
   const { addToast } = useToast();
 
-  const renameBtn = session != null ? (
-    <RenameButton
+  const configureBtn = session != null ? (
+    <ConfigureButton
       className="btn-sm btn-secondary mr-1"
+      onConfigured={onConfigured}
       session={session}
-      onRenamed={onRenamed}
-    />
-  ) : null;
-
-  const resizeBtn = session != null ? (
-    <ResizeButton
-      className="btn-sm btn-secondary mr-1"
-      session={session}
-      onResized={onResized}
     />
   ) : null;
 
@@ -312,8 +297,7 @@ function Toolbar({
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
       {fullscreenBtn}
-      {renameBtn}
-      {resizeBtn}
+      {configureBtn}
       {disconnectBtn}
       {reconnectBtn}
       {terminateBtn}
