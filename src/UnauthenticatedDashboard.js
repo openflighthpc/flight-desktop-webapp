@@ -12,8 +12,9 @@ function UnauthenticatedDashboard() {
       <Blurb />
 
       <p>
-        To start interacting with desktop sessions and gain access to your
-        HPC environment sign in above.
+        To start interacting with desktop sessions and gain access to your HPC
+        environment you will need to login by clicking the "Log in" button
+        above.
       </p>
     </div>
   );
