@@ -9,7 +9,9 @@ function AuthenticatedDashboard() {
       <div
         className="centernav col-8"
       >
-        <Blurb />
+        <div className="narrow-container">
+          <Blurb />
+        </div>
         <div className="card-deck">
           <div className="card">
             <div className="card-body fa-background fa-background-desktop">
