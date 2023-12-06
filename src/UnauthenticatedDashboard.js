@@ -5,15 +5,19 @@ import ClusterOverview from './ClusterOverview';
 
 function UnauthenticatedDashboard() {
   return (
-    <div>
-      <ClusterOverview className="mt-2 mb-2" />
-      <Blurb />
-
-      <p>
-        To start interacting with desktop sessions and gain access to your
-        HPC environment sign in above.
-      </p>
-    </div>
+    <>
+      <div
+        className="centernav col-8"
+      >
+        <div className='unauthenticated'>
+          <Blurb />
+          <p className="tagline">
+            Sign in to start interacting with desktop sessions and gain access to your
+            HPC environment.
+          </p>
+        </div>
+      </div>
+    </>
   );
 }
 
