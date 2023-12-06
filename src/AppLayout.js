@@ -23,7 +23,6 @@ function AppLayout() {
     ]
   }
 
-
   return (
     <>
     <BrandBar
@@ -44,19 +43,12 @@ function AppLayout() {
           Switch={Switch}
           exact={!unconfigured}
           routes={unconfigured ? unconfiguredRoutes : routes}
-          sideNav={SideNav}
           useLocation={useLocation}
         />
       </div>
     </div>
     <Footer />
     </>
-  );
-}
-
-function SideNav() {
-  return (
-    <div className="sidenav col-sm-2"></div>
   );
 }
 
