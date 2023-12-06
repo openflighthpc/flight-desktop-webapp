@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { DashboardLogo } from 'flight-webapp-components';
 
 import Blurb from './Blurb';
 import { CardFooter } from './CardParts';
@@ -7,7 +6,6 @@ import { CardFooter } from './CardParts';
 function AuthenticatedDashboard() {
   return (
     <div>
-      <DashboardLogo />
       <Blurb />
       <div className="card-deck">
         <div className="card">

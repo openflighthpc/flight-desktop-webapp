@@ -1,11 +1,8 @@
 import React from 'react';
 
-import { DashboardLogo } from 'flight-webapp-components';
-
 function UnconfiguredDashboard() {
   return (
     <div>
-      <DashboardLogo />
       <p>
         The Flight Desktop Access Service allows you to access interactive
         GUI (graphical user interface) desktop sessions running on your
