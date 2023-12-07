@@ -20,8 +20,6 @@ function LaunchDesktopButton({
   className,
   desktop,
   children,
-  color,
-  size
 }) {
   const history = useHistory();
   const { addToast } = useToast();
@@ -57,20 +55,20 @@ function LaunchDesktopButton({
 
   return (
     <div>
-      <Button
+      <div
         data-testid="launch-modal-button"
-        color={color}
-        size={size}
-        className={classNames(className, { 'disabled': request.loading})}
+        className={classNames(className, { 'disabled': request.loading}, 'card-text')}
         onClick={toggle}
       >
-        {
-          request.loading ?
-            <i className="fa fa-spinner fa-spin mr-1"></i> :
-            <i className="fa fa-bolt mr-1"></i>
-        }
-        <span>{ request.loading ? 'Launching...' : 'Launch' }</span>
-      </Button>
+        {children}
+        <div className="d-flex align-self-center mb-2">
+          {request.loading ?
+            <span className="card-text">
+              <i className="fa fa-spinner fa-spin mr-1"></i>
+              Launching...
+            </span> : null}
+        </div>
+      </div>
       <LaunchDesktopModal
         defaultGeometry={defaultGeometry}
         desktop={desktop}
