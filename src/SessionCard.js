@@ -113,45 +113,48 @@ function SessionCard({ reload, session }) {
 }
 
 function DropdownMenu({ onCleaned, onTerminated, session }) {
+  return (
+    <div className="dropdown">
+      <a className="card-text dropdown-toggle" id="dropdownMenuButton"
+         data-toggle="dropdown"
+         aria-haspopup="true" aria-expanded="false">
+        <i className="fa-solid fa-ellipsis-vertical pl-2"></i>
+      </a>
+      <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <DropdownItems
+          onCleaned={onCleaned}
+          onTerminated={onTerminated}
+          session={session}
+        />
+      </div>
+    </div>
+  );
+}
+
+function DropdownItems({ onCleaned, onTerminated, session }) {
   if (activeStates.includes(session.state)) {
     return (
-      <div className="dropdown">
-        <a className="card-text dropdown-toggle" id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-          <i className="fa-solid fa-ellipsis-vertical pl-2"></i>
-        </a>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <Link
-            className="dropdown-item"
-            to={`/sessions/${session.id}`}
-          >
-            Connect
-          </Link>
-          <TerminateButton
-            className="dropdown-item"
-            onTerminated={onTerminated}
-            session={session}
-          />
-        </div>
-      </div>
+      <>
+        <Link
+          className="dropdown-item"
+          to={`/sessions/${session.id}`}
+        >
+          Connect
+        </Link>
+        <TerminateButton
+          className="dropdown-item"
+          onTerminated={onTerminated}
+          session={session}
+        />
+      </>
     );
   } else {
     return (
-      <div className="dropdown">
-        <a className="card-text dropdown-toggle" id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-          <i className="fa-solid fa-ellipsis-vertical pl-2"></i>
-        </a>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <CleanButton
-            className="dropdown-item"
-            onCleaned={onCleaned}
-            session={session}
-          />
-        </div>
-      </div>
+      <CleanButton
+        className="dropdown-item"
+        onCleaned={onCleaned}
+        session={session}
+      />
     );
   }
 }
