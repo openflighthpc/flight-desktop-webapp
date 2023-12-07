@@ -40,16 +40,23 @@ function SessionCard({ reload, session }) {
 
   return (
       <div
-        className={classNames('card text-left', {
+        className={classNames('card text-left pb-2', {
           [`session--${session.state.toLowerCase()}`]: true,
         })}
         data-testid="session-card"
       >
-        <h5
-          className="card-text text-start"
-        >
-          {title}
-        </h5>
+        <div className="row col justify-content-between mb-2 mt-3">
+          <h5
+            className="card-text text-start"
+          >
+            {title}
+          </h5>
+          <DropdownMenu
+            onCleaned={reload}
+            onTerminated={reload}
+            session={session}
+          />
+        </div>
         <div className={
           classNames("card-text", { 'text-muted': !activeStates.includes(session.state) })
         }>
@@ -101,15 +108,52 @@ function SessionCard({ reload, session }) {
             { jobIdEntry }
           </dl>
         </div>
-        <CardFooter>
-          <Buttons
-            onCleaned={reload}
-            onTerminated={reload}
-            session={session} 
-          />
-        </CardFooter>
       </div>
   );
+}
+
+function DropdownMenu({ onCleaned, onTerminated, session }) {
+  if (activeStates.includes(session.state)) {
+    return (
+      <div className="dropdown">
+        <a className="card-text dropdown-toggle" id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+          <i className="fa-solid fa-ellipsis-vertical pl-2"></i>
+        </a>
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <Link
+            className="dropdown-item"
+            to={`/sessions/${session.id}`}
+          >
+            Connect
+          </Link>
+          <TerminateButton
+            className="dropdown-item"
+            onTerminated={onTerminated}
+            session={session}
+          />
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div className="dropdown">
+        <a className="card-text dropdown-toggle" id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+          <i className="fa-solid fa-ellipsis-vertical pl-2"></i>
+        </a>
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <CleanButton
+            className="dropdown-item"
+            onCleaned={onCleaned}
+            session={session}
+          />
+        </div>
+      </div>
+    );
+  }
 }
 
 function MetadataEntry({ name, title, value, format, valueTitle }) {
@@ -133,37 +177,6 @@ function MetadataEntry({ name, title, value, format, valueTitle }) {
       </dd>
     </React.Fragment>
   );
-}
-
-function Buttons({ onCleaned, onTerminated, session }) {
-  if (activeStates.includes(session.state)) {
-    return (
-      <div className="btn-toolbar justify-content-center">
-        <Link
-          className="btn btn-sm btn-primary mr-2 text-nowrap"
-          to={`/sessions/${session.id}`}
-        >
-          <i className="fa fa-bolt mr-1"></i>
-          <span>Connect</span>
-        </Link>
-        <TerminateButton
-          className="btn-sm text-nowrap"
-          onTerminated={onTerminated}
-          session={session}
-        />
-      </div>
-    );
-  } else {
-    return (
-      <div className="btn-toolbar justify-content-center">
-        <CleanButton
-          className="btn-sm"
-          onCleaned={onCleaned}
-          session={session}
-        />
-      </div>
-    );
-  }
 }
 
 function Screenshot({ session }) {
