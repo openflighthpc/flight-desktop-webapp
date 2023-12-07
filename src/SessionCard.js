@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import CleanButton from './CleanSessionButton';
 import WrappedScreenshot from './Screenshot';
 import TerminateButton from './TerminateButton';
-import { CardFooter } from './CardParts';
 import { prettyDesktopName } from './utils';
 
 const timeFormat = d3.timeFormat("%a %e %b %Y %H:%M");
