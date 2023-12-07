@@ -40,16 +40,18 @@ function SessionCard({ reload, session }) {
 
   return (
       <div
-        className={classNames('card border-primary mb-2', {
+        className={classNames('card text-left', {
           [`session--${session.state.toLowerCase()}`]: true,
         })}
         data-testid="session-card"
       >
-        <h5 className="card-header bg-primary text-light">
+        <h5
+          className="card-text text-start"
+        >
           {title}
         </h5>
         <div className={
-          classNames("card-body", { 'text-muted': !activeStates.includes(session.state) })
+          classNames("card-text", { 'text-muted': !activeStates.includes(session.state) })
         }>
           <div className="row mb-2">
             <div className="col">
@@ -84,7 +86,7 @@ function SessionCard({ reload, session }) {
               name="Host"
               value={session.hostname}
               valueTitle="The machine this session is running on"
-              format={host => <code>{host}</code>}
+              format={host => <code className="card-text">{host}</code>}
             />
             <MetadataEntry
               name="Started"
@@ -92,7 +94,7 @@ function SessionCard({ reload, session }) {
               format={timestampFormat}
             />
             <MetadataEntry
-              name="Last accessed"
+              name="Accessed"
               value={session.last_accessed_at}
               format={timestampFormat}
             />

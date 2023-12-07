@@ -78,7 +78,7 @@ function SessionsList({ reload, sessions }) {
         blanks = a.map((i, index) => <div key={index} className="card invisible"></div>)
       }
       return (
-        <div key={index} className="card-deck">
+        <div key={index} className="desktops app-card-deck">
           {
             group.map((session) => (
               <SessionCard key={session.id} reload={reload} session={session} />
