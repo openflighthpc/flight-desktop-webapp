@@ -51,12 +51,12 @@ function SessionsPage() {
 function NoSessionsFound() {
   return (
     <div>
-      <p>
-        No sessions found.  You may want to
-        <Link to="/sessions/new">
-          start a new session
-        </Link>.
+      <p className="tagline mt-4">
+        No sessions found.
       </p>
+      <NewDesktopButton
+        className="mt-5"
+      />
     </div>
   );
 }
@@ -108,13 +108,19 @@ function InfoRow({ sessions }) {
       <p className={`tagline mb-0`}>
         You have {sessions.length} desktop {sessionOrSessions} currently running.
       </p>
-      <Link
-        to="/sessions/new"
-        className="button link"
-      >
-        NEW DESKTOP
-      </Link>
+      <NewDesktopButton />
     </div>
+  );
+}
+
+function NewDesktopButton({ className }) {
+  return(
+    <Link
+      to="/sessions/new"
+      className={className + " button link"}
+    >
+      NEW DESKTOP
+    </Link>
   );
 }
 
