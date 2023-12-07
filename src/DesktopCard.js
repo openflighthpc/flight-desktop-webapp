@@ -11,7 +11,7 @@ function DesktopCard({ desktop }) {
   return (
     <div
       className={
-        classNames('card border-primary mb-2')
+        classNames('card desktop-type border-primary mb-2')
       }
     >
       <h5

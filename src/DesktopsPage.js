@@ -14,6 +14,8 @@ import {
 import DesktopCard from './DesktopCard';
 import styles from './DesktopsPage.module.css';
 import { useFetchDesktops } from './api';
+import Blurb from "./Blurb";
+import SessionsPage from "./SessionsPage";
 
 function DesktopsPage() {
   const { data, error, loading } = useFetchDesktops();
@@ -57,16 +59,14 @@ function DesktopsList({ desktops }) {
       if ( group.length < perGroup) {
         const a = new Array(perGroup - group.length);
         a.fill(0);
-        blanks = a.map((i, index) => <div key={index} className="card invisible"></div>)
       }
       return (
-        <div key={index} className="card-deck">
+        <div key={index} className="desktop-types-card-deck">
           {
             group.map((desktop) => (
               <DesktopCard key={desktop.id} desktop={desktop} />
             ))
           }
-          {blanks}
         </div>
       );
     }
@@ -74,18 +74,17 @@ function DesktopsList({ desktops }) {
 
   return (
     <React.Fragment>
-      <Jumbotron className={`${styles.Jumbotron} bg-white py-4`}>
-        <h1>
-          Launch a new desktop session
-        </h1>
-        <ul>
-          <li>Select the desktop session type from the list below.</li>
-          <li>Click "Launch".</li>
-          <li>When your session is ready you will be automatically connected to it.</li>
-          <li>Start working!</li>
-        </ul>
-      </Jumbotron>
-      {decks}
+      <div
+        className="centernav col-8"
+      >
+        <div className="narrow-container">
+          <Blurb />
+        </div>
+        <p className="tagline">
+          Select your desktop type from the options below.
+        </p>
+        { decks }
+      </div>
     </React.Fragment>
   );
 }
