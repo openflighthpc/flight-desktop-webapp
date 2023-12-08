@@ -175,35 +175,35 @@ function Layout({
 }) {
 
   return (
-    <div className="overflow-auto">
-      <div className="row no-gutters">
-        <div className="col">
-          <div className="card border-primary">
-            <div className="card-header bg-primary text-light">
-              <div className="row no-gutters">
-                <div className="col">
-                  <div className="d-flex flex-wrap align-items-center">
-                    <h5 className="flex-grow-1 mb-0">
-                      <SessionHeaderText session={session}/>
-                    </h5>
-                    <Toolbar
-                      connectionState={connectionState}
-                      onConfigured={onConfigured}
-                      onDisconnect={onDisconnect}
-                      onReconnect={onReconnect}
-                      onTerminate={onTerminate}
-                      onTerminated={onTerminated}
-                      onZenChange={onZenChange}
-                      session={session}
-                      vnc={vnc}
-                    />
+    <div className="centernav col-12 fullscreen">
+      <div className="overflow-auto">
+        <div className="row no-gutters">
+          <div className="col">
+              <div className="card-header toolbar text-light">
+                <div className="row no-gutters">
+                  <div className="col">
+                    <div className="d-flex align-items-center">
+                      <h5 className="flex-grow-1 mb-0">
+                        <SessionHeaderText session={session}/>
+                      </h5>
+                      <Toolbar
+                        connectionState={connectionState}
+                        onConfigured={onConfigured}
+                        onDisconnect={onDisconnect}
+                        onReconnect={onReconnect}
+                        onTerminate={onTerminate}
+                        onTerminated={onTerminated}
+                        onZenChange={onZenChange}
+                        session={session}
+                        vnc={vnc}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="card-body p-0">
-              {children}
-            </div>
+              <div className="fullscreen-content">
+                {children}
+              </div>
           </div>
         </div>
       </div>

@@ -31,7 +31,6 @@ function AppLayout() {
       accountMenuItems={accountMenuItems}
     />
     <div
-      className="container-fluid"
       id="main"
     >
       <div id="toast-portal" className={styles.ToastPortal}></div>
@@ -47,7 +46,6 @@ function AppLayout() {
         />
       </div>
     </div>
-    <Footer />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Jumbotron } from 'reactstrap';
+import { Footer } from 'flight-webapp-components';
 
 import {
   DefaultErrorMessage,
@@ -12,10 +12,8 @@ import {
 } from 'flight-webapp-components';
 
 import DesktopCard from './DesktopCard';
-import styles from './DesktopsPage.module.css';
 import { useFetchDesktops } from './api';
 import Blurb from "./Blurb";
-import SessionsPage from "./SessionsPage";
 
 function DesktopsPage() {
   const { data, error, loading } = useFetchDesktops();
@@ -73,19 +71,22 @@ function DesktopsList({ desktops }) {
   );
 
   return (
-    <React.Fragment>
-      <div
-        className="centernav col-8"
-      >
-        <div className="narrow-container">
-          <Blurb />
+    <>
+      <React.Fragment>
+        <div
+          className="centernav col-8"
+        >
+          <div className="narrow-container">
+            <Blurb />
+          </div>
+          <p className="tagline">
+            Select your desktop type from the options below.
+          </p>
+          { decks }
         </div>
-        <p className="tagline">
-          Select your desktop type from the options below.
-        </p>
-        { decks }
-      </div>
-    </React.Fragment>
+      </React.Fragment>
+      <Footer />
+    </>
   );
 }
 

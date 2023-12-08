@@ -1,7 +1,7 @@
 import React from 'react';
+import { Footer } from 'flight-webapp-components';
 
 import Blurb from './Blurb';
-import ClusterOverview from './ClusterOverview';
 
 function UnauthenticatedDashboard() {
   return (
@@ -17,9 +17,9 @@ function UnauthenticatedDashboard() {
           </p>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
-
 
 export default UnauthenticatedDashboard;
