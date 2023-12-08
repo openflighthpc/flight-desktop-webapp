@@ -13,7 +13,6 @@ import {
 } from 'flight-webapp-components';
 
 import SessionCard from './SessionCard';
-import styles from './SessionsPage.module.css';
 import { useFetchSessions } from './api';
 import { useInterval } from './utils';
 
