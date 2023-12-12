@@ -27,7 +27,6 @@ function AppLayout() {
     <>
     <BrandBar
       className="brandbar"
-      navItems={<NavItems includeHome={false} />}
       accountMenuItems={accountMenuItems}
     />
     <div
