@@ -1,5 +1,4 @@
 import React from 'react';
-import { Footer } from 'flight-webapp-components';
 
 import Blurb from './Blurb';
 
@@ -17,7 +16,6 @@ function UnauthenticatedDashboard() {
           </p>
         </div>
       </div>
-      <Footer />
     </>
   );
 }

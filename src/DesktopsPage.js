@@ -1,5 +1,4 @@
 import React from 'react';
-import { Footer } from 'flight-webapp-components';
 
 import {
   DefaultErrorMessage,
@@ -85,7 +84,6 @@ function DesktopsList({ desktops }) {
           { decks }
         </div>
       </React.Fragment>
-      <Footer />
     </>
   );
 }

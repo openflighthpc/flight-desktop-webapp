@@ -1,4 +1,3 @@
-import { Footer } from 'flight-webapp-components';
 import Blurb from './Blurb';
 import SessionsPage from "./SessionsPage";
 
@@ -13,7 +12,6 @@ function AuthenticatedDashboard() {
         </div>
         <SessionsPage/>
       </div>
-      <Footer/>
     </>
   );
 }
