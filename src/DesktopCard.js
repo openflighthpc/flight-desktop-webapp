@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import LaunchDesktopButton from './LaunchDesktopButton';
 import { prettyDesktopName } from './utils';
 
-function DesktopCard({ desktop, loading, selected }) {
+function DesktopCard({ desktop, loading, selected, onClick }) {
   const desktopName = prettyDesktopName[desktop.id];
 
   return (
@@ -13,7 +13,7 @@ function DesktopCard({ desktop, loading, selected }) {
       desktop={desktop}
       loading={loading}
     >
-      <div className="card-body">
+      <div className="card-body" onClick={onClick}>
         <h3 className="card-text mb-4 mt-2">
           {desktopName}
         </h3>

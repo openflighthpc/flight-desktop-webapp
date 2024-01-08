@@ -40,8 +40,7 @@ function DesktopsPage() {
   const clusterName = useContext(ConfigContext).clusterName;
 
   const desktops = utils.getResourcesFromResponse(data);
-  const selectedDesktop = desktops !== null ? desktops.filter(desktop => desktop.verified)[0] : null;
-  const desktop = selectedDesktop;
+  const [desktop, setDesktop] = useState(null);
 
   function launchErrorToast({ clusterName, desktop, launchError }) {
     const desktopName = prettyDesktopName[desktop.id];
@@ -129,41 +128,47 @@ function DesktopsPage() {
           <p className="tagline">
             Select your desktop type from the options below.
           </p>
-          {desktops != null && <DesktopsList desktops={desktops} loading={request.loading} selectedDesktop={selectedDesktop}/>}
+          {desktops != null && <DesktopsList desktops={desktops} loading={request.loading} selectedDesktop={desktop}/>}
           {desktops != null && desktopQuestions}
         </div>
       </React.Fragment>
     );
   }
-}
 
-function DesktopsList({desktops, loading, selectedDesktop}) {
-  console.log(selectedDesktop)
-  const filteredDesktops = desktops.filter(desktop => desktop.verified);
-  const {groupedItems: groupedDesktops, perGroup} = useMediaGrouping(
-    ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
-    [3, 2, 2, 1],
-    1,
-    filteredDesktops,
-  );
+  function DesktopsList({desktops, loading, selectedDesktop}) {
+    const filteredDesktops = desktops.filter(desktop => desktop.verified);
+    const {groupedItems: groupedDesktops, perGroup} = useMediaGrouping(
+      ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
+      [3, 2, 2, 1],
+      1,
+      filteredDesktops,
+    );
 
-  return groupedDesktops.map(
-    (group, index) => {
-      if (group.length < perGroup) {
-        const a = new Array(perGroup - group.length);
-        a.fill(0);
+    return groupedDesktops.map(
+      (group, index) => {
+        if (group.length < perGroup) {
+          const a = new Array(perGroup - group.length);
+          a.fill(0);
+        }
+        return (
+          <div key={index} className="desktop-types-card-deck">
+            {
+              group.map((desktop) => (
+                <DesktopCard
+                  key={desktop.id}
+                  className="aa"
+                  desktop={desktop}
+                  loading={loading}
+                  selected={selectedDesktop === desktop}
+                  onClick={() => setDesktop(desktop)}
+                />
+              ))
+            }
+          </div>
+        );
       }
-      return (
-        <div key={index} className="desktop-types-card-deck">
-          {
-            group.map((desktop) => (
-              <DesktopCard key={desktop.id} className="aa" desktop={desktop} loading={loading} selected={selectedDesktop === desktop}/>
-            ))
-          }
-        </div>
-      );
-    }
-  );
+    );
+  }
 }
 
 export default DesktopsPage;

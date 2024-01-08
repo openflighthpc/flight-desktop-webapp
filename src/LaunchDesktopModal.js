@@ -1,16 +1,13 @@
 import {Button, Input} from "reactstrap";
 import React from "react";
-import {prettyDesktopName} from "./utils";
 import {
   Spinner
 } from 'flight-webapp-components';
 
 function LaunchDesktopModal({
                               defaultGeometry,
-                              desktop,
                               geometry,
                               launch,
-                              modal,
                               nameRef,
                               setGeometry,
                               toggle,
