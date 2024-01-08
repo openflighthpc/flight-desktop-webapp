@@ -3,13 +3,14 @@ import React from 'react';
 import LaunchDesktopButton from './LaunchDesktopButton';
 import { prettyDesktopName } from './utils';
 
-function DesktopCard({ desktop }) {
+function DesktopCard({ desktop, loading }) {
   const desktopName = prettyDesktopName[desktop.id];
 
   return (
     <LaunchDesktopButton
       className="card link"
       desktop={desktop}
+      loading={loading}
     >
       <div className="card-body">
         <h3 className="card-text mb-4 mt-2">

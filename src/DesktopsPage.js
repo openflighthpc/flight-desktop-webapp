@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useContext, useRef, useState} from 'react';
 
 import {
+  ConfigContext,
   DefaultErrorMessage,
   Overlay,
   OverlayContainer,
@@ -11,49 +12,113 @@ import {
 } from 'flight-webapp-components';
 
 import DesktopCard from './DesktopCard';
-import { useFetchDesktops } from './api';
+import {useFetchDesktops, useLaunchSession} from './api';
 import Blurb from "./Blurb";
+import {Context as UserConfigContext} from "./UserConfigContext";
+import LaunchDesktopModal from "./LaunchDesktopModal";
+import {useHistory} from "react-router-dom";
+import {useToast} from "./ToastContext";
 
 function DesktopsPage() {
-  const { data, error, loading } = useFetchDesktops();
+  const {data, error, loading} = useFetchDesktops();
+
+  // Context consumers
+  const userConfig = useContext(UserConfigContext);
+  const defaultGeometry = userConfig.geometry;
+
+  // Modal controls
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
+
+  // Input refs/states
+  const nameRef = useRef(null);
+  const [geometry, setGeometry] = useState(defaultGeometry);
+
+  const history = useHistory();
+  const {addToast} = useToast();
+  const clusterName = useContext(ConfigContext).clusterName;
+
+  const desktops = utils.getResourcesFromResponse(data);
+  let desktop = desktops !== null ? desktops[0] : null;
+
+  // Launch session API call
+  const {request, post} = useLaunchSession();
+  const launchSession = () => {
+    post(desktop.id, nameRef.current?.value, geometry).then((responseBody) => {
+      if (request.response.ok) {
+        history.push(`/sessions/${responseBody.id}`);
+      } else {
+        addToast(launchErrorToast({
+          clusterName: clusterName,
+          desktop: desktop,
+          launchError: utils.errorCode(responseBody),
+        }));
+      }
+    });
+  };
+
+  const desktopQuestions =
+    <>
+      <LaunchDesktopModal
+        defaultGeometry={defaultGeometry}
+        desktop={desktop}
+        geometry={geometry}
+        launch={launchSession}
+        modal={modal}
+        nameRef={nameRef}
+        setGeometry={setGeometry}
+        toggle={toggle}
+        userConfig={userConfig}
+      />
+    </>;
 
   if (error) {
     if (utils.errorCode(data) === 'Unauthorized') {
-      return <UnauthorizedError />;
+      return <UnauthorizedError/>;
     } else {
-      return <DefaultErrorMessage />;
+      return <DefaultErrorMessage/>;
     }
   } else {
-    const desktops = utils.getResourcesFromResponse(data);
     return (
       <React.Fragment>
-        {
-          loading && (
-            <OverlayContainer>
-              <Overlay>
-                <Spinner text="Loading desktops..."/>
-              </Overlay>
-            </OverlayContainer>
-          )
-        }
-        { desktops != null && <DesktopsList desktops={desktops} /> }
+        <div
+          className="centernav col-8"
+        >
+          <div className="narrow-container">
+            <Blurb/>
+          </div>
+          {
+            loading && (
+              <OverlayContainer>
+                <Overlay>
+                  <Spinner text="Loading desktops..."/>
+                </Overlay>
+              </OverlayContainer>
+            )
+          }
+          <p className="tagline">
+            Select your desktop type from the options below.
+          </p>
+          {desktops != null && <DesktopsList desktops={desktops} loading={request.loading}/>}
+          {desktops != null && desktopQuestions}
+        </div>
       </React.Fragment>
     );
   }
 }
 
-function DesktopsList({ desktops }) {
+function DesktopsList({desktops, loading}) {
   const filteredDesktops = desktops.filter(desktop => desktop.verified);
-  const { groupedItems: groupedDesktops, perGroup } = useMediaGrouping(
+  const {groupedItems: groupedDesktops, perGroup} = useMediaGrouping(
     ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
     [3, 2, 2, 1],
     1,
     filteredDesktops,
   );
-  const decks = groupedDesktops.map(
+
+  return groupedDesktops.map(
     (group, index) => {
-      let blanks = null;
-      if ( group.length < perGroup) {
+      if (group.length < perGroup) {
         const a = new Array(perGroup - group.length);
         a.fill(0);
       }
@@ -61,30 +126,12 @@ function DesktopsList({ desktops }) {
         <div key={index} className="desktop-types-card-deck">
           {
             group.map((desktop) => (
-              <DesktopCard key={desktop.id} desktop={desktop} />
+              <DesktopCard key={desktop.id} desktop={desktop} loading={loading}/>
             ))
           }
         </div>
       );
     }
-  );
-
-  return (
-    <>
-      <React.Fragment>
-        <div
-          className="centernav col-8"
-        >
-          <div className="narrow-container">
-            <Blurb />
-          </div>
-          <p className="tagline">
-            Select your desktop type from the options below.
-          </p>
-          { decks }
-        </div>
-      </React.Fragment>
-    </>
   );
 }
 
