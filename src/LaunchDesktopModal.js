@@ -10,14 +10,12 @@ function LaunchDesktopModal({
                               launch,
                               nameRef,
                               setGeometry,
-                              toggle,
                               userConfig,
                             }) {
 
-  // Run launch method and close modal
+  // Run launch method
   const handleSubmit = e => {
     launch();
-    toggle();
   };
 
   // Submit modal on return
@@ -27,25 +25,16 @@ function LaunchDesktopModal({
     }
   };
 
-  // Modal bottom bar buttons
-  const leftButton = (
-    <Button
-      className="btn-sm"
-      color="secondary"
-      onClick={toggle}
-    >
-      Cancel
-    </Button>
-  );
-  const rightButton = (
-    <Button
+  // Launch button
+  const launchButton = (
+    <a
+      href={'#'}
       data-testid="session-launch-button"
-      className="btn-sm ml-2"
+      className="button link"
       onClick={handleSubmit}
     >
-      <i className="fa fa-bolt mr-1"></i>
-      Launch
-    </Button>
+      LAUNCH
+    </a>
   );
 
   // Config may not have fully loaded yet
@@ -53,7 +42,7 @@ function LaunchDesktopModal({
     userConfig.loading ?
       <Spinner text="Loading config..." /> :
       <React.Fragment>
-        <label for="session-name">
+        <label>
           Give your session a name to more easily identify it (optional).
         </label>
         <input
@@ -67,7 +56,7 @@ function LaunchDesktopModal({
           autoFocus={true}
         />
 
-        <label for="session-geometry">
+        <label>
           Specify the geometry for the desktop session (optional).
         </label>
         <Input
@@ -86,8 +75,7 @@ function LaunchDesktopModal({
   return (
     <>
       {modalContent}
-      {leftButton}
-      {rightButton}
+      {launchButton}
     </>
   );
 }
