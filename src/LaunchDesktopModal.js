@@ -27,50 +27,53 @@ function LaunchDesktopModal({
 
   // Launch button
   const launchButton = (
-    <a
+    <Button
       href={'#'}
       data-testid="session-launch-button"
-      className="button link"
+      className="button link launch-button"
       onClick={handleSubmit}
     >
       LAUNCH
-    </a>
+    </Button>
   );
 
   // Config may not have fully loaded yet
   const modalContent =
     userConfig.loading ?
-      <Spinner text="Loading config..." /> :
-      <React.Fragment>
-        <label>
-          Give your session a name to more easily identify it (optional).
-        </label>
-        <input
-          id="session-name"
-          className="w-100 mb-2"
-          name="session-name"
-          placeholder="Session name"
-          type="text"
-          ref={nameRef}
-          onKeyDown={handleKeyDown}
-          autoFocus={true}
-        />
-
-        <label>
-          Specify the geometry for the desktop session (optional).
-        </label>
-        <Input
-          id="session-geometry"
-          name="session-geometry"
-          onChange={(e) => setGeometry(e.target.value)}
-          type="select"
-          className="w-100"
-          value={geometry}
-          defaultValue={defaultGeometry}
-        >
-          <GeometryOptions geometries={userConfig.geometries} defaultGeometry={defaultGeometry} />
-        </Input>
-      </React.Fragment>;
+      <Spinner text="Loading config..."/> :
+      <div className={'d-flex flex-column align-items-center'}>
+        <div className={'form-field'}>
+          <label className={'tagline'}>
+            Name your desktop session (optional).
+          </label>
+          <input
+            id="session-name"
+            className="w-100"
+            name="session-name"
+            placeholder="Session name"
+            type="text"
+            ref={nameRef}
+            onKeyDown={handleKeyDown}
+            autoFocus={true}
+          />
+        </div>
+        <div className={'form-field'}>
+          <label className={'tagline'}>
+            Select your desktop resolution (optional).
+          </label>
+          <Input
+            id="session-geometry"
+            name="session-geometry"
+            onChange={(e) => setGeometry(e.target.value)}
+            type="select"
+            className="w-100"
+            value={geometry}
+            defaultValue={defaultGeometry}
+          >
+            <GeometryOptions geometries={userConfig.geometries} defaultGeometry={defaultGeometry}/>
+          </Input>
+        </div>
+      </div>;
 
   return (
     <>
@@ -81,13 +84,15 @@ function LaunchDesktopModal({
 }
 
 function GeometryOptions({geometries, defaultGeometry}) {
-  if (!geometries) { return null }
+  if (!geometries) {
+    return null
+  }
   return geometries.map(geometry => {
     const isDefault = defaultGeometry === geometry;
     return (
       <option
         key={geometry.key}
-        label={`${geometry}${isDefault ? ' (default)'  : ''}`}
+        label={`${geometry}${isDefault ? ' (default)' : ''}`}
         value={geometry}
       />
     );
