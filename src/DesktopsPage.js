@@ -18,6 +18,7 @@ import {Context as UserConfigContext} from "./UserConfigContext";
 import LaunchDesktopModal from "./LaunchDesktopModal";
 import {useHistory} from "react-router-dom";
 import {useToast} from "./ToastContext";
+import {prettyDesktopName} from "./utils";
 
 function DesktopsPage() {
   const {data, error, loading} = useFetchDesktops();
@@ -39,7 +40,36 @@ function DesktopsPage() {
   const clusterName = useContext(ConfigContext).clusterName;
 
   const desktops = utils.getResourcesFromResponse(data);
-  let desktop = desktops !== null ? desktops[0] : null;
+  const selectedDesktop = desktops !== null ? desktops.filter(desktop => desktop.verified)[0] : null;
+  const desktop = selectedDesktop;
+
+  function launchErrorToast({ clusterName, desktop, launchError }) {
+    const desktopName = prettyDesktopName[desktop.id];
+    let body = (
+      <div>
+        Unfortunately there has been a problem launching your
+        {' '}<strong>{desktopName}</strong> desktop session.  Please try
+        again and, if problems persist, help us to more quickly rectify the
+        problem by contacting us and letting us know.
+      </div>
+    );
+    if (launchError === 'Desktop Not Prepared') {
+      body = (
+        <div>
+          <strong>{desktopName}</strong> has not yet been fully configured.  If
+          you would like to use this desktop please contact the system
+          administrator for {' '}<em>{clusterName}</em> and ask them to prepare
+          this desktop.
+        </div>
+      );
+    }
+
+    return {
+      body,
+      icon: 'danger',
+      header: 'Failed to launch desktop',
+    };
+  }
 
   // Launch session API call
   const {request, post} = useLaunchSession();
@@ -99,7 +129,7 @@ function DesktopsPage() {
           <p className="tagline">
             Select your desktop type from the options below.
           </p>
-          {desktops != null && <DesktopsList desktops={desktops} loading={request.loading}/>}
+          {desktops != null && <DesktopsList desktops={desktops} loading={request.loading} selectedDesktop={selectedDesktop}/>}
           {desktops != null && desktopQuestions}
         </div>
       </React.Fragment>
@@ -107,7 +137,8 @@ function DesktopsPage() {
   }
 }
 
-function DesktopsList({desktops, loading}) {
+function DesktopsList({desktops, loading, selectedDesktop}) {
+  console.log(selectedDesktop)
   const filteredDesktops = desktops.filter(desktop => desktop.verified);
   const {groupedItems: groupedDesktops, perGroup} = useMediaGrouping(
     ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
@@ -126,7 +157,7 @@ function DesktopsList({desktops, loading}) {
         <div key={index} className="desktop-types-card-deck">
           {
             group.map((desktop) => (
-              <DesktopCard key={desktop.id} desktop={desktop} loading={loading}/>
+              <DesktopCard key={desktop.id} className="aa" desktop={desktop} loading={loading} selected={selectedDesktop === desktop}/>
             ))
           }
         </div>

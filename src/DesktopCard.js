@@ -1,14 +1,15 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import LaunchDesktopButton from './LaunchDesktopButton';
 import { prettyDesktopName } from './utils';
 
-function DesktopCard({ desktop, loading }) {
+function DesktopCard({ desktop, loading, selected }) {
   const desktopName = prettyDesktopName[desktop.id];
 
   return (
     <LaunchDesktopButton
-      className="card link"
+      className={classNames("card link", { "selected": selected })}
       desktop={desktop}
       loading={loading}
     >
