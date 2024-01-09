@@ -131,12 +131,16 @@ function DesktopsPage() {
             )
           }
           {
-            desktops != null && (
+            desktops != null ? (
               <>
                 <DesktopsList desktops={desktops} loading={request.loading} selectedDesktop={desktop}/>
                 {desktopQuestions}
                 {launchButton}
               </>
+            ) : (
+              <p className="tagline">
+                No desktop types available.
+              </p>
             )
           }
         </div>
