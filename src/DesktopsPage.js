@@ -1,4 +1,5 @@
 import React, {useContext, useRef, useState} from 'react';
+import {useHistory} from "react-router-dom";
 
 import {
   ConfigContext,
@@ -16,31 +17,23 @@ import {useFetchDesktops, useLaunchSession} from './api';
 import Blurb from "./Blurb";
 import {Context as UserConfigContext} from "./UserConfigContext";
 import LaunchDesktopModal from "./LaunchDesktopModal";
-import {useHistory} from "react-router-dom";
 import {useToast} from "./ToastContext";
 import {prettyDesktopName} from "./utils";
 
 function DesktopsPage() {
   const {data, error, loading} = useFetchDesktops();
 
-  // Context consumers
   const userConfig = useContext(UserConfigContext);
   const defaultGeometry = userConfig.geometry;
 
-  // Modal controls
-  const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
-
-  // Input refs/states
   const nameRef = useRef(null);
   const [geometry, setGeometry] = useState(defaultGeometry);
+  const desktops = utils.getResourcesFromResponse(data);
+  const [desktop, setDesktop] = useState(null);
 
   const history = useHistory();
   const {addToast} = useToast();
   const clusterName = useContext(ConfigContext).clusterName;
-
-  const desktops = utils.getResourcesFromResponse(data);
-  const [desktop, setDesktop] = useState(null);
 
   function launchErrorToast({ clusterName, desktop, launchError }) {
     const desktopName = prettyDesktopName[desktop.id];
@@ -90,13 +83,10 @@ function DesktopsPage() {
     <>
       <LaunchDesktopModal
         defaultGeometry={defaultGeometry}
-        desktop={desktop}
         geometry={geometry}
         launch={launchSession}
-        modal={modal}
         nameRef={nameRef}
         setGeometry={setGeometry}
-        toggle={toggle}
         userConfig={userConfig}
       />
     </>;
@@ -109,10 +99,8 @@ function DesktopsPage() {
     }
   } else {
     return (
-      <React.Fragment>
-        <div
-          className="centernav col-8"
-        >
+      <>
+        <div className="centernav col-8">
           <div className="narrow-container">
             <Blurb/>
           </div>
@@ -125,13 +113,16 @@ function DesktopsPage() {
               </OverlayContainer>
             )
           }
-          <p className="tagline">
-            Select your desktop type from the options below.
-          </p>
-          {desktops != null && <DesktopsList desktops={desktops} loading={request.loading} selectedDesktop={desktop}/>}
-          {desktops != null && desktopQuestions}
+          {
+            desktops != null && (
+              <>
+                <DesktopsList desktops={desktops} loading={request.loading} selectedDesktop={desktop}/>
+                {desktopQuestions}
+              </>
+            )
+          }
         </div>
-      </React.Fragment>
+      </>
     );
   }
 
@@ -143,8 +134,7 @@ function DesktopsPage() {
       1,
       filteredDesktops,
     );
-
-    return groupedDesktops.map(
+    const decks = groupedDesktops.map(
       (group, index) => {
         if (group.length < perGroup) {
           const a = new Array(perGroup - group.length);
@@ -167,6 +157,15 @@ function DesktopsPage() {
           </div>
         );
       }
+    );
+
+    return (
+      <>
+        <p className="tagline">
+          Select your desktop type from the options below.
+        </p>
+        {decks}
+      </>
     );
   }
 }
