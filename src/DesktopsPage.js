@@ -22,7 +22,7 @@ import {prettyDesktopName} from "./utils";
 import {Button} from "reactstrap";
 
 function DesktopsPage() {
-  const {data, error, loading} = useFetchDesktops();
+  const {data, error, typesLoading} = useFetchDesktops();
 
   const userConfig = useContext(UserConfigContext);
   const defaultGeometry = userConfig.geometry;
@@ -84,30 +84,6 @@ function DesktopsPage() {
     launchSession();
   };
 
-  const desktopQuestions =
-    <>
-      <ConfigQuestions
-        defaultGeometry={defaultGeometry}
-        geometry={geometry}
-        launch={handleSubmit}
-        nameRef={nameRef}
-        setGeometry={setGeometry}
-        userConfig={userConfig}
-      />
-    </>;
-
-  const launchButton = (
-    <Button
-      href={'#'}
-      data-testid="session-launch-button"
-      className="button link launch-button"
-      onClick={handleSubmit}
-      disabled={desktop === null}
-    >
-      LAUNCH
-    </Button>
-  );
-
   if (error) {
     if (utils.errorCode(data) === 'Unauthorized') {
       return <UnauthorizedError/>;
@@ -122,7 +98,7 @@ function DesktopsPage() {
             <Blurb/>
           </div>
           {
-            loading && (
+            typesLoading && (
               <OverlayContainer>
                 <Overlay>
                   <Spinner text="Loading desktops..."/>
@@ -133,9 +109,20 @@ function DesktopsPage() {
           {
             desktops != null ? (
               <>
-                <DesktopsList desktops={desktops} loading={request.loading} selectedDesktop={desktop}/>
-                {desktopQuestions}
-                {launchButton}
+                <DesktopsList
+                  desktops={desktops}
+                  loading={request.loading}
+                  selectedDesktop={desktop}
+                />
+                <ConfigQuestions
+                  defaultGeometry={defaultGeometry}
+                  geometry={geometry}
+                  launch={handleSubmit}
+                  nameRef={nameRef}
+                  setGeometry={setGeometry}
+                  userConfig={userConfig}
+                />
+                <LaunchButton/>
               </>
             ) : (
               <p className="tagline">
@@ -145,6 +132,27 @@ function DesktopsPage() {
           }
         </div>
       </>
+    );
+  }
+
+  function LaunchButton() {
+    return (
+      <Button
+        data-testid="session-launch-button"
+        className="button link launch-button"
+        onClick={handleSubmit}
+        disabled={desktop === null || request.loading}
+      >
+        {
+          request.loading ?
+            <span className="d-flex">
+                        <span className="mr-2">LAUNCHING</span>
+                        <Spinner/>
+                      </span>
+            :
+            'LAUNCH'
+        }
+      </Button>
     );
   }
 
