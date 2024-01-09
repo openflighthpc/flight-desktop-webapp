@@ -23,13 +23,6 @@ function DesktopCard({desktop, loading, selected, onClick}) {
             {desktop.summary}
           </p>
         </div>
-        <div className="d-flex align-self-center mb-2">
-          {loading && selected ?
-            <span className="card-text">
-              <i className="fa fa-spinner fa-spin mr-1"></i>
-              Launching...
-            </span> : null}
-        </div>
       </div>
     </div>
   );
