@@ -64,18 +64,6 @@ function DesktopsPage() {
     };
   }
 
-  const desktopQuestions =
-    <>
-      <ConfigQuestions
-        defaultGeometry={defaultGeometry}
-        geometry={geometry}
-        launch={launchSession}
-        nameRef={nameRef}
-        setGeometry={setGeometry}
-        userConfig={userConfig}
-      />
-    </>;
-
   // Launch session API call
   const {request, post} = useLaunchSession();
   const launchSession = () => {
@@ -95,6 +83,18 @@ function DesktopsPage() {
   const handleSubmit = e => {
     launchSession();
   };
+
+  const desktopQuestions =
+    <>
+      <ConfigQuestions
+        defaultGeometry={defaultGeometry}
+        geometry={geometry}
+        launch={handleSubmit}
+        nameRef={nameRef}
+        setGeometry={setGeometry}
+        userConfig={userConfig}
+      />
+    </>;
 
   const launchButton = (
     <Button
