@@ -1,27 +1,37 @@
-import React from 'react';
+import React, {useState} from 'react';
 import classNames from 'classnames';
+import {prettyDesktopName} from './utils';
 
-import LaunchDesktopButton from './LaunchDesktopButton';
-import { prettyDesktopName } from './utils';
-
-function DesktopCard({ desktop, loading, selected, onClick }) {
+function DesktopCard({desktop, loading, selected, onClick}) {
   const desktopName = prettyDesktopName[desktop.id];
-
   return (
-    <LaunchDesktopButton
-      className={classNames("card link", { "selected": selected })}
-      desktop={desktop}
-      loading={loading}
-    >
-      <div className="card-body" onClick={onClick} tabIndex={0}>
-        <h3 className="card-text mb-4 mt-2">
-          {desktopName}
-        </h3>
-        <p className="card-text tagline">
-          {desktop.summary}
-        </p>
+    <div>
+      <div
+        data-testid="launch-modal-button"
+        className={
+        classNames("card link card-text", {
+          "selected": selected,
+          'disabled': loading,
+        })}
+        onClick={onClick}
+      >
+        <div className="card-body" tabIndex={0}>
+          <h3 className="card-text mb-4 mt-2">
+            {desktopName}
+          </h3>
+          <p className="card-text tagline">
+            {desktop.summary}
+          </p>
+        </div>
+        <div className="d-flex align-self-center mb-2">
+          {loading && selected ?
+            <span className="card-text">
+              <i className="fa fa-spinner fa-spin mr-1"></i>
+              Launching...
+            </span> : null}
+        </div>
       </div>
-    </LaunchDesktopButton>
+    </div>
   );
 }
 
