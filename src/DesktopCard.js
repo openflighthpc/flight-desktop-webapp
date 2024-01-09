@@ -13,7 +13,7 @@ function DesktopCard({ desktop, loading, selected, onClick }) {
       desktop={desktop}
       loading={loading}
     >
-      <div className="card-body" onClick={onClick}>
+      <div className="card-body" onClick={onClick} tabIndex={0}>
         <h3 className="card-text mb-4 mt-2">
           {desktopName}
         </h3>
