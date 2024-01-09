@@ -13,14 +13,10 @@ function ConfigQuestions({
                            userConfig,
                          }) {
 
-  const handleSubmit = e => {
-    launch();
-  };
-
   // Launch desktop by pressing return
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      handleSubmit();
+      launch();
     }
   };
 
@@ -64,21 +60,9 @@ function ConfigQuestions({
         </div>
       </div>;
 
-  const launchButton = (
-    <Button
-      href={'#'}
-      data-testid="session-launch-button"
-      className="button link launch-button"
-      onClick={handleSubmit}
-    >
-      LAUNCH
-    </Button>
-  );
-
   return (
     <>
       {configQuestions}
-      {launchButton}
     </>
   );
 }

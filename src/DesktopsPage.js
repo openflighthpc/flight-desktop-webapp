@@ -19,6 +19,7 @@ import {Context as UserConfigContext} from "./UserConfigContext";
 import ConfigQuestions from "./ConfigQuestions";
 import {useToast} from "./ToastContext";
 import {prettyDesktopName} from "./utils";
+import {Button} from "reactstrap";
 
 function DesktopsPage() {
   const {data, error, loading} = useFetchDesktops();
@@ -63,6 +64,18 @@ function DesktopsPage() {
     };
   }
 
+  const desktopQuestions =
+    <>
+      <ConfigQuestions
+        defaultGeometry={defaultGeometry}
+        geometry={geometry}
+        launch={launchSession}
+        nameRef={nameRef}
+        setGeometry={setGeometry}
+        userConfig={userConfig}
+      />
+    </>;
+
   // Launch session API call
   const {request, post} = useLaunchSession();
   const launchSession = () => {
@@ -79,17 +92,20 @@ function DesktopsPage() {
     });
   };
 
-  const desktopQuestions =
-    <>
-      <ConfigQuestions
-        defaultGeometry={defaultGeometry}
-        geometry={geometry}
-        launch={launchSession}
-        nameRef={nameRef}
-        setGeometry={setGeometry}
-        userConfig={userConfig}
-      />
-    </>;
+  const handleSubmit = e => {
+    launchSession();
+  };
+
+  const launchButton = (
+    <Button
+      href={'#'}
+      data-testid="session-launch-button"
+      className="button link launch-button"
+      onClick={handleSubmit}
+    >
+      LAUNCH
+    </Button>
+  );
 
   if (error) {
     if (utils.errorCode(data) === 'Unauthorized') {
@@ -118,6 +134,7 @@ function DesktopsPage() {
               <>
                 <DesktopsList desktops={desktops} loading={request.loading} selectedDesktop={desktop}/>
                 {desktopQuestions}
+                {launchButton}
               </>
             )
           }
