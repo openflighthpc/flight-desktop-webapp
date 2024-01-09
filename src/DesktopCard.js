@@ -19,7 +19,7 @@ function DesktopCard({desktop, loading, selected, onClick}) {
           <h3 className="card-text mb-4 mt-2">
             {desktopName}
           </h3>
-          <p className="card-text tagline">
+          <p className="card-text">
             {desktop.summary}
           </p>
         </div>
