@@ -102,6 +102,7 @@ function DesktopsPage() {
       data-testid="session-launch-button"
       className="button link launch-button"
       onClick={handleSubmit}
+      disabled={desktop === null}
     >
       LAUNCH
     </Button>
@@ -163,7 +164,6 @@ function DesktopsPage() {
               group.map((desktop) => (
                 <DesktopCard
                   key={desktop.id}
-                  className="aa"
                   desktop={desktop}
                   loading={loading}
                   selected={selectedDesktop === desktop}
