@@ -27,7 +27,10 @@ function ConfigQuestions({
   // Config may not have fully loaded yet
   const configQuestions =
     userConfig.loading ?
-      <Spinner text="Loading config..."/> :
+      <div className="mt-5">
+        <Spinner text="Loading configuration questions..."/>
+      </div>
+      :
       <div className='d-flex flex-column align-items-center'>
         <div className='form-field'>
           <label className='tagline'>
@@ -41,7 +44,6 @@ function ConfigQuestions({
             type="text"
             ref={nameRef}
             onKeyDown={handleKeyDown}
-            autoFocus={true}
           />
         </div>
         <div className='form-field'>
