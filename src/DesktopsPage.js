@@ -142,6 +142,7 @@ function DesktopsPage() {
         className="button link launch-button"
         onClick={handleSubmit}
         disabled={desktop === null || request.loading}
+        title={ desktop === null ? "Select a desktop type to continue" : "" }
       >
         {
           request.loading ?
