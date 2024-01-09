@@ -4,46 +4,33 @@ import {
   Spinner
 } from 'flight-webapp-components';
 
-function LaunchDesktopModal({
-                              defaultGeometry,
-                              geometry,
-                              launch,
-                              nameRef,
-                              setGeometry,
-                              userConfig,
-                            }) {
+function ConfigQuestions({
+                           defaultGeometry,
+                           geometry,
+                           launch,
+                           nameRef,
+                           setGeometry,
+                           userConfig,
+                         }) {
 
-  // Run launch method
   const handleSubmit = e => {
     launch();
   };
 
-  // Submit modal on return
+  // Launch desktop by pressing return
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       handleSubmit();
     }
   };
 
-  // Launch button
-  const launchButton = (
-    <Button
-      href={'#'}
-      data-testid="session-launch-button"
-      className="button link launch-button"
-      onClick={handleSubmit}
-    >
-      LAUNCH
-    </Button>
-  );
-
   // Config may not have fully loaded yet
-  const modalContent =
+  const configQuestions =
     userConfig.loading ?
       <Spinner text="Loading config..."/> :
-      <div className={'d-flex flex-column align-items-center'}>
-        <div className={'form-field'}>
-          <label className={'tagline'}>
+      <div className='d-flex flex-column align-items-center'>
+        <div className='form-field'>
+          <label className='tagline'>
             Name your desktop session (optional).
           </label>
           <input
@@ -57,8 +44,8 @@ function LaunchDesktopModal({
             autoFocus={true}
           />
         </div>
-        <div className={'form-field'}>
-          <label className={'tagline'}>
+        <div className='form-field'>
+          <label className='tagline'>
             Select your desktop resolution (optional).
           </label>
           <Input
@@ -75,9 +62,20 @@ function LaunchDesktopModal({
         </div>
       </div>;
 
+  const launchButton = (
+    <Button
+      href={'#'}
+      data-testid="session-launch-button"
+      className="button link launch-button"
+      onClick={handleSubmit}
+    >
+      LAUNCH
+    </Button>
+  );
+
   return (
     <>
-      {modalContent}
+      {configQuestions}
       {launchButton}
     </>
   );
@@ -99,4 +97,4 @@ function GeometryOptions({geometries, defaultGeometry}) {
   });
 }
 
-export default LaunchDesktopModal
+export default ConfigQuestions

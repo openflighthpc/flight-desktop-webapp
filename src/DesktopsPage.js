@@ -16,7 +16,7 @@ import DesktopCard from './DesktopCard';
 import {useFetchDesktops, useLaunchSession} from './api';
 import Blurb from "./Blurb";
 import {Context as UserConfigContext} from "./UserConfigContext";
-import LaunchDesktopModal from "./LaunchDesktopModal";
+import ConfigQuestions from "./ConfigQuestions";
 import {useToast} from "./ToastContext";
 import {prettyDesktopName} from "./utils";
 
@@ -81,7 +81,7 @@ function DesktopsPage() {
 
   const desktopQuestions =
     <>
-      <LaunchDesktopModal
+      <ConfigQuestions
         defaultGeometry={defaultGeometry}
         geometry={geometry}
         launch={launchSession}
