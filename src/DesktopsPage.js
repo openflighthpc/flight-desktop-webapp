@@ -1,5 +1,5 @@
 import React, {useContext, useRef, useState} from 'react';
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
 import {
   ConfigContext,
@@ -94,6 +94,7 @@ function DesktopsPage() {
     return (
       <>
         <div className="centernav col-8">
+          <BackLink/>
           <div className="narrow-container">
             <Blurb/>
           </div>
@@ -196,6 +197,18 @@ function DesktopsPage() {
         </p>
         {decks}
       </>
+    );
+  }
+
+  function BackLink() {
+    return (
+      <Link
+        to=".."
+        relative="path"
+        className="back-link blue-text"
+      >
+        Back to desktops
+      </Link>
     );
   }
 }
