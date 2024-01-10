@@ -103,10 +103,10 @@ function InfoRow({ sessions }) {
   const sessionOrSessions = sessions.length === 1 ? 'session' : 'sessions';
 
   return (
-    <div className={`row justify-content-between mb-3`}>
-      <p className={`tagline mb-0`}>
+    <div className={`row justify-content-between align-items-center mb-4`}>
+      <span className={`tagline mb-0`}>
         You have {sessions.length} desktop {sessionOrSessions} currently running.
-      </p>
+      </span>
       <NewDesktopButton />
     </div>
   );
