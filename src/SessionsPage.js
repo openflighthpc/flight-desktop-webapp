@@ -15,6 +15,7 @@ import {
 import SessionCard from './SessionCard';
 import { useFetchSessions } from './api';
 import { useInterval } from './utils';
+import LaunchDropdown from "./LaunchDropdown";
 
 function SessionsPage() {
   const { data, error, loading, get } = useFetchSessions();
@@ -53,7 +54,7 @@ function NoSessionsFound() {
       <p className="tagline mt-4">
         No sessions found.
       </p>
-      <NewDesktopButton
+      <LaunchDropdown
         className="mt-5"
       />
     </div>
@@ -107,19 +108,8 @@ function InfoRow({ sessions }) {
       <span className={`tagline mb-0`}>
         You have {sessions.length} desktop {sessionOrSessions} currently running.
       </span>
-      <NewDesktopButton />
+      <LaunchDropdown/>
     </div>
-  );
-}
-
-function NewDesktopButton({ className }) {
-  return(
-    <Link
-      to="/sessions/new"
-      className={className + " button link"}
-    >
-      NEW DESKTOP
-    </Link>
   );
 }
 
