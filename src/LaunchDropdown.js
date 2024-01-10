@@ -28,7 +28,7 @@ function LaunchDropdown({ className }) {
 
   return (
     <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-      <DropdownToggle className={classNames(className, "button link")}>
+      <DropdownToggle className={classNames(className, "button link white-text")}>
         NEW DESKTOP
         <i className="fa-solid fa-caret-down ml-2"></i>
       </DropdownToggle>

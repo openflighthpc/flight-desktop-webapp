@@ -140,7 +140,7 @@ function DesktopsPage() {
     return (
       <Button
         data-testid="session-launch-button"
-        className="button link launch-button"
+        className="button link white-text launch-button"
         onClick={handleSubmit}
         disabled={desktop === null || request.loading}
         title={ desktop === null ? "Select a desktop type to continue" : "" }
