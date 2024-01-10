@@ -205,7 +205,7 @@ function DesktopsPage() {
       <Link
         to=".."
         relative="path"
-        className="back-link blue-text"
+        className="link back-link blue-text"
       >
         Back to desktops
       </Link>

@@ -17,7 +17,7 @@ function AppLayout() {
   const { unconfigured } = useContext(ConfigContext);
   const accountMenuItems = {
     signedIn: [
-      <Link to="/configs" className="nav nav-link dropdown-item">
+      <Link to="/configs" className="nav nav-link white-text dropdown-item">
         Configuration
       </Link>
     ]
