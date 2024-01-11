@@ -18,7 +18,7 @@ function LaunchDropdown({ className }) {
   const quickLaunch = (ev) => {
     post().then((responseBody) => {
       if (response.ok) {
-        history.push(`/sessions/${responseBody.id}`);
+        history.push(`/${responseBody.id}`);
       } else {
         addToast(failedToast(clusterName));
       }
@@ -45,7 +45,7 @@ function LaunchDropdown({ className }) {
         </DropdownItem>
         <DropdownItem
           disabled={loading}
-          onClick={() => history.push("/sessions/new")}
+          onClick={() => history.push("/new")}
           >
           Custom desktop
         </DropdownItem>

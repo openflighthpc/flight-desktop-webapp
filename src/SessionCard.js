@@ -136,7 +136,7 @@ function DropdownItems({ onCleaned, onTerminated, session }) {
       <>
         <Link
           className="dropdown-item"
-          to={`/sessions/${session.id}`}
+          to={`/${session.id}`}
         >
           Connect
         </Link>
@@ -184,7 +184,7 @@ function MetadataEntry({ name, title, value, format, valueTitle }) {
 function Screenshot({ session }) {
   const screenshot = <WrappedScreenshot className="card-img" session={session} />;
   if (activeStates.includes(session.state)) {
-    return <Link to={`/sessions/${session.id}`}>{screenshot}</Link>;
+    return <Link to={`/${session.id}`}>{screenshot}</Link>;
   } else {
     return screenshot;
   }

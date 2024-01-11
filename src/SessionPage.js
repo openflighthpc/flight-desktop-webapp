@@ -130,7 +130,7 @@ function Connected({ id, session }) {
       }}
       onReconnect={onReconnect}
       onTerminate={() => setConnectionState('terminating')}
-      onTerminated={() => history.push('/sessions')}
+      onTerminated={() => history.push('/')}
       onZenChange={() => vnc.current && vnc.current.resize()}
       session={session}
       vnc={vnc}

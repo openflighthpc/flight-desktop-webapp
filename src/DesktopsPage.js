@@ -69,7 +69,7 @@ function DesktopsPage() {
   const launchSession = () => {
     post(desktop.id, nameRef.current?.value, geometry).then((responseBody) => {
       if (request.response.ok) {
-        history.push(`/sessions/${responseBody.id}`);
+        history.push(`/${responseBody.id}`);
       } else {
         addToast(launchErrorToast({
           clusterName: clusterName,
