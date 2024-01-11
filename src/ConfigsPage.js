@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import React, {useState} from 'react';
+import {Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 import {
   DefaultErrorMessage,
@@ -9,9 +9,11 @@ import {
   utils,
 } from 'flight-webapp-components';
 
-import { prettyDesktopName } from './utils';
-import { useFetchUserConfig, useFetchDesktops, useUpdateUserConfig } from './api';
-import { useToast } from './ToastContext';
+import {prettyDesktopName} from './utils';
+import {useFetchUserConfig, useFetchDesktops, useUpdateUserConfig} from './api';
+import {useToast} from './ToastContext';
+import Blurb from "./Blurb";
+import SessionsPage from "./SessionsPage";
 
 function ConfigsPage() {
   const config_req = useFetchUserConfig();
@@ -20,20 +22,20 @@ function ConfigsPage() {
   if (config_req.error || desktop_req.error) {
     const req = (config_req.error ? config_req : desktop_req)
     if (utils.errorCode(req.data) === 'Unauthorized') {
-      return <UnauthorizedError />;
+      return <UnauthorizedError/>;
     } else {
-      return <DefaultErrorMessage />;
+      return <DefaultErrorMessage/>;
     }
   } else {
     if (config_req.loading || desktop_req.loading) {
-      return <Loading />;
+      return <Loading/>;
     } else {
-      return <Layout configs={config_req.data} desktops={desktop_req.data.data} />
+      return <Layout configs={config_req.data} desktops={desktop_req.data.data}/>
     }
   }
 }
 
-function Layout({ configs, desktops }) {
+function Layout({configs, desktops}) {
   // Determine the current settings
   const [originalStruct, setOriginalStruct] = useState({
     desktop: desktops.map(d => d.id).includes(configs.desktop) ? configs.desktop : desktops[0].id,
@@ -45,58 +47,67 @@ function Layout({ configs, desktops }) {
   const [geometry, setGeometry] = useState(originalStruct.geometry);
 
   if (configs == null) {
-    return <DefaultErrorMessage />;
+    return <DefaultErrorMessage/>;
   }
 
   return (
-    <div className="card" >
-      <h4
-        className="card-header text-truncate justify-content-between d-flex align-items-end"
-        title={"User Configuration"}
+    <>
+      <div
+        className="centernav col-8"
       >
-        <span>
-          User Configuration
-        </span>
-      </h4>
-      <div className="card-body container">
-        <Form>
-          <FormGroup>
-            <Label for="desktop">Desktop</Label>
-            <Input
-              id="desktop"
-              name="desktop"
-              onChange={e => setDesktop(e.target.value)}
-              required
-              type="select"
-              value={desktop}
-            >
-              <DesktopOptions desktops={desktops} original={originalStruct.desktop} />
-            </Input>
-          </FormGroup>
-          <FormGroup>
-            <Label>Geometry</Label>
-            <Input
-              id="geometry"
-              name="geometry"
-              onChange={e => { setGeometry(e.target.value) }}
-              required
-              type="select"
-              value={geometry}
-            >
-              <GeometryOptions geometries={configs.geometries} original={originalStruct.geometry} />
-            </Input>
-          </FormGroup>
-          <FormGroup check>
-            <UpdateButton
-              desktop={desktop}
-              geometry={geometry}
-              originalStruct={originalStruct}
-              setOriginalStruct={setOriginalStruct}
-            />
-          </FormGroup>
-        </Form>
+        <div className="narrow-container">
+          <Blurb/>
+        </div>
+
+        <p className="tagline mt-4">Set your default desktop configuration.</p>
+
+        <div className='d-flex flex-column align-items-center'>
+          <Form>
+            <FormGroup className="form-field mt-4">
+              <Label
+                className="tagline mb-2"
+                for="desktop"
+              >
+                Desktop type</Label>
+              <Input
+                id="desktop"
+                name="desktop"
+                onChange={e => setDesktop(e.target.value)}
+                required
+                type="select"
+                value={desktop}
+              >
+                <DesktopOptions desktops={desktops} original={originalStruct.desktop}/>
+              </Input>
+            </FormGroup>
+            <FormGroup className="form-field">
+              <Label className="tagline mb-2">Resolution</Label>
+              <Input
+                id="geometry"
+                name="geometry"
+                onChange={e => {
+                  setGeometry(e.target.value)
+                }}
+                required
+                type="select"
+                value={geometry}
+              >
+                <GeometryOptions geometries={configs.geometries} original={originalStruct.geometry}/>
+              </Input>
+            </FormGroup>
+            <FormGroup check>
+              <UpdateButton
+                className="button link white-text"
+                desktop={desktop}
+                geometry={geometry}
+                originalStruct={originalStruct}
+                setOriginalStruct={setOriginalStruct}
+              />
+            </FormGroup>
+          </Form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -134,13 +145,13 @@ function GeometryOptions({geometries, original}) {
 }
 
 function UpdateButton({desktop, geometry, originalStruct, setOriginalStruct}) {
-  const { addToast } = useToast();
-  const { request, patch } = useUpdateUserConfig();
-  const submit = async() => {
+  const {addToast} = useToast();
+  const {request, patch} = useUpdateUserConfig();
+  const submit = async () => {
     // Create the submitter
     const data = await patch(desktop, geometry);
     if (request.response.ok) {
-      if ( desktop === data.desktop && geometry === data.geometry) {
+      if (desktop === data.desktop && geometry === data.geometry) {
         // Update successful
         setOriginalStruct({
           desktop: data.desktop,
@@ -149,19 +160,25 @@ function UpdateButton({desktop, geometry, originalStruct, setOriginalStruct}) {
         addToast(updateSuccessfulToast());
       } else {
         // The API response does not match the expected values
-        addToast(updateFailedToast({ errorCode: "did-not-update" }));
+        addToast(updateFailedToast({errorCode: "did-not-update"}));
       }
     } else {
       console.log("Failed to update your configuration");
-      addToast(updateFailedToast({ errorCode: utils.errorCode(data) }));
+      addToast(updateFailedToast({errorCode: utils.errorCode(data)}));
     }
   }
   const isOriginal = (desktop === originalStruct.desktop) && (geometry === originalStruct.geometry);
 
-  return <Button color="success" className="pull-right" disabled={request.loading || isOriginal} onClick={submit}>
-    { request.loading ? <i className="fa fa-spinner fa-spin mr-1"/> : null }
-    <span>{request.loading ? "Updating..." : "Update Your Configuration"}</span>
-  </Button>
+  return (
+    <Button
+      className="button link white-text mt-5 pull-right submit-button"
+      disabled={request.loading || isOriginal}
+      onClick={submit}
+    >
+      {request.loading ? <i className="fa fa-spinner fa-spin mr-1"/> : null}
+      <span>{request.loading ? "UPDATING..." : "UPDATE"}</span>
+    </Button>
+  );
 }
 
 function updateSuccessfulToast() {
@@ -178,7 +195,7 @@ function updateSuccessfulToast() {
   };
 }
 
-function updateFailedToast({ errorCode }) {
+function updateFailedToast({errorCode}) {
   let body = (
     <div>
       Unfortunately there has been a problem updating your configuration.
@@ -197,7 +214,7 @@ function updateFailedToast({ errorCode }) {
 function Loading() {
   return (
     <Overlay>
-      <Spinner text="Loading config..." />
+      <Spinner text="Loading config..."/>
     </Overlay>
   );
 }

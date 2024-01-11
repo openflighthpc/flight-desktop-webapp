@@ -114,7 +114,7 @@ function SessionCard({ reload, session }) {
 function DropdownMenu({ onCleaned, onTerminated, session }) {
   return (
     <div className="dropdown">
-      <a className="card-text dropdown-toggle" id="dropdownMenuButton"
+      <a className="card-text dropdown-toggle no-caret" id="dropdownMenuButton"
          data-toggle="dropdown"
          aria-haspopup="true" aria-expanded="false">
         <i className="fa-solid fa-ellipsis-vertical pl-2"></i>
