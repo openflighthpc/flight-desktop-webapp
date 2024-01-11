@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import {Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem} from 'reactstrap'
+import {Modal, ModalBody} from 'reactstrap'
 
 function PreparePasteButton({className, onPaste, onFallbackError, onFallbackPaste}) {
   const [showFallback, setShowFallback] = useState(false);
@@ -42,8 +42,8 @@ function FallbackPasteModal({isOpen, onError, onPaste, toggle}) {
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
-      <ModalHeader toggle={toggle}>Paste Text</ModalHeader>
       <ModalBody>
+        <h4>Paste Text</h4>
         <p>
           To allow your desktop session to gain access to the pasted text,
           paste your text in the text area below and click "OK".
@@ -53,27 +53,27 @@ function FallbackPasteModal({isOpen, onError, onPaste, toggle}) {
           paste normally from within your session.
         </p>
         <textarea ref={textRef} style={{ width: "100%", height: "7em" }}></textarea>
+        <div className="d-flex justify-content-center">
+          <button
+            className="button link white-text mr-3"
+            onClick={() => {
+              try {
+                onPaste(textRef.current.value);
+              } catch (e) {
+                console.log('Fallback failed.', e);  // eslint-disable-line no-console
+                onError(e);
+              } finally {
+                toggle();
+              }
+            }}
+          >
+            OK
+          </button>
+          <button className="button link blue-text cancel-button" onClick={toggle}>
+            Cancel
+          </button>
+        </div>
       </ModalBody>
-      <ModalFooter>
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            try {
-              onPaste(textRef.current.value);
-            } catch (e) {
-              console.log('Fallback failed.', e);  // eslint-disable-line no-console
-              onError(e);
-            } finally {
-              toggle();
-            }
-          }}
-        >
-          OK
-        </button>
-        <button className="btn btn-link" onClick={toggle}>
-          Cancel
-        </button>
-      </ModalFooter>
     </Modal>
   );
 }
