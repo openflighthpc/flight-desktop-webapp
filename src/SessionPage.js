@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import {Link, useHistory, useParams} from 'react-router-dom';
 import { useToast } from './ToastContext';
 
 import {
@@ -21,6 +21,9 @@ import WrappedScreenshot from './Screenshot';
 import styles from './NoVNC.module.css';
 import { useFetchSession } from './api';
 import { useForceRender } from './utils';
+import {Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from "reactstrap";
+import classNames from "classnames";
+import CleanButton from "./CleanSessionButton";
 
 function buildWebsocketUrl(session, config) {
   // We expect restapi to be running on an externally accessible machine.
@@ -224,45 +227,6 @@ function Toolbar({
 }) {
   const { addToast } = useToast();
 
-  const configureBtn = session != null ? (
-    <ConfigureButton
-      onConfigured={onConfigured}
-      session={session}
-    />
-  ) : null;
-
-  const disconnectBtn = connectionState === 'connected' ? (
-    <button
-      className="btn btn-secondary btn-sm mr-1"
-      onClick={onDisconnect}
-    >
-      <i className="fa fa-times mr-1"></i>
-      <span>Disconnect</span>
-    </button>
-  ) : null;
-
-  const reconnectBtn = connectionState === 'disconnected' ? (
-    <button
-      className="btn btn-secondary btn-sm mr-1"
-      onClick={onReconnect}
-    >
-      <i className="fa fa-bolt mr-1"></i>
-      <span>Reconnect</span>
-    </button>
-  ) : null;
-
-  const terminateBtn = session != null ? (
-    <TerminateButton
-      className="btn-sm mr-1"
-      session={session}
-      onTerminate={onTerminate}
-      onTerminated={onTerminated}
-    >
-    </TerminateButton>
-  ) : null;
-
-  const fullscreenBtn = <FullscreenButton onZenChange={onZenChange} />;
-
   function handlePaste(text) {
     vnc.current.setClipboardText(text);
     const body = (
@@ -285,22 +249,62 @@ function Toolbar({
     addToast({body, icon: 'danger', header: 'Unexpected error' });
   }
 
-  const pasteButton = connectionState === 'connected' ? (
-    <PreparePasteButton
-      onPaste={handlePaste}
-      onFallbackError={handleFallbackError}
-      onFallbackPaste={handlePaste}
-    />
-  ) : null;
-
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
-      {fullscreenBtn}
-      {configureBtn}
-      {disconnectBtn}
-      {reconnectBtn}
-      {terminateBtn}
-      {pasteButton}
+      <FullscreenButton onZenChange={onZenChange} />
+      <div className="dropdown">
+        <a aria-expanded="false"
+           aria-haspopup="true"
+           className="link white-text dropdown-toggle no-caret"
+           data-toggle="dropdown"
+           id="dropdownMenuButton"
+        >
+          <i className="fa-solid fa-bars pl-2"></i>
+        </a>
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {connectionState === 'connected' &&
+            <a
+              className="dropdown-item"
+              href="#"
+              onClick={onDisconnect}
+            >
+              Disconnect
+            </a>
+          }
+          {connectionState === 'disconnected' &&
+            <a
+              className="dropdown-item"
+              href="#"
+              onClick={onReconnect}
+            >
+              Reconnect
+            </a>
+          }
+          {connectionState === 'connected' &&
+            <PreparePasteButton
+              className="dropdown-item"
+              onPaste={handlePaste}
+              onFallbackError={handleFallbackError}
+              onFallbackPaste={handlePaste}
+            />
+          }
+          {session != null &&
+            <ConfigureButton
+              className="dropdown-item"
+              onConfigured={onConfigured}
+              session={session}
+            />
+          }
+          {session != null &&
+            <TerminateButton
+              className="dropdown-item"
+              onTerminate={onTerminate}
+              onTerminated={onTerminated}
+              session={session}
+            />
+          }
+        </div>
+      </div>
     </div>
   );
 }

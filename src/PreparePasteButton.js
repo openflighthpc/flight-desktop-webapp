@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import {Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem} from 'reactstrap'
 
-function PreparePasteButton({onPaste, onFallbackError, onFallbackPaste}) {
+function PreparePasteButton({className, onPaste, onFallbackError, onFallbackPaste}) {
   const [showFallback, setShowFallback] = useState(false);
 
   const toggleFallback = function() {
@@ -10,8 +10,9 @@ function PreparePasteButton({onPaste, onFallbackError, onFallbackPaste}) {
 
   return (
     <React.Fragment>
-      <button
-        className="btn btn-sm btn-light"
+      <a
+        className={className}
+        href="#"
         onClick={async () => {
           try {
             const text = await navigator.clipboard.readText();
@@ -24,9 +25,8 @@ function PreparePasteButton({onPaste, onFallbackError, onFallbackPaste}) {
           }
         }}
       >
-        <i className="fa fa-paste mr-1"></i>
         Prepare paste
-      </button>
+      </a>
       <FallbackPasteModal
         isOpen={showFallback}
         onError={onFallbackError}

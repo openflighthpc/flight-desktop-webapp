@@ -67,11 +67,13 @@ function ConfigureButton({
 
   return (
     <React.Fragment>
-      <i
-        className={ classNames(className, "fa ml-2 link white-text", configuring ? 'fa-spinner fa-spin' : 'fa-cog') }
+      <a
+        className={className}
+        href="#"
         id={id}
-        title={ configuring ? 'Configuring...' : 'Configure' }
-      ></i>
+      >
+        { configuring ? 'Configuring...' : 'Settings' }
+      </a>
       <Popover
         isOpen={showConfirmation}
         target={id}
