@@ -46,7 +46,7 @@ function FallbackPasteModal({isOpen, onError, onPaste, toggle}) {
         <h4>Paste Text</h4>
         <p>
           To allow your desktop session to gain access to the pasted text,
-          paste your text in the text area below and click "OK".
+          paste your text in the text area below.
         </p>
         <p>
           Your session's clipboard will be updated and you will be able to
@@ -67,7 +67,7 @@ function FallbackPasteModal({isOpen, onError, onPaste, toggle}) {
               }
             }}
           >
-            OK
+            SAVE TO CLIPBOARD
           </button>
           <button className="button link blue-text cancel-button" onClick={toggle}>
             Cancel
