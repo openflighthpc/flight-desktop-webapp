@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import {
   Button,
   ButtonToolbar,
+  Modal,
+  ModalBody,
   Popover,
   PopoverBody,
   PopoverHeader
@@ -71,16 +73,16 @@ function ConfigureButton({
         className={className}
         id={id}
         tabIndex={0}
+        onClick={toggle}
       >
         { configuring ? 'Configuring...' : 'Settings' }
       </a>
-      <Popover
+      <Modal
         isOpen={showConfirmation}
-        target={id}
         toggle={toggle}
       >
-        <PopoverBody>
-          <h5>Configure session</h5>
+        <ModalBody>
+          <h4 className="mb-3">Configure session</h4>
           <form onSubmit={handleSubmit}>
             <RenameInput
               autoFocus={true}
@@ -97,24 +99,24 @@ function ConfigureButton({
                 />
               )
             }
-            <ButtonToolbar>
+            <div className="d-flex justify-content-center">
               <Button
-                className="cancel-button button link blue-text mr-3 flex-grow-1"
+                className="button link white-text mr-3"
+                type="submit"
+              >
+                UPDATE
+              </Button>
+              <Button
+                className="cancel-button button link blue-text"
                 onClick={toggle}
                 size="sm"
               >
                 CANCEL
               </Button>
-              <Button
-                className="button link white-text flex-grow-1"
-                type="submit"
-              >
-                UPDATE
-              </Button>
-            </ButtonToolbar>
+            </div>
           </form>
-        </PopoverBody>
-      </Popover>
+        </ModalBody>
+      </Modal>
     </React.Fragment>
   )
 }
