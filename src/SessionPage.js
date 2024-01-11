@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import {Link, useHistory, useParams} from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import { useToast } from './ToastContext';
 
 import {
@@ -21,9 +21,6 @@ import WrappedScreenshot from './Screenshot';
 import styles from './NoVNC.module.css';
 import { useFetchSession } from './api';
 import { useForceRender } from './utils';
-import {Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from "reactstrap";
-import classNames from "classnames";
-import CleanButton from "./CleanSessionButton";
 
 function buildWebsocketUrl(session, config) {
   // We expect restapi to be running on an externally accessible machine.
