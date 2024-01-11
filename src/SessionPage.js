@@ -226,7 +226,6 @@ function Toolbar({
 
   const configureBtn = session != null ? (
     <ConfigureButton
-      className="btn-sm btn-secondary mr-1"
       onConfigured={onConfigured}
       session={session}
     />

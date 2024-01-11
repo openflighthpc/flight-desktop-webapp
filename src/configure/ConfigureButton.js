@@ -18,6 +18,7 @@ import { useConfigureSession } from '../api';
 
 import { prettyDesktopName } from '../utils';
 import { useToast } from '../ToastContext';
+import classNames from "classnames";
 
 function ConfigureButton({
   className,
@@ -66,27 +67,18 @@ function ConfigureButton({
 
   return (
     <React.Fragment>
-      <Button
-        className={className}
-        disabled={configuring}
+      <i
+        className={ classNames(className, "fa ml-2 link white-text", configuring ? 'fa-spinner fa-spin' : 'fa-cog') }
         id={id}
-      >
-        {
-          configuring ?
-          <i className="fa fa-spinner fa-spin mr-1"></i> :
-          <i className="fa fa-cog mr-1"></i>
-        }
-        <span>{ configuring ? 'Configuring...' : 'Configure' }</span>
-      </Button>
+        title={ configuring ? 'Configuring...' : 'Configure' }
+      ></i>
       <Popover
         isOpen={showConfirmation}
         target={id}
         toggle={toggle}
       >
-        <PopoverHeader>
-          Configure session
-        </PopoverHeader>
         <PopoverBody>
+          <h5>Configure session</h5>
           <form onSubmit={handleSubmit}>
             <RenameInput
               autoFocus={true}
@@ -103,22 +95,19 @@ function ConfigureButton({
                 />
               )
             }
-            <ButtonToolbar className="justify-content-center">
+            <ButtonToolbar>
               <Button
-                className="mr-2"
+                className="cancel-button button link blue-text mr-3 flex-grow-1"
                 onClick={toggle}
                 size="sm"
               >
-                Cancel
+                CANCEL
               </Button>
               <Button
-                className="mr-2"
-                color="primary"
-                size="sm"
+                className="button link white-text flex-grow-1"
                 type="submit"
               >
-                <i className="fa fa-cog mr-1"></i>
-                Configure
+                UPDATE
               </Button>
             </ButtonToolbar>
           </form>
