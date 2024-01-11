@@ -12,7 +12,6 @@ function PreparePasteButton({className, onPaste, onFallbackError, onFallbackPast
     <React.Fragment>
       <a
         className={className}
-        href="#"
         onClick={async () => {
           try {
             const text = await navigator.clipboard.readText();
@@ -24,6 +23,7 @@ function PreparePasteButton({className, onPaste, onFallbackError, onFallbackPast
             toggleFallback();
           }
         }}
+        tabIndex={0}
       >
         Prepare paste
       </a>

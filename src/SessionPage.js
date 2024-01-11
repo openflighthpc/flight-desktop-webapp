@@ -265,8 +265,8 @@ function Toolbar({
           {connectionState === 'connected' &&
             <a
               className="dropdown-item"
-              href="#"
               onClick={onDisconnect}
+              tabIndex={0}
             >
               Disconnect
             </a>
@@ -274,8 +274,8 @@ function Toolbar({
           {connectionState === 'disconnected' &&
             <a
               className="dropdown-item"
-              href="#"
               onClick={onReconnect}
+              tabIndex={0}
             >
               Reconnect
             </a>

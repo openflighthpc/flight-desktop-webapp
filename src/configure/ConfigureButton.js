@@ -69,8 +69,8 @@ function ConfigureButton({
     <React.Fragment>
       <a
         className={className}
-        href="#"
         id={id}
+        tabIndex={0}
       >
         { configuring ? 'Configuring...' : 'Settings' }
       </a>
