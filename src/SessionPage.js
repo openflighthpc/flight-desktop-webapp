@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import {useHistory, useParams} from 'react-router-dom';
+import {Link, useHistory, useParams} from 'react-router-dom';
 import { useToast } from './ToastContext';
 
 import {
@@ -302,6 +302,14 @@ function Toolbar({
           }
         </div>
       </div>
+      <Link
+        className="link white-text pl-4"
+        title="Exit to desktops"
+        to="/"
+        relative="path"
+      >
+        <i className="fa-solid fa-right-from-bracket"></i>
+      </Link>
     </div>
   );
 }
