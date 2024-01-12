@@ -332,6 +332,7 @@ function ConnectStateIndicator({ connectionState, id, onReconnect }) {
   }
   return (
     <div
+      className="fullscreen-content"
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
@@ -343,10 +344,12 @@ function ConnectStateIndicator({ connectionState, id, onReconnect }) {
 
 function Screenshot({ id }) {
   return (
-    <WrappedScreenshot
-      className={`d-block m-auto ${styles.NoVNCWrapper}`}
-      session={{ id }}
-    />
+    <div className="blurred-container fullscreen-content mx-auto">
+      <WrappedScreenshot
+        className={`d-block ${styles.NoVNCWrapper} fullscreen-content blurred`}
+        session={{ id }}
+      />
+    </div>
   );
 }
 
