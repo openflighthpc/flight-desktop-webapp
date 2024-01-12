@@ -78,11 +78,13 @@ function ConfigureButton({
         { configuring ? 'Configuring...' : 'Settings' }
       </a>
       <Modal
+        autoFocus={false}
         isOpen={showConfirmation}
         toggle={toggle}
+        centered={true}
       >
         <ModalBody>
-          <h4 className="mb-3">Configure session</h4>
+          <h3 className="mb-4">Configure session</h3>
           <form onSubmit={handleSubmit}>
             <RenameInput
               autoFocus={true}
@@ -99,7 +101,7 @@ function ConfigureButton({
                 />
               )
             }
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center mt-4">
               <Button
                 className="button link white-text mr-3"
                 type="submit"

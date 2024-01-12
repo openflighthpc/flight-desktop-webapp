@@ -41,9 +41,14 @@ function FallbackPasteModal({isOpen, onError, onPaste, toggle}) {
   const textRef = useRef();
 
   return (
-    <Modal isOpen={isOpen} toggle={toggle}>
+    <Modal
+      autoFocus={false}
+      isOpen={isOpen}
+      toggle={toggle}
+      centered={true}
+    >
       <ModalBody>
-        <h4>Paste Text</h4>
+        <h3 className="mb-4">Paste Text</h3>
         <p>
           To allow your desktop session to gain access to the pasted text,
           paste your text in the text area below.
@@ -52,8 +57,10 @@ function FallbackPasteModal({isOpen, onError, onPaste, toggle}) {
           Your session's clipboard will be updated and you will be able to
           paste normally from within your session.
         </p>
-        <textarea ref={textRef} style={{ width: "100%", height: "7em" }}></textarea>
-        <div className="d-flex justify-content-center">
+        <div className="form-field mt-0">
+          <textarea ref={textRef} style={{ width: "100%", height: "7em" }} autoFocus={true}></textarea>
+        </div>
+        <div className="d-flex justify-content-center mt-4">
           <button
             className="button link white-text mr-3"
             onClick={() => {
