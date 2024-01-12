@@ -1,5 +1,5 @@
 import React, {useContext, useRef, useState} from 'react';
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {Button} from "reactstrap";
 
 import {
@@ -20,6 +20,7 @@ import {Context as UserConfigContext} from "./UserConfigContext";
 import ConfigQuestions from "./ConfigQuestions";
 import {useToast} from "./ToastContext";
 import {prettyDesktopName} from "./utils";
+import BackLink from "./BackLink";
 
 function DesktopsPage() {
   const {data, error, typesLoading} = useFetchDesktops();
@@ -197,18 +198,6 @@ function DesktopsPage() {
         </p>
         {decks}
       </>
-    );
-  }
-
-  function BackLink() {
-    return (
-      <Link
-        to=".."
-        relative="path"
-        className="link back-link blue-text"
-      >
-        Back to desktops
-      </Link>
     );
   }
 }

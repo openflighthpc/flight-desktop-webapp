@@ -13,7 +13,7 @@ import {prettyDesktopName} from './utils';
 import {useFetchUserConfig, useFetchDesktops, useUpdateUserConfig} from './api';
 import {useToast} from './ToastContext';
 import Blurb from "./Blurb";
-import SessionsPage from "./SessionsPage";
+import BackLink from "./BackLink";
 
 function ConfigsPage() {
   const config_req = useFetchUserConfig();
@@ -55,6 +55,7 @@ function Layout({configs, desktops}) {
       <div
         className="centernav col-8"
       >
+        <BackLink/>
         <div className="narrow-container">
           <Blurb/>
         </div>
