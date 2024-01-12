@@ -201,7 +201,7 @@ function Layout({
                   </div>
                 </div>
               </div>
-              <div className="fullscreen-content">
+              <div className="fullscreen-content bg-session">
                 {children}
               </div>
           </div>
