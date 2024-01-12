@@ -6,28 +6,18 @@ import {
   AuthenticatedRoute,
   BrandBar,
   ConfigContext,
-  Footer,
 } from 'flight-webapp-components';
 
-import NavItems from './NavItems';
 import styles from './AppLayout.module.css';
 import { routes, unconfiguredRoutes } from './routes';
 
 function AppLayout() {
   const { unconfigured } = useContext(ConfigContext);
-  const accountMenuItems = {
-    signedIn: [
-      <Link to="/configs" className="nav nav-link white-text dropdown-item">
-        Configuration
-      </Link>
-    ]
-  }
 
   return (
     <>
     <BrandBar
       className="brandbar"
-      accountMenuItems={accountMenuItems}
     />
     <div
       id="main"

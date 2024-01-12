@@ -15,6 +15,7 @@ import SessionCard from './SessionCard';
 import { useFetchSessions } from './api';
 import { useInterval } from './utils';
 import LaunchDropdown from "./LaunchDropdown";
+import {Link} from "react-router-dom";
 
 function SessionsPage() {
   const { data, error, loading, get } = useFetchSessions();
@@ -107,7 +108,16 @@ function InfoRow({ sessions }) {
       <span className={`tagline mb-0`}>
         You have {sessions.length} desktop {sessionOrSessions} currently running.
       </span>
-      <LaunchDropdown/>
+      <div className="d-flex">
+        <LaunchDropdown/>
+        <Link
+          className="button link white-text px-3 ml-2"
+          title="Default desktop settings"
+          to="/configs"
+        >
+          <i className="fa fa-solid fa-cog"></i>
+        </Link>
+      </div>
     </div>
   );
 }
