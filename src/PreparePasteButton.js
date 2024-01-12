@@ -74,7 +74,7 @@ function FallbackPasteModal({isOpen, onError, onPaste, toggle}) {
               }
             }}
           >
-            SAVE TO CLIPBOARD
+            Save to clipboard
           </button>
           <button className="button link blue-text cancel-button" onClick={toggle}>
             Cancel

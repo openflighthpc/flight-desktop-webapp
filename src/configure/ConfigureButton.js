@@ -106,14 +106,14 @@ function ConfigureButton({
                 className="button link white-text mr-3"
                 type="submit"
               >
-                UPDATE
+                Update
               </Button>
               <Button
                 className="cancel-button button link blue-text"
                 onClick={toggle}
                 size="sm"
               >
-                CANCEL
+                Cancel
               </Button>
             </div>
           </form>
