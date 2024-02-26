@@ -3,6 +3,7 @@ import {Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 import {
   DefaultErrorMessage,
+  Footer,
   Overlay,
   Spinner,
   UnauthorizedError,
@@ -108,6 +109,7 @@ function Layout({configs, desktops}) {
           </Form>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

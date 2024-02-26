@@ -5,6 +5,7 @@ import {Button} from "reactstrap";
 import {
   ConfigContext,
   DefaultErrorMessage,
+  Footer,
   Overlay,
   OverlayContainer,
   Spinner,
@@ -133,6 +134,7 @@ function DesktopsPage() {
             )
           }
         </div>
+        <Footer />
       </>
     );
   }

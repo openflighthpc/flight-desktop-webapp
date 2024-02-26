@@ -1,5 +1,6 @@
 import Blurb from './Blurb';
 import SessionsPage from "./SessionsPage";
+import {Footer} from "flight-webapp-components";
 
 function AuthenticatedDashboard() {
   return (
@@ -12,6 +13,7 @@ function AuthenticatedDashboard() {
         </div>
         <SessionsPage/>
       </div>
+      <Footer />
     </>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Blurb from './Blurb';
+import {Footer} from "flight-webapp-components";
 
 function UnauthenticatedDashboard() {
   return (
@@ -16,6 +17,7 @@ function UnauthenticatedDashboard() {
           </p>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
