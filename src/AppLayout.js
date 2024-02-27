@@ -18,6 +18,7 @@ function AppLayout() {
     <>
       <BrandBar
         className="brandbar"
+        activeApp="Desktop"
       />
       <div
         id="main"
