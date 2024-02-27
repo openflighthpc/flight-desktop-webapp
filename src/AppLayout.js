@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Link, Redirect, Route, Switch, useLocation } from "react-router-dom";
+import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 
 import {
   AnimatedRouter,
@@ -16,25 +16,25 @@ function AppLayout() {
 
   return (
     <>
-    <BrandBar
-      className="brandbar"
-    />
-    <div
-      id="main"
-    >
-      <div id="toast-portal" className={styles.ToastPortal}></div>
-      <div className="content">
-        <AnimatedRouter
-          AuthenticatedRoute={AuthenticatedRoute}
-          Redirect={Redirect}
-          Route={Route}
-          Switch={Switch}
-          exact={!unconfigured}
-          routes={unconfigured ? unconfiguredRoutes : routes}
-          useLocation={useLocation}
-        />
+      <BrandBar
+        className="brandbar"
+      />
+      <div
+        id="main"
+      >
+        <div id="toast-portal" className={styles.ToastPortal}></div>
+        <div className="content">
+          <AnimatedRouter
+            AuthenticatedRoute={AuthenticatedRoute}
+            Redirect={Redirect}
+            Route={Route}
+            Switch={Switch}
+            exact={!unconfigured}
+            routes={unconfigured ? unconfiguredRoutes : routes}
+            useLocation={useLocation}
+          />
+        </div>
       </div>
-    </div>
     </>
   );
 }
