@@ -54,9 +54,9 @@ function NoSessionsFound() {
       <p className="tagline mt-4">
         No sessions found.
       </p>
-      <LaunchDropdown
-        className="mt-5"
-      />
+      <div className="d-flex justify-content-center mt-5">
+        <InfoRowButtons/>
+      </div>
     </div>
   );
 }
@@ -109,17 +109,25 @@ function InfoRow({ sessions }) {
         You have {sessions.length} desktop {sessionOrSessions} currently running.
       </span>
       <div className="d-flex">
-        <LaunchDropdown/>
-        <Link
-          className="button link white-text px-3 ml-2"
-          title="Default desktop settings"
-          to="/configs"
-        >
-          <i className="fa fa-solid fa-cog"></i>
-        </Link>
+        <InfoRowButtons/>
       </div>
     </div>
   );
+}
+
+function InfoRowButtons() {
+  return (
+    <>
+      <LaunchDropdown/>
+      <Link
+        className="button link white-text px-3 ml-2"
+        title="Default desktop settings"
+        to="/configs"
+      >
+        <i className="fa fa-solid fa-cog"></i>
+      </Link>
+    </>
+  )
 }
 
 export default SessionsPage;
