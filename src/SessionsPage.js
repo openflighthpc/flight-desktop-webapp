@@ -8,7 +8,6 @@ import {
   DefaultErrorMessage,
   utils,
   // useInterval,
-  useMediaGrouping,
 } from 'flight-webapp-components';
 
 import SessionCard from './SessionCard';
@@ -62,41 +61,21 @@ function NoSessionsFound() {
 }
 
 function SessionsList({ reload, sessions }) {
-  const { groupedItems: groupedSessions, perGroup } = useMediaGrouping(
-    ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
-    [3, 2, 2, 1],
-    1,
-    sessions || [],
-  );
   if (sessions == null || !sessions.length) {
     return <NoSessionsFound />;
   }
-  const decks = groupedSessions.map(
-    (group, index) => {
-      let blanks = null;
-      if ( group.length < perGroup ) {
-        const a = new Array(perGroup - group.length);
-        a.fill(0);
-        blanks = a.map((i, index) => <div key={index} className="card invisible"></div>)
-      }
-      return (
-        <div key={index} className="desktops app-card-deck">
-          {
-            group.map((session) => (
-              <SessionCard key={session.id} reload={reload} session={session} />
-            ))
-          }
-          {blanks}
-        </div>
-      );
-    }
-  );
 
   return (
-    <React.Fragment>
+    <>
       <InfoRow sessions={sessions} />
-      {decks}
-    </React.Fragment>
+      <div className="desktops app-card-deck">
+        {
+          sessions.map((session) => (
+            <SessionCard key={session.id} reload={reload} session={session} />
+          ))
+        }
+      </div>
+    </>
   );
 }
 
