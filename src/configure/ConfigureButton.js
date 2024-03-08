@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import {
   Button,
-  ButtonToolbar,
   Modal,
   ModalBody,
-  Popover,
-  PopoverBody,
-  PopoverHeader
 } from 'reactstrap';
 
 import { 
@@ -20,7 +16,6 @@ import { useConfigureSession } from '../api';
 
 import { prettyDesktopName } from '../utils';
 import { useToast } from '../ToastContext';
-import classNames from "classnames";
 
 function ConfigureButton({
   className,
