@@ -111,7 +111,6 @@ function ConfigureButton({
               <Button
                 className="cancel-button button link blue-text"
                 onClick={toggle}
-                size="sm"
               >
                 Cancel
               </Button>
