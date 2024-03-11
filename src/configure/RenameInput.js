@@ -1,4 +1,5 @@
 import React from 'react';
+import {FormGroup, Input, Label} from "reactstrap";
 
 function RenameInput({
   autoFocus=false,
@@ -9,11 +10,11 @@ function RenameInput({
 
 
   return (
-    <p>
-      <label for="session-name">
-        Enter new name (leave blank to remove the name).
-      </label>
-      <input
+    <FormGroup className="form-field mt-2">
+      <Label className="text-center">
+        Rename desktop (leave blank to remove the name).
+      </Label>
+      <Input
         autoFocus={autoFocus}
         className="w-100"
         defaultValue={current}
@@ -23,7 +24,7 @@ function RenameInput({
         placeholder="Session name"
         type="text"
       />
-    </p>
+    </FormGroup>
   )
 }
 

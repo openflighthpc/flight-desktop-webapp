@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import CleanButton from './CleanSessionButton';
 import WrappedScreenshot from './Screenshot';
 import TerminateButton from './TerminateButton';
-import { CardFooter } from './CardParts';
 import { prettyDesktopName } from './utils';
 
 const timeFormat = d3.timeFormat("%a %e %b %Y %H:%M");
@@ -40,16 +39,25 @@ function SessionCard({ reload, session }) {
 
   return (
       <div
-        className={classNames('card border-primary mb-2', {
+        className={classNames('card text-left pb-2', {
           [`session--${session.state.toLowerCase()}`]: true,
         })}
         data-testid="session-card"
       >
-        <h5 className="card-header bg-primary text-light">
-          {title}
-        </h5>
+        <div className="row col justify-content-between mb-2 mt-3">
+          <h5
+            className="card-text text-start"
+          >
+            {title}
+          </h5>
+          <DropdownMenu
+            onCleaned={reload}
+            onTerminated={reload}
+            session={session}
+          />
+        </div>
         <div className={
-          classNames("card-body", { 'text-muted': !activeStates.includes(session.state) })
+          classNames("card-text", { 'text-muted': !activeStates.includes(session.state) })
         }>
           <div className="row mb-2">
             <div className="col">
@@ -84,7 +92,7 @@ function SessionCard({ reload, session }) {
               name="Host"
               value={session.hostname}
               valueTitle="The machine this session is running on"
-              format={host => <code>{host}</code>}
+              format={host => <code className="card-text">{host}</code>}
             />
             <MetadataEntry
               name="Started"
@@ -92,22 +100,62 @@ function SessionCard({ reload, session }) {
               format={timestampFormat}
             />
             <MetadataEntry
-              name="Last accessed"
+              name="Accessed"
               value={session.last_accessed_at}
               format={timestampFormat}
             />
             { jobIdEntry }
           </dl>
         </div>
-        <CardFooter>
-          <Buttons
-            onCleaned={reload}
-            onTerminated={reload}
-            session={session} 
-          />
-        </CardFooter>
       </div>
   );
+}
+
+function DropdownMenu({ onCleaned, onTerminated, session }) {
+  return (
+    <div className="dropdown">
+      <a className="card-text dropdown-toggle no-caret" id="dropdownMenuButton"
+         data-toggle="dropdown"
+         aria-haspopup="true" aria-expanded="false">
+        <i className="fa-solid fa-ellipsis-vertical pl-2"></i>
+      </a>
+      <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <DropdownItems
+          onCleaned={onCleaned}
+          onTerminated={onTerminated}
+          session={session}
+        />
+      </div>
+    </div>
+  );
+}
+
+function DropdownItems({ onCleaned, onTerminated, session }) {
+  if (activeStates.includes(session.state)) {
+    return (
+      <>
+        <Link
+          className="dropdown-item"
+          to={`/${session.id}`}
+        >
+          Connect
+        </Link>
+        <TerminateButton
+          className="dropdown-item"
+          onTerminated={onTerminated}
+          session={session}
+        />
+      </>
+    );
+  } else {
+    return (
+      <CleanButton
+        className="dropdown-item"
+        onCleaned={onCleaned}
+        session={session}
+      />
+    );
+  }
 }
 
 function MetadataEntry({ name, title, value, format, valueTitle }) {
@@ -133,41 +181,10 @@ function MetadataEntry({ name, title, value, format, valueTitle }) {
   );
 }
 
-function Buttons({ onCleaned, onTerminated, session }) {
-  if (activeStates.includes(session.state)) {
-    return (
-      <div className="btn-toolbar justify-content-center">
-        <Link
-          className="btn btn-sm btn-primary mr-2 text-nowrap"
-          to={`/sessions/${session.id}`}
-        >
-          <i className="fa fa-bolt mr-1"></i>
-          <span>Connect</span>
-        </Link>
-        <TerminateButton
-          className="btn-sm text-nowrap"
-          onTerminated={onTerminated}
-          session={session}
-        />
-      </div>
-    );
-  } else {
-    return (
-      <div className="btn-toolbar justify-content-center">
-        <CleanButton
-          className="btn-sm"
-          onCleaned={onCleaned}
-          session={session}
-        />
-      </div>
-    );
-  }
-}
-
 function Screenshot({ session }) {
   const screenshot = <WrappedScreenshot className="card-img" session={session} />;
   if (activeStates.includes(session.state)) {
-    return <Link to={`/sessions/${session.id}`}>{screenshot}</Link>;
+    return <Link to={`/${session.id}`}>{screenshot}</Link>;
   } else {
     return screenshot;
   }

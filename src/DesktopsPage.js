@@ -1,8 +1,11 @@
-import React from 'react';
-import { Jumbotron } from 'reactstrap';
+import React, {useContext, useRef, useState} from 'react';
+import {useHistory} from "react-router-dom";
+import {Button} from "reactstrap";
 
 import {
+  ConfigContext,
   DefaultErrorMessage,
+  Footer,
   Overlay,
   OverlayContainer,
   Spinner,
@@ -12,82 +15,193 @@ import {
 } from 'flight-webapp-components';
 
 import DesktopCard from './DesktopCard';
-import styles from './DesktopsPage.module.css';
-import { useFetchDesktops } from './api';
+import {useFetchDesktops, useLaunchSession} from './api';
+import Blurb from "./Blurb";
+import {Context as UserConfigContext} from "./UserConfigContext";
+import ConfigQuestions from "./ConfigQuestions";
+import {useToast} from "./ToastContext";
+import {prettyDesktopName} from "./utils";
+import BackLink from "./BackLink";
 
 function DesktopsPage() {
-  const { data, error, loading } = useFetchDesktops();
+  const {data, error, typesLoading} = useFetchDesktops();
 
-  if (error) {
-    if (utils.errorCode(data) === 'Unauthorized') {
-      return <UnauthorizedError />;
-    } else {
-      return <DefaultErrorMessage />;
-    }
-  } else {
-    const desktops = utils.getResourcesFromResponse(data);
-    return (
-      <React.Fragment>
-        {
-          loading && (
-            <OverlayContainer>
-              <Overlay>
-                <Spinner text="Loading desktops..."/>
-              </Overlay>
-            </OverlayContainer>
-          )
-        }
-        { desktops != null && <DesktopsList desktops={desktops} /> }
-      </React.Fragment>
+  const userConfig = useContext(UserConfigContext);
+  const defaultGeometry = userConfig.geometry;
+
+  const nameRef = useRef(null);
+  const [geometry, setGeometry] = useState(defaultGeometry);
+  const desktops = utils.getResourcesFromResponse(data);
+  const [desktop, setDesktop] = useState(null);
+
+  const history = useHistory();
+  const {addToast} = useToast();
+  const clusterName = useContext(ConfigContext).clusterName;
+
+  function launchErrorToast({ clusterName, desktop, launchError }) {
+    const desktopName = prettyDesktopName[desktop.id];
+    let body = (
+      <div>
+        Unfortunately there has been a problem launching your
+        {' '}<strong>{desktopName}</strong> desktop session.  Please try
+        again and, if problems persist, help us to more quickly rectify the
+        problem by contacting us and letting us know.
+      </div>
     );
-  }
-}
-
-function DesktopsList({ desktops }) {
-  const filteredDesktops = desktops.filter(desktop => desktop.verified);
-  const { groupedItems: groupedDesktops, perGroup } = useMediaGrouping(
-    ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
-    [3, 2, 2, 1],
-    1,
-    filteredDesktops,
-  );
-  const decks = groupedDesktops.map(
-    (group, index) => {
-      let blanks = null;
-      if ( group.length < perGroup) {
-        const a = new Array(perGroup - group.length);
-        a.fill(0);
-        blanks = a.map((i, index) => <div key={index} className="card invisible"></div>)
-      }
-      return (
-        <div key={index} className="card-deck">
-          {
-            group.map((desktop) => (
-              <DesktopCard key={desktop.id} desktop={desktop} />
-            ))
-          }
-          {blanks}
+    if (launchError === 'Desktop Not Prepared') {
+      body = (
+        <div>
+          <strong>{desktopName}</strong> has not yet been fully configured.  If
+          you would like to use this desktop please contact the system
+          administrator for {' '}<em>{clusterName}</em> and ask them to prepare
+          this desktop.
         </div>
       );
     }
-  );
 
-  return (
-    <React.Fragment>
-      <Jumbotron className={`${styles.Jumbotron} bg-white py-4`}>
-        <h1>
-          Launch a new desktop session
-        </h1>
-        <ul>
-          <li>Select the desktop session type from the list below.</li>
-          <li>Click "Launch".</li>
-          <li>When your session is ready you will be automatically connected to it.</li>
-          <li>Start working!</li>
-        </ul>
-      </Jumbotron>
-      {decks}
-    </React.Fragment>
-  );
+    return {
+      body,
+      icon: 'danger',
+      header: 'Failed to launch desktop',
+    };
+  }
+
+  // Launch session API call
+  const {request, post} = useLaunchSession();
+  const launchSession = () => {
+    post(desktop.id, nameRef.current?.value, geometry).then((responseBody) => {
+      if (request.response.ok) {
+        history.push(`/${responseBody.id}`);
+      } else {
+        addToast(launchErrorToast({
+          clusterName: clusterName,
+          desktop: desktop,
+          launchError: utils.errorCode(responseBody),
+        }));
+      }
+    });
+  };
+
+  const handleSubmit = e => {
+    launchSession();
+  };
+
+  if (error) {
+    if (utils.errorCode(data) === 'Unauthorized') {
+      return <UnauthorizedError/>;
+    } else {
+      return <DefaultErrorMessage/>;
+    }
+  } else {
+    return (
+      <>
+        <div className="centernav col-8">
+          <BackLink/>
+          <div className="narrow-container">
+            <Blurb/>
+          </div>
+          {
+            typesLoading && (
+              <OverlayContainer>
+                <Overlay>
+                  <Spinner text="Loading desktops..."/>
+                </Overlay>
+              </OverlayContainer>
+            )
+          }
+          {
+            desktops != null ? (
+              <>
+                <DesktopsList
+                  desktops={desktops}
+                  loading={request.loading}
+                  selectedDesktop={desktop}
+                />
+                <ConfigQuestions
+                  defaultGeometry={defaultGeometry}
+                  geometry={geometry}
+                  launch={handleSubmit}
+                  nameRef={nameRef}
+                  setGeometry={setGeometry}
+                  userConfig={userConfig}
+                />
+                <LaunchButton/>
+              </>
+            ) : (
+              <p className="tagline">
+                No desktop types available.
+              </p>
+            )
+          }
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  function LaunchButton() {
+    return (
+      <Button
+        data-testid="session-launch-button"
+        className="button link white-text submit-button"
+        onClick={handleSubmit}
+        disabled={desktop === null || request.loading}
+        title={ desktop === null ? "Select a desktop type to continue" : "" }
+      >
+        {
+          request.loading ?
+            <span className="d-flex">
+                        <span className="mr-2">LAUNCHING</span>
+                        <Spinner/>
+                      </span>
+            :
+            'LAUNCH'
+        }
+      </Button>
+    );
+  }
+
+  function DesktopsList({desktops, loading, selectedDesktop}) {
+    const filteredDesktops = desktops.filter(desktop => desktop.verified);
+    const {groupedItems: groupedDesktops, perGroup} = useMediaGrouping(
+      ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
+      [3, 2, 2, 1],
+      1,
+      filteredDesktops,
+    );
+    const decks = groupedDesktops.map(
+      (group, index) => {
+        if (group.length < perGroup) {
+          const a = new Array(perGroup - group.length);
+          a.fill(0);
+        }
+        return (
+          <div key={index} className="desktop-types-card-deck">
+            {
+              group.map((desktop) => (
+                <DesktopCard
+                  key={desktop.id}
+                  desktop={desktop}
+                  loading={loading}
+                  selected={selectedDesktop === desktop}
+                  onClick={() => setDesktop(desktop)}
+                />
+              ))
+            }
+          </div>
+        );
+      }
+    );
+
+    return (
+      <>
+        <p className="tagline">
+          Select your desktop type from the options below.
+        </p>
+        {decks}
+      </>
+    );
+  }
 }
 
 export default DesktopsPage;

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import {
   Button,
-  ButtonToolbar,
-  Popover,
-  PopoverBody,
-  PopoverHeader
+  Modal,
+  ModalBody,
 } from 'reactstrap';
 
 import { 
@@ -66,27 +64,22 @@ function ConfigureButton({
 
   return (
     <React.Fragment>
-      <Button
+      <a
         className={className}
-        disabled={configuring}
         id={id}
+        tabIndex={0}
+        onClick={toggle}
       >
-        {
-          configuring ?
-          <i className="fa fa-spinner fa-spin mr-1"></i> :
-          <i className="fa fa-cog mr-1"></i>
-        }
-        <span>{ configuring ? 'Configuring...' : 'Configure' }</span>
-      </Button>
-      <Popover
+        { configuring ? 'Configuring...' : 'Settings' }
+      </a>
+      <Modal
+        autoFocus={false}
         isOpen={showConfirmation}
-        target={id}
         toggle={toggle}
+        centered={true}
       >
-        <PopoverHeader>
-          Configure session
-        </PopoverHeader>
-        <PopoverBody>
+        <ModalBody>
+          <h3 className="mb-4">Configure session</h3>
           <form onSubmit={handleSubmit}>
             <RenameInput
               autoFocus={true}
@@ -103,27 +96,23 @@ function ConfigureButton({
                 />
               )
             }
-            <ButtonToolbar className="justify-content-center">
+            <div className="d-flex justify-content-center mt-4">
               <Button
-                className="mr-2"
+                className="button link white-text mr-3"
+                type="submit"
+              >
+                Update
+              </Button>
+              <Button
+                className="cancel-button button link blue-text"
                 onClick={toggle}
-                size="sm"
               >
                 Cancel
               </Button>
-              <Button
-                className="mr-2"
-                color="primary"
-                size="sm"
-                type="submit"
-              >
-                <i className="fa fa-cog mr-1"></i>
-                Configure
-              </Button>
-            </ButtonToolbar>
+            </div>
           </form>
-        </PopoverBody>
-      </Popover>
+        </ModalBody>
+      </Modal>
     </React.Fragment>
   )
 }

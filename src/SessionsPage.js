@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from "react-router-dom";
 
 import {
   Overlay,
@@ -9,13 +8,13 @@ import {
   DefaultErrorMessage,
   utils,
   // useInterval,
-  useMediaGrouping,
 } from 'flight-webapp-components';
 
 import SessionCard from './SessionCard';
-import styles from './SessionsPage.module.css';
 import { useFetchSessions } from './api';
 import { useInterval } from './utils';
+import LaunchDropdown from "./LaunchDropdown";
+import {Link} from "react-router-dom";
 
 function SessionsPage() {
   const { data, error, loading, get } = useFetchSessions();
@@ -51,66 +50,63 @@ function SessionsPage() {
 function NoSessionsFound() {
   return (
     <div>
-      <p>
-        No sessions found.  You may want to <Link to="/sessions/new">start a
-          new session</Link>.
+      <p className="tagline mt-4">
+        No sessions found.
       </p>
+      <div className="d-flex justify-content-center mt-5">
+        <InfoRowButtons/>
+      </div>
     </div>
   );
 }
 
 function SessionsList({ reload, sessions }) {
-  const { groupedItems: groupedSessions, perGroup } = useMediaGrouping(
-    ['(min-width: 1200px)', '(min-width: 992px)', '(min-width: 768px)', '(min-width: 576px)'],
-    [3, 2, 2, 1],
-    1,
-    sessions || [],
-  );
   if (sessions == null || !sessions.length) {
     return <NoSessionsFound />;
   }
-  const decks = groupedSessions.map(
-    (group, index) => {
-      let blanks = null;
-      if ( group.length < perGroup ) {
-        const a = new Array(perGroup - group.length);
-        a.fill(0);
-        blanks = a.map((i, index) => <div key={index} className="card invisible"></div>)
-      }
-      return (
-        <div key={index} className="card-deck">
-          {
-            group.map((session) => (
-              <SessionCard key={session.id} reload={reload} session={session} />
-            ))
-          }
-          {blanks}
-        </div>
-      );
-    }
-  );
 
   return (
-    <React.Fragment>
-      <IntroCard sessions={sessions} />
-      {decks}
-    </React.Fragment>
+    <>
+      <InfoRow sessions={sessions} />
+      <div className="desktops app-card-deck">
+        {
+          sessions.map((session) => (
+            <SessionCard key={session.id} reload={reload} session={session} />
+          ))
+        }
+      </div>
+    </>
   );
 }
 
-function IntroCard({ sessions }) {
+function InfoRow({ sessions }) {
   const sessionOrSessions = sessions.length === 1 ? 'session' : 'sessions';
 
   return (
-    <div className={`${styles.IntroCard} card card-body mb-2`}>
-      <p className={`${styles.IntroCardText} card-text`}>
-        You have {sessions.length} currently running desktop
-        {' '}{sessionOrSessions}.  Use the <i>Connect</i> button to establish
-        a connection to a desktop session or the <i>Terminate</i> button to
-        shutdown a desktop session.
-      </p>
+    <div className={`row justify-content-between align-items-center mb-4`}>
+      <span className={`tagline mb-0`}>
+        You have {sessions.length} desktop {sessionOrSessions} currently running.
+      </span>
+      <div className="d-flex">
+        <InfoRowButtons/>
+      </div>
     </div>
   );
+}
+
+function InfoRowButtons() {
+  return (
+    <>
+      <LaunchDropdown/>
+      <Link
+        className="button link white-text px-3 ml-2"
+        title="Default desktop settings"
+        to="/configs"
+      >
+        <i className="fa fa-solid fa-cog"></i>
+      </Link>
+    </>
+  )
 }
 
 export default SessionsPage;

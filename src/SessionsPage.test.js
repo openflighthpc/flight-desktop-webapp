@@ -52,7 +52,7 @@ describe('when there are no running sessions', () => {
 
     expect(getByText(/No sessions found./)).toBeInTheDocument();
     const startSessionLink = getByRole("link", { name: /start .* session/i });
-    expect(startSessionLink).toHaveAttribute("href", "/sessions/new");
+    expect(startSessionLink).toHaveAttribute("href", "/new");
   });
 });
 
@@ -160,8 +160,8 @@ describe('when there are running sessions', () => {
       const cleanButton = queryByRole("button", { name: "Clean" });
 
       if (session.state === "Active") {
-        expect(connectLink).toBeInTheDocument("href", `/sessions/${session.id}`);
-        expect(connectLink).toHaveAttribute("href", `/sessions/${session.id}`);
+        expect(connectLink).toBeInTheDocument("href", `/${session.id}`);
+        expect(connectLink).toHaveAttribute("href", `/${session.id}`);
         expect(terminateBtn).toBeInTheDocument();
         expect(cleanButton).toBeNull();
       } else {

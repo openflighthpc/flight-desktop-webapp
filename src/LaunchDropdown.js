@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
-import { DropdownItem } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Dropdown, DropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
+import classNames from "classnames";
 
-import { ButtonDropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
 import { ConfigContext } from 'flight-webapp-components';
 import { useLaunchDefaultSession } from './api';
 import { useToast } from './ToastContext';
@@ -19,7 +18,7 @@ function LaunchDropdown({ className }) {
   const quickLaunch = (ev) => {
     post().then((responseBody) => {
       if (response.ok) {
-        history.push(`/sessions/${responseBody.id}`);
+        history.push(`/${responseBody.id}`);
       } else {
         addToast(failedToast(clusterName));
       }
@@ -28,16 +27,11 @@ function LaunchDropdown({ className }) {
   };
 
   return (
-    <ButtonDropdown isOpen={dropdownOpen} toggle={toggle}>
-      <Link
-        className={className}
-        to="/sessions/new"
-      >
-          Launch session
-      </Link>
-
-      <DropdownToggle tag={"a"} type="button" split />
-
+    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+      <DropdownToggle className={classNames(className, "button link white-text")}>
+        NEW DESKTOP
+        <i className="fa-solid fa-caret-down ml-2"></i>
+      </DropdownToggle>
       <DropdownMenu right >
         <DropdownItem
           disabled={loading}
@@ -49,8 +43,14 @@ function LaunchDropdown({ className }) {
           { loading ? <i className="fa fa-spinner fa-spin mr-1"/> : null }
           <span>{ loading ? "Launching..." : "Quick launch" }</span>
         </DropdownItem>
+        <DropdownItem
+          disabled={loading}
+          onClick={() => history.push("/new")}
+          >
+          Custom desktop
+        </DropdownItem>
       </DropdownMenu>
-    </ButtonDropdown>
+    </Dropdown>
   );
 }
 

@@ -1,17 +1,26 @@
 import React from 'react';
+import Logo from './assets/desktop.png';
 
 function Blurb() {
   return (
-    <p>
-      The Flight Desktop service allows you to access interactive
-      GUI (graphical user interface) desktop sessions running on your
-      cluster.
-      Powered by the Flight Desktop tool, part of the OpenFlightHPC user
-      suite, this app allows you to launch, manage and connect to GUI
-      desktop sessions that operate within your OpenFlightHPC environment.
-    </p>
+    <>
+      <div
+        className="app-card blurb"
+      >
+        <img
+          className="app-icon mr-3"
+          alt=""
+          src={Logo}
+        />
+        <h2 className="card-title card-text">
+          flight<strong>Desktop</strong>
+        </h2>
+        <p className="tagline card-subtitle card-text">
+          Access interactive desktop sessions.
+        </p>
+      </div>
+    </>
   );
 }
-
 
 export default Blurb;

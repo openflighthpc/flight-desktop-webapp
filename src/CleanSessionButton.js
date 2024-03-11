@@ -50,7 +50,6 @@ function CleanSessionButton({
         Are you sure you want to clean this
         {' '}<strong>{prettyDesktopName[session.desktop]}</strong> session?
       </p>}
-      icon="fa-times"
       id={id}
     />
   );

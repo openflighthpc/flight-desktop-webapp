@@ -58,8 +58,8 @@ function TerminateButton({
           </p>
         </React.Fragment>
       }
-      icon="fa-trash"
       id={id}
+      type="link"
     />
   );
 }
