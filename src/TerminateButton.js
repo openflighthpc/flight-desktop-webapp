@@ -59,7 +59,6 @@ function TerminateButton({
         </React.Fragment>
       }
       id={id}
-      type="link"
     />
   );
 }
