@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import {Modal, ModalBody} from 'reactstrap'
 
-function PreparePasteButton({onPaste, onFallbackError, onFallbackPaste}) {
+function PreparePasteButton({className, onPaste, onFallbackError, onFallbackPaste}) {
   const [showFallback, setShowFallback] = useState(false);
 
   const toggleFallback = function() {
@@ -10,8 +10,8 @@ function PreparePasteButton({onPaste, onFallbackError, onFallbackPaste}) {
 
   return (
     <React.Fragment>
-      <button
-        className="btn btn-sm btn-light"
+      <a
+        className={className}
         onClick={async () => {
           try {
             const text = await navigator.clipboard.readText();
@@ -23,10 +23,10 @@ function PreparePasteButton({onPaste, onFallbackError, onFallbackPaste}) {
             toggleFallback();
           }
         }}
+        tabIndex={0}
       >
-        <i className="fa fa-paste mr-1"></i>
         Prepare paste
-      </button>
+      </a>
       <FallbackPasteModal
         isOpen={showFallback}
         onError={onFallbackError}
@@ -41,39 +41,46 @@ function FallbackPasteModal({isOpen, onError, onPaste, toggle}) {
   const textRef = useRef();
 
   return (
-    <Modal isOpen={isOpen} toggle={toggle}>
-      <ModalHeader toggle={toggle}>Paste Text</ModalHeader>
+    <Modal
+      autoFocus={false}
+      isOpen={isOpen}
+      toggle={toggle}
+      centered={true}
+    >
       <ModalBody>
+        <h3 className="mb-4">Paste Text</h3>
         <p>
           To allow your desktop session to gain access to the pasted text,
-          paste your text in the text area below and click "OK".
+          paste your text in the text area below.
         </p>
         <p>
           Your session's clipboard will be updated and you will be able to
           paste normally from within your session.
         </p>
-        <textarea ref={textRef} style={{ width: "100%", height: "7em" }}></textarea>
+        <div className="form-field mt-0">
+          <textarea ref={textRef} style={{ width: "100%", height: "7em" }} autoFocus={true}></textarea>
+        </div>
+        <div className="d-flex justify-content-center mt-4">
+          <button
+            className="button link white-text mr-3"
+            onClick={() => {
+              try {
+                onPaste(textRef.current.value);
+              } catch (e) {
+                console.log('Fallback failed.', e);  // eslint-disable-line no-console
+                onError(e);
+              } finally {
+                toggle();
+              }
+            }}
+          >
+            Save to clipboard
+          </button>
+          <button className="button link blue-text cancel-button" onClick={toggle}>
+            Cancel
+          </button>
+        </div>
       </ModalBody>
-      <ModalFooter>
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            try {
-              onPaste(textRef.current.value);
-            } catch (e) {
-              console.log('Fallback failed.', e);  // eslint-disable-line no-console
-              onError(e);
-            } finally {
-              toggle();
-            }
-          }}
-        >
-          OK
-        </button>
-        <button className="btn btn-link" onClick={toggle}>
-          Cancel
-        </button>
-      </ModalFooter>
     </Modal>
   );
 }

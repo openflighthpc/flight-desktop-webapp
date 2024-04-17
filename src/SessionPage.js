@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import {Link, useHistory, useParams} from 'react-router-dom';
 import { useToast } from './ToastContext';
 
 import {
@@ -130,7 +130,7 @@ function Connected({ id, session }) {
       }}
       onReconnect={onReconnect}
       onTerminate={() => setConnectionState('terminating')}
-      onTerminated={() => history.push('/sessions')}
+      onTerminated={() => history.push('/')}
       onZenChange={() => vnc.current && vnc.current.resize()}
       session={session}
       vnc={vnc}
@@ -175,35 +175,35 @@ function Layout({
 }) {
 
   return (
-    <div className="overflow-auto">
-      <div className="row no-gutters">
-        <div className="col">
-          <div className="card border-primary">
-            <div className="card-header bg-primary text-light">
-              <div className="row no-gutters">
-                <div className="col">
-                  <div className="d-flex flex-wrap align-items-center">
-                    <h5 className="flex-grow-1 mb-0">
-                      <SessionHeaderText session={session}/>
-                    </h5>
-                    <Toolbar
-                      connectionState={connectionState}
-                      onConfigured={onConfigured}
-                      onDisconnect={onDisconnect}
-                      onReconnect={onReconnect}
-                      onTerminate={onTerminate}
-                      onTerminated={onTerminated}
-                      onZenChange={onZenChange}
-                      session={session}
-                      vnc={vnc}
-                    />
+    <div className="centernav col-12 fullscreen">
+      <div className="overflow-auto">
+        <div className="row no-gutters">
+          <div className="col">
+              <div className="card-header toolbar text-light">
+                <div className="row no-gutters">
+                  <div className="col">
+                    <div className="d-flex align-items-center">
+                      <h5 className="flex-grow-1 mb-0">
+                        <SessionHeaderText session={session}/>
+                      </h5>
+                      <Toolbar
+                        connectionState={connectionState}
+                        onConfigured={onConfigured}
+                        onDisconnect={onDisconnect}
+                        onReconnect={onReconnect}
+                        onTerminate={onTerminate}
+                        onTerminated={onTerminated}
+                        onZenChange={onZenChange}
+                        session={session}
+                        vnc={vnc}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="card-body p-0">
-              {children}
-            </div>
+              <div className="fullscreen-content bg-session">
+                {children}
+              </div>
           </div>
         </div>
       </div>
@@ -223,46 +223,6 @@ function Toolbar({
   vnc,
 }) {
   const { addToast } = useToast();
-
-  const configureBtn = session != null ? (
-    <ConfigureButton
-      className="btn-sm btn-secondary mr-1"
-      onConfigured={onConfigured}
-      session={session}
-    />
-  ) : null;
-
-  const disconnectBtn = connectionState === 'connected' ? (
-    <button
-      className="btn btn-secondary btn-sm mr-1"
-      onClick={onDisconnect}
-    >
-      <i className="fa fa-times mr-1"></i>
-      <span>Disconnect</span>
-    </button>
-  ) : null;
-
-  const reconnectBtn = connectionState === 'disconnected' ? (
-    <button
-      className="btn btn-secondary btn-sm mr-1"
-      onClick={onReconnect}
-    >
-      <i className="fa fa-bolt mr-1"></i>
-      <span>Reconnect</span>
-    </button>
-  ) : null;
-
-  const terminateBtn = session != null ? (
-    <TerminateButton
-      className="btn-sm mr-1"
-      session={session}
-      onTerminate={onTerminate}
-      onTerminated={onTerminated}
-    >
-    </TerminateButton>
-  ) : null;
-
-  const fullscreenBtn = <FullscreenButton onZenChange={onZenChange} />;
 
   function handlePaste(text) {
     vnc.current.setClipboardText(text);
@@ -286,22 +246,70 @@ function Toolbar({
     addToast({body, icon: 'danger', header: 'Unexpected error' });
   }
 
-  const pasteButton = connectionState === 'connected' ? (
-    <PreparePasteButton
-      onPaste={handlePaste}
-      onFallbackError={handleFallbackError}
-      onFallbackPaste={handlePaste}
-    />
-  ) : null;
-
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
-      {fullscreenBtn}
-      {configureBtn}
-      {disconnectBtn}
-      {reconnectBtn}
-      {terminateBtn}
-      {pasteButton}
+      <FullscreenButton onZenChange={onZenChange} />
+      <div className="dropdown">
+        <a aria-expanded="false"
+           aria-haspopup="true"
+           className="link white-text dropdown-toggle no-caret"
+           data-toggle="dropdown"
+           id="dropdownMenuButton"
+        >
+          <i className="fa-solid fa-bars pl-2"></i>
+        </a>
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {connectionState === 'connected' &&
+            <a
+              className="dropdown-item"
+              onClick={onDisconnect}
+              tabIndex={0}
+            >
+              Disconnect
+            </a>
+          }
+          {connectionState === 'disconnected' &&
+            <a
+              className="dropdown-item"
+              onClick={onReconnect}
+              tabIndex={0}
+            >
+              Reconnect
+            </a>
+          }
+          {connectionState === 'connected' &&
+            <PreparePasteButton
+              className="dropdown-item"
+              onPaste={handlePaste}
+              onFallbackError={handleFallbackError}
+              onFallbackPaste={handlePaste}
+            />
+          }
+          {session != null &&
+            <ConfigureButton
+              className="dropdown-item"
+              onConfigured={onConfigured}
+              session={session}
+            />
+          }
+          {session != null &&
+            <TerminateButton
+              className="dropdown-item"
+              onTerminate={onTerminate}
+              onTerminated={onTerminated}
+              session={session}
+            />
+          }
+        </div>
+      </div>
+      <Link
+        className="link white-text pl-4"
+        title="Exit to desktops"
+        to="/"
+        relative="path"
+      >
+        <i className="fa-solid fa-right-from-bracket"></i>
+      </Link>
     </div>
   );
 }
@@ -332,6 +340,7 @@ function ConnectStateIndicator({ connectionState, id, onReconnect }) {
   }
   return (
     <div
+      className="fullscreen-content"
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
@@ -343,10 +352,12 @@ function ConnectStateIndicator({ connectionState, id, onReconnect }) {
 
 function Screenshot({ id }) {
   return (
-    <WrappedScreenshot
-      className={`d-block m-auto ${styles.NoVNCWrapper}`}
-      session={{ id }}
-    />
+    <div className="blurred-container fullscreen-content mx-auto">
+      <WrappedScreenshot
+        className={`d-block ${styles.NoVNCWrapper} fullscreen-content blurred`}
+        session={{ id }}
+      />
+    </div>
   );
 }
 

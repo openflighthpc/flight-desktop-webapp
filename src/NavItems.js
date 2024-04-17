@@ -17,7 +17,7 @@ function NavItems({ includeHome=true }) {
   return (
     <>
     { includeHome ? <NavLink path="/">Home</NavLink> : null }
-    <NavLink path="/sessions">Sessions</NavLink>
+    <NavLink path="/">Sessions</NavLink>
     <li className="nav-item dropdown">
       <LaunchDropdown className="nav-link nav-menu-button" color="link"/>
     </li>
