@@ -44,10 +44,8 @@ function SessionCard({ reload, session }) {
         })}
         data-testid="session-card"
       >
-        <div className="row col justify-content-between mb-2 mt-3">
-          <h5
-            className="card-text text-start"
-          >
+        <div className="desktop-header">
+          <h5 className="card-text text-start">
             {title}
           </h5>
           <DropdownMenu
@@ -117,7 +115,7 @@ function DropdownMenu({ onCleaned, onTerminated, session }) {
       <a className="card-text dropdown-toggle no-caret" id="dropdownMenuButton"
          data-toggle="dropdown"
          aria-haspopup="true" aria-expanded="false">
-        <i className="fa-solid fa-ellipsis-vertical pl-2"></i>
+        <i className="fa-solid fa-ellipsis-vertical pl-3"></i>
       </a>
       <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <DropdownItems
