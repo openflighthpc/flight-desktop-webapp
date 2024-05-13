@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import {Link, useHistory, useParams} from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import { useToast } from './ToastContext';
 
 import {
@@ -246,6 +246,13 @@ function Toolbar({
     addToast({body, icon: 'danger', header: 'Unexpected error' });
   }
 
+  function exitToDesktops() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+    window.location.href = '../desktop';
+  }
+
   return (
     <div className="btn-toolbar" style={{ minHeight: '31px' }}>
       <FullscreenButton onZenChange={onZenChange} />
@@ -302,14 +309,13 @@ function Toolbar({
           }
         </div>
       </div>
-      <Link
+      <div
         className="link white-text pl-4"
+        onClick={exitToDesktops}
         title="Exit to desktops"
-        to="/"
-        relative="path"
       >
         <i className="fa-solid fa-right-from-bracket"></i>
-      </Link>
+      </div>
     </div>
   );
 }
